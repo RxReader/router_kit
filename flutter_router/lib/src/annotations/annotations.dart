@@ -1,16 +1,21 @@
 import 'package:meta/meta.dart';
 
-abstract class FRouter {
+class Component {
+  Component({
+    @required this.routeName,
+    this.autowired = true,
+  }) : assert(routeName != null && routeName.isNotEmpty);
+
+  final String routeName;
+  final bool autowired;
 }
 
-class NameRouter implements FRouter {
-  const NameRouter({
-    @required this.name,
-  }) : assert(name != null);
+class Autowired {
+  Autowired({
+    this.name,
+  });
 
   final String name;
 }
 
-class NotFoundRouter implements FRouter {
-  const NotFoundRouter();
-}
+class Ignored {}
