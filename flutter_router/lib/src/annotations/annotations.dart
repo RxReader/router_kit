@@ -1,21 +1,23 @@
 import 'package:meta/meta.dart';
 
 class Component {
-  Component({
+  const Component({
     @required this.routeName,
     this.autowired = true,
-  }) : assert(routeName != null && routeName.isNotEmpty);
+  }) : assert(routeName != null);
 
   final String routeName;
   final bool autowired;
 }
 
 class Autowired {
-  Autowired({
+  const Autowired({
     this.name,
   });
 
   final String name;
 }
 
-class Ignored {}
+class Ignored {
+  const Ignored();
+}
