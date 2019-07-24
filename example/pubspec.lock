@@ -81,6 +81,27 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.0.2"
+  router_annotation:
+    dependency: "direct main"
+    description:
+      path: "../router_annotation"
+      relative: true
+    source: path
+    version: "0.0.0"
+  router_api:
+    dependency: "direct main"
+    description:
+      path: "../router_api"
+      relative: true
+    source: path
+    version: "0.0.1"
+  router_compiler:
+    dependency: "direct dev"
+    description:
+      path: "../router_compiler"
+      relative: true
+    source: path
+    version: "0.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

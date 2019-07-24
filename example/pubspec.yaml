@@ -24,10 +24,17 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
+  router_api:
+    path: ../router_api
+  router_annotation:
+    path: ../router_annotation
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  router_compiler:
+    path: ../router_compiler
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
