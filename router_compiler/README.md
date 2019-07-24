@@ -9,10 +9,6 @@ A simple usage example:
 
 ```dart
 import 'package:router_compiler/router_compiler.dart';
-
-main() {
-  var awesome = new Awesome();
-}
 ```
 
 ## Features and bugs
