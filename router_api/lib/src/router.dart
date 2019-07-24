@@ -19,11 +19,10 @@ class Router {
     return await nextDispatchers[0](this, routeName, arguments);
   }
 
-  Future<dynamic> pushReplacementNamed(String routeName,
-      {Object result, Object arguments}) async {
+  Future<dynamic> navigate(Navigation navigation, String routeName,
+      {Object arguments}) async {
     List<NextDispatcher> nextDispatchers = _createDispatchers((_, __, ___) {
-      return Navigator.of(_context).pushReplacementNamed(routeName,
-          result: result, arguments: arguments);
+      return navigation(_context, routeName, arguments);
     }, _interceptors);
     return await nextDispatchers[0](this, routeName, arguments);
   }
@@ -80,4 +79,10 @@ typedef FutureOr<dynamic> Interceptor(
   String routeName,
   Object arguments,
   NextDispatcher next,
+);
+
+typedef FutureOr<dynamic> Navigation(
+  BuildContext context,
+  String routeName,
+  Object arguments,
 );
