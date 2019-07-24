@@ -10,7 +10,16 @@ environment:
 dependencies:
   router_annotation:
     path: ../router_annotation
+  meta: ^1.1.5
+  logging: ^0.11.3
+  analyzer: ^0.36.0
+  build: ^1.1.4
+  source_gen: ^0.9.0
 
 dev_dependencies:
   pedantic: ^1.0.0
   test: ^1.0.0
+  build_runner: ^1.5.0
+  build_web_compilers: ^2.1.0
+  build_test: ^0.10.3
+  collection: ^1.14.11
