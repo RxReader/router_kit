@@ -113,6 +113,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.3.3"
+  jaguar_serializer:
+    dependency: "direct main"
+    description:
+      name: jaguar_serializer
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "2.2.12"
   js:
     dependency: transitive
     description:
@@ -135,7 +142,7 @@ packages:
     source: hosted
     version: "0.12.5"
   meta:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: meta
       url: "https://pub.flutter-io.cn"
