@@ -1,8 +1,8 @@
 name: router_annotation
 description: A starting point for Dart libraries or applications.
 version: 0.0.1
-homepage: https://github.com/v7lin
 author: v7lin <v7lin@qq.com>
+homepage: https://github.com/v7lin
 
 environment:
   sdk: '>=2.2.0 <3.0.0'

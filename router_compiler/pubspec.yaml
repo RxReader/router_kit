@@ -1,14 +1,15 @@
 name: router_compiler
 description: A starting point for Dart libraries or applications.
-# version: 1.0.0
-# homepage: https://www.example.com
-# author: v7lin <v7lin@qq.com>
+version: 0.0.1
+author: v7lin <v7lin@qq.com>
+homepage: https://github.com/v7lin
 
 environment:
   sdk: '>=2.2.0 <3.0.0'
 
-#dependencies:
-#  path: ^1.4.1
+dependencies:
+  router_annotation:
+    path: ../router_annotation
 
 dev_dependencies:
   pedantic: ^1.0.0
