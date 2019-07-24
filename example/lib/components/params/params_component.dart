@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-@Component(routeName: '/params')
+@Component(
+  routeName: '/params',
+)
 // ignore: must_be_immutable
 class ParamsComponent extends StatefulWidget {
   ParamsComponent({
@@ -12,10 +14,8 @@ class ParamsComponent extends StatefulWidget {
 
   final String paramA;
 
-  @Autowired(name: 'paramC')
   final String paramB;
 
-  @Ignored()
   String paramC;
 
   @override
