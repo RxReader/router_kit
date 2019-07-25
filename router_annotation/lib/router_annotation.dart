@@ -4,4 +4,4 @@
 library router_annotation;
 
 export 'src/annotations.dart';
-export 'package:jaguar_serializer/jaguar_serializer.dart';
+export 'src/name_formatters.dart';
