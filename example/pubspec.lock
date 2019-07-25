@@ -85,6 +85,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.7"
+  fake_path_provider:
+    dependency: "direct main"
+    description:
+      name: fake_path_provider
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -116,6 +123,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "0.14.0+2"
+  intl:
+    dependency: "direct main"
+    description:
+      name: intl
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.15.8"
   jaguar_serializer:
     dependency: transitive
     description:

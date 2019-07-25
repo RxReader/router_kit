@@ -21,7 +21,7 @@ class _PaymentComponentState extends State<PaymentComponent> {
             onTap: () {
               Navigator.of(context).pop('Click Pay');
             },
-          )
+          ),
         ],
       ),
     );

@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:example/logs/collect-console-logs.dart';
 import 'package:example/router/navigator_route.dart';
 import 'package:example/router/router.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,6 +38,24 @@ class _HomeComponentState extends State<HomeComponent> {
                 AppNavigator.params,
                 arguments: ParamsRoute.arguments(paramA: 'aaa', paramC: 'ccc'),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('Null'),
+            onTap: () {
+              String xxx;
+              print(xxx.length);
+            },
+          ),
+          ListTile(
+            title: const Text('All Logs'),
+            onTap: () async {
+              List<File> logs = await CollectConsoleLogs.get().getAllLogs();
+              if (logs != null && logs.isNotEmpty) {
+                logs.forEach((File log) {
+                  print('log: ${log.path}');
+                });
+              }
             },
           ),
         ],
