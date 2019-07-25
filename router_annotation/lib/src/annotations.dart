@@ -16,14 +16,25 @@ class Component {
   final NameFormatter nameFormatter;
 }
 
-abstract class Field {}
+class Field {
+  final bool isNullable;
+
+  Field({
+    this.isNullable,
+  });
+}
 
 class Alias implements Field {
-  const Alias({this.name});
+  const Alias({
+    this.name,
+    this.isNullable,
+  });
 
   final String name;
+  final bool isNullable;
 }
 
 class Ignore implements Field {
-  const Ignore();
+  const Ignore() : isNullable = null;
+  final bool isNullable;
 }
