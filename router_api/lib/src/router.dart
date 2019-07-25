@@ -12,11 +12,10 @@ class Router {
   final BuildContext _context;
   final List<Interceptor> _interceptors;
 
-  Future<dynamic> pushNamed(String routeName, {Object arguments}) async {
-    List<NextDispatcher> nextDispatchers = _createDispatchers((_, __, ___) {
+  Future<dynamic> pushNamed(String routeName, {Object arguments}) {
+    return navigate((BuildContext context, String routeName, Object arguments) {
       return Navigator.of(_context).pushNamed(routeName, arguments: arguments);
-    }, _interceptors);
-    return await nextDispatchers[0](this, routeName, arguments);
+    }, routeName, arguments: arguments);
   }
 
   Future<dynamic> navigate(Navigation navigation, String routeName,
