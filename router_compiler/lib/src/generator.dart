@@ -11,7 +11,7 @@ import 'package:source_gen/source_gen.dart';
 
 final Logger _log = Logger("RouterCompiler");
 
-final Map<String, ComponentInfo> infos = <String, ComponentInfo>{};
+final Map<String, ComponentInfo> infoMap = <String, ComponentInfo>{};
 
 class ComponentCompilerGenerator extends GeneratorForAnnotation<Component> {
   static const String _onlyClassMsg =
@@ -25,7 +25,7 @@ class ComponentCompilerGenerator extends GeneratorForAnnotation<Component> {
     try {
       ComponentInfo info = ComponentParser.parse(
           element as ClassElement, annotation, buildStep);
-      infos[info.routeName] = info;
+      infoMap[info.routeName] = info;
 
       ComponentWriter writer = ComponentWriter(info);
 
@@ -48,7 +48,7 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Router> {
     if (element is! ClassElement) throw RouterCompilerException(_onlyClassMsg);
 
     try {
-      RouterWriter writer = RouterWriter(element, infos);
+      RouterWriter writer = RouterWriter(element, infoMap);
 
       writer.generate();
       return writer.toString();

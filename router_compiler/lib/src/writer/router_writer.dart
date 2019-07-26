@@ -2,10 +2,10 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:router_compiler/src/info/info.dart';
 
 class RouterWriter {
-  RouterWriter(this.element, this.infos);
+  RouterWriter(this.element, this.infoMap);
 
   final ClassElement element;
-  final Map<String, ComponentInfo> infos;
+  final Map<String, ComponentInfo> infoMap;
 
   final StringBuffer _buffer = StringBuffer();
 
@@ -26,7 +26,12 @@ class RouterWriter {
     _buffer.writeln('');
 
     _buffer.writeln('static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{');
-    for (ComponentInfo info in infos.values) {
+    List<ComponentInfo> infos = <ComponentInfo>[];
+    infos.addAll(infoMap.values);
+    infos.sort((ComponentInfo a, ComponentInfo b) {
+      return a.routeName.compareTo(b.routeName);
+    });
+    for (ComponentInfo info in infos) {
       _buffer.writeln('${info.providerDisplayName}.routeName: ${info.providerDisplayName}.routeBuilder,');
     }
     _buffer.writeln('};');

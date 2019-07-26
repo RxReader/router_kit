@@ -50,50 +50,59 @@ class ComponentWriter {
     // blank
     _buffer.writeln('');
 
-    // arguments
-    StringBuffer ctor2 = StringBuffer();
-    for (ParameterElement ctorParameter in info.ctorParameters) {
-      FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
-      if (!fieldInfo.ignore) {
-        ctor2.writeln(
-            '${ctorParameter.type.displayName} ${ctorParameter.displayName},');
-      }
-    }
-    bool hasOptionalParameters = false;
-    for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
-      FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
-      if (!fieldInfo.ignore) {
-        if (!hasOptionalParameters) {
-          hasOptionalParameters = true;
-          ctor2.writeln('{');
+    if (info.ctorParameters.isNotEmpty || info.ctorNamedParameters.isNotEmpty) {
+      // arguments
+      StringBuffer ctor2 = StringBuffer();
+      for (ParameterElement ctorParameter in info.ctorParameters) {
+        FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
+        if (!fieldInfo.ignore) {
+          ctor2.writeln(
+              '${ctorParameter.type.displayName} ${ctorParameter
+                  .displayName},');
         }
-        ctor2.writeln(
+      }
+      bool hasOptionalParameters = false;
+      for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
+        FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
+        if (!fieldInfo.ignore) {
+          if (!hasOptionalParameters) {
+            hasOptionalParameters = true;
+            ctor2.writeln('{');
+          }
+          ctor2.writeln(
             // ignore: deprecated_member_use
-            '${ctorNamedParameter.isRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
+              '${ctorNamedParameter.isRequired
+                  ? '@required '
+                  : ''}${ctorNamedParameter.type
+                  .displayName} ${ctorNamedParameter.displayName},');
+        }
       }
-    }
-    if (hasOptionalParameters) {
-      ctor2.writeln('}');
-    }
-    _buffer.writeln(
-        'static Map<dynamic, dynamic> routeArgument(\n${ctor2.toString()}){');
-    _buffer.writeln('Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
-    for (ParameterElement ctorParameter in info.ctorParameters) {
-      FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
-      if (!fieldInfo.ignore) {
-        _buffer.write(
-            'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
+      if (hasOptionalParameters) {
+        ctor2.writeln('}');
       }
-    }
-    for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
-      FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
-      if (!fieldInfo.ignore) {
-        _buffer.write(
-            'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
+      _buffer.writeln(
+          'static Map<dynamic, dynamic> routeArgument(\n${ctor2.toString()}){');
+      _buffer.writeln(
+          'Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
+      for (ParameterElement ctorParameter in info.ctorParameters) {
+        FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
+        if (!fieldInfo.ignore) {
+          _buffer.write(
+              'arguments[\'${info.nameFormatter(
+                  fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
+        }
       }
+      for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
+        FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
+        if (!fieldInfo.ignore) {
+          _buffer.write(
+              'arguments[\'${info.nameFormatter(
+                  fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
+        }
+      }
+      _buffer.writeln('return arguments;');
+      _buffer.writeln('}');
     }
-    _buffer.writeln('return arguments;');
-    _buffer.writeln('}');
 
     // end
     _buffer.writeln('}');
