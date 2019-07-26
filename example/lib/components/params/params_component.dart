@@ -1,33 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
+part 'params_component.route.dart';
+
 @Component(
   routeName: '/params',
   nameFormatter: toSnakeCase,
 )
 // ignore: must_be_immutable
 class ParamsComponent extends StatefulWidget {
-  ParamsComponent({
+  ParamsComponent(
+    this.paramA, {
     Key key,
-    @required this.paramA,
-    this.paramB,
+    @required this.paramB,
+    this.paramC,
+    @required this.paramE,
   }) : super(key: key);
 
   final String paramA;
 
-  @Alias('paramC')
   final String paramB;
 
+  @Alias('paramD')
+  final String paramC;
+
   @Ignore()
-  String paramC;
+  String paramD;
 
-  final String paramD = '';
+  @Ignore()
+  String paramE;
 
-  String paramE = '';
+  final String paramF = '';
 
-  static String paramF = '';
-
-  static const String paramG = '';
+  String paramG = '';
 
   @override
   State<StatefulWidget> createState() {

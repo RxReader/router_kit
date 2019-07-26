@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:build/build.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
@@ -9,7 +10,7 @@ import 'package:source_gen/source_gen.dart';
 class AnnotationParser {
   AnnotationParser._();
 
-  static SerializerInfo parse(ClassElement element, ConstantReader annotation) {
+  static SerializerInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) => supertype.displayName)
         .contains('Widget')) {
@@ -35,6 +36,7 @@ class AnnotationParser {
 
     return SerializerInfo(
       name: element.displayName,
+      importUri: buildStep.inputId.uri,
       fieldInfos: fieldInfos,
       ctorParameters: ctorParameters,
       ctorNamedParameters: ctorNamedParameters,
@@ -67,7 +69,7 @@ class AnnotationParser {
       }
 
       DartType type = field.type;
-      String alias;
+      String alias = name;
       bool nullable = nullableFields;
       bool ignore = false;
       bool isFinal = field.isFinal;
@@ -123,7 +125,6 @@ class AnnotationParser {
     NameFormatter nameFormatter;
     Uri uri = annotation.revive().source;
     String accessor = annotation.revive().accessor;
-    print('uri: $uri');
     if (uri.pathSegments.isNotEmpty ||
         uri.pathSegments.first == 'router_annotation') {
       switch (accessor) {

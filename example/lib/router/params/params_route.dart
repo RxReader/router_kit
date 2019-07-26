@@ -9,8 +9,9 @@ class ParamsRoute {
     Map<dynamic, dynamic> arguments =
         ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return ParamsComponent(
-      paramA: arguments['paramA'] as String,
-      paramB: arguments['paramC'] as String,
+      arguments['paramA'] as String,
+      paramB: arguments['paramB'] as String,
+      paramC: arguments['paramD'] as String,
     );
   };
 
