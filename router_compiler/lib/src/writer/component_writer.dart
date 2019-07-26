@@ -26,8 +26,6 @@ class ComponentWriter {
     // route
     _buffer.writeln(
         'static WidgetBuilder routeBuilder = (BuildContext context) {');
-    _buffer.writeln(
-        'Map<dynamic, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;');
     StringBuffer ctor1 = StringBuffer();
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
@@ -41,6 +39,10 @@ class ComponentWriter {
         ctor1.writeln(
             '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.displayName}' : 'null'},');
       }
+    }
+    if (ctor1.toString().isNotEmpty) {
+      _buffer.writeln(
+          'Map<dynamic, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;');
     }
     _buffer.writeln('return ${info.displayName}(\n${ctor1.toString()});');
     _buffer.writeln('};');
