@@ -34,10 +34,10 @@ class _HomeComponentState extends State<HomeComponent> {
           ListTile(
             title: const Text('Params'),
             onTap: () {
-              AppRouter.defaultRouter(context).pushNamed(
-                AppNavigator.params,
-                arguments: ParamsRoute.arguments(paramA: 'aaa', paramC: 'ccc'),
-              );
+//              AppRouter.defaultRouter(context).pushNamed(
+//                AppNavigator.params,
+//                arguments: ParamsRoute.arguments(paramA: 'aaa', paramC: 'ccc'),
+//              );
             },
           ),
           ListTile(

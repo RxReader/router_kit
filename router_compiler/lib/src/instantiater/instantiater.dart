@@ -37,7 +37,7 @@ class AnnotationParser {
         _parseFieldFormatter(annotation.peek('nameFormatter'));
 
     return SerializerInfo(
-      name: element.displayName,
+      displayName: element.displayName,
       importUri: buildStep.inputId.uri,
       routeName: routeName,
       fieldInfos: fieldInfos,
@@ -62,7 +62,6 @@ class AnnotationParser {
     }
     for (FieldElement field in fields) {
       String name = field.displayName;
-      print('name: $name');
       if (name == 'hashCode') {
         continue;
       }

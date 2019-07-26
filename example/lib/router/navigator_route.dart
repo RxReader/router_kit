@@ -6,8 +6,6 @@ import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
 import 'package:flutter/widgets.dart';
 
-part 'params/params_route.dart';
-
 /// TODO 注解自动生成
 
 class AppNavigator {
@@ -23,7 +21,7 @@ class AppNavigator {
     Navigator.defaultRouteName: (BuildContext context) => HomeComponent(),
     login: (BuildContext context) => LoginComponent(),
     payment: (BuildContext context) => PaymentComponent(),
-    params: ParamsRoute.route,
+//    params: ParamsRoute.route,
     about: (BuildContext context) => AboutComponent(),
     notFound: (BuildContext context) => NotFoundComponent(),
   };

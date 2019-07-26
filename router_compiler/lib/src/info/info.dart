@@ -5,7 +5,7 @@ import 'package:router_annotation/router_annotation.dart';
 
 class SerializerInfo {
   SerializerInfo({
-    @required this.name,
+    @required this.displayName,
     @required this.importUri,
     @required this.routeName,
     @required this.fieldInfos,
@@ -14,7 +14,7 @@ class SerializerInfo {
     this.nameFormatter,
   });
 
-  final String name;
+  final String displayName;
   final Uri importUri;
   final String routeName;
   final Map<String, FieldInfo> fieldInfos;
@@ -22,7 +22,7 @@ class SerializerInfo {
   final List<ParameterElement> ctorNamedParameters;
   final NameFormatter nameFormatter;
 
-  String get clazzRouteName => '${name}Route';
+  String get clazzRouteName => '${displayName}Route';
 }
 
 class FieldInfo {

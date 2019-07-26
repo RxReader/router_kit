@@ -3,6 +3,8 @@ import 'package:router_annotation/router_annotation.dart';
 
 part 'params_component.route.dart';
 
+typedef String Callback(String info);
+
 @Component(
   routeName: '/params',
   nameFormatter: toSnakeCase,
@@ -14,7 +16,8 @@ class ParamsComponent extends StatefulWidget {
     Key key,
     @required this.paramB,
     this.paramC,
-    @required this.paramE,
+    this.paramE,
+    this.callback,
   }) : super(key: key);
 
   final String paramA;
@@ -33,6 +36,8 @@ class ParamsComponent extends StatefulWidget {
   final String paramF = '';
 
   String paramG = '';
+
+  Callback callback;
 
   @override
   State<StatefulWidget> createState() {
