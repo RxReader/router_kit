@@ -1,12 +1,12 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:router_compiler/src/info/info.dart';
 
-class Writer {
-  SerializerInfo info;
+class ComponentWriter {
+  ComponentWriter(this.info);
+
+  final ComponentInfo info;
 
   final StringBuffer _buffer = StringBuffer();
-
-  Writer(this.info);
 
   void generate() {
     // begin
@@ -24,7 +24,8 @@ class Writer {
     _buffer.writeln('');
 
     // route
-    _buffer.writeln('static WidgetBuilder routeBuilder = (BuildContext context) {');
+    _buffer.writeln(
+        'static WidgetBuilder routeBuilder = (BuildContext context) {');
     _buffer.writeln(
         'Map<dynamic, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;');
     StringBuffer ctor1 = StringBuffer();
@@ -52,7 +53,8 @@ class Writer {
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
       if (!fieldInfo.ignore) {
-        ctor2.writeln('${ctorParameter.type.displayName} ${ctorParameter.displayName},');
+        ctor2.writeln(
+            '${ctorParameter.type.displayName} ${ctorParameter.displayName},');
       }
     }
     bool hasOptionalParameters = false;
@@ -63,8 +65,9 @@ class Writer {
           hasOptionalParameters = true;
           ctor2.writeln('{');
         }
-        // ignore: deprecated_member_use
-        ctor2.writeln('${ctorNamedParameter.isRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
+        ctor2.writeln(
+            // ignore: deprecated_member_use
+            '${ctorNamedParameter.isRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
       }
     }
     if (hasOptionalParameters) {
@@ -76,13 +79,15 @@ class Writer {
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
       if (!fieldInfo.ignore) {
-        _buffer.write('arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
+        _buffer.write(
+            'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
       }
     }
     for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
       if (!fieldInfo.ignore) {
-        _buffer.write('arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
+        _buffer.write(
+            'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
       }
     }
     _buffer.writeln('return arguments;');
@@ -92,5 +97,6 @@ class Writer {
     _buffer.writeln('}');
   }
 
+  @override
   String toString() => _buffer.toString();
 }

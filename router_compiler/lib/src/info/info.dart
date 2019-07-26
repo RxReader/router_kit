@@ -3,19 +3,17 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-class SerializerInfo {
-  SerializerInfo({
+class ComponentInfo {
+  ComponentInfo({
     @required this.displayName,
-    @required this.importUri,
     @required this.routeName,
     @required this.fieldInfos,
     @required this.ctorParameters,
     @required this.ctorNamedParameters,
-    this.nameFormatter,
+    @required this.nameFormatter,
   });
 
   final String displayName;
-  final Uri importUri;
   final String routeName;
   final Map<String, FieldInfo> fieldInfos;
   final List<ParameterElement> ctorParameters;

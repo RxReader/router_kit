@@ -7,10 +7,10 @@ import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:source_gen/source_gen.dart';
 
-class AnnotationParser {
-  AnnotationParser._();
+class ComponentParser {
+  ComponentParser._();
 
-  static SerializerInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
+  static ComponentInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) => supertype.displayName)
         .contains('Widget')) {
@@ -34,11 +34,10 @@ class AnnotationParser {
     _makeCtor(element, ctorParameters, ctorNamedParameters);
 
     NameFormatter nameFormatter =
-        _parseFieldFormatter(annotation.peek('nameFormatter'));
+        _parseFieldFormatter(annotation.peek('nameFormatter')) ?? toSnakeCase;
 
-    return SerializerInfo(
+    return ComponentInfo(
       displayName: element.displayName,
-      importUri: buildStep.inputId.uri,
       routeName: routeName,
       fieldInfos: fieldInfos,
       ctorParameters: ctorParameters,
