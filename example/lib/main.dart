@@ -9,17 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 void main() {
-  void _reportError(Object error, StackTrace stackTrace) {
-
-  }
+  void _reportError(Object error, StackTrace stackTrace) {}
 
   FlutterError.onError = (FlutterErrorDetails details) async {
     FlutterError.dumpErrorToConsole(details);
     _reportError(details.exception, details.stack);
   };
 
-  Isolate.current
-      .addErrorListener(RawReceivePort((List<String> message) async {
+  Isolate.current.addErrorListener(RawReceivePort((List<String> message) async {
     RemoteError error = RemoteError(message[0], message[1]);
     _reportError(error, error.stackTrace);
   }).sendPort);
@@ -31,7 +28,7 @@ void main() {
     zoneSpecification: ZoneSpecification(
         print: (Zone self, ZoneDelegate parent, Zone zone, String line) {
       // 全局控制台日志拦截
-      parent.print(zone, line);
+      parent.print(zone, 'xxx: $line');
       CollectConsoleLogs.get().print(zone, line);
     }),
     onError: (Object error, [StackTrace stackTrace]) {

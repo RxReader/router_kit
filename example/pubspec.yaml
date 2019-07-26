@@ -26,6 +26,8 @@ dependencies:
 
   intl: ^0.15.8
 
+  scoped_model: ^1.0.1
+
   fake_path_provider: ^0.1.2
   router_api:
     path: ../router_api
@@ -36,6 +38,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  build_runner:
   router_compiler:
     path: ../router_compiler
 
