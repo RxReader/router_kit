@@ -7,8 +7,9 @@ Created from templates made available by Stagehand under a BSD-style
 
 A simple usage example:
 
-```dart
-import 'package:router_compiler/router_compiler.dart';
+```shell
+flutter clean
+flutter packages pub run build_runner build --delete-conflicting-outputs
 ```
 
 ## Features and bugs
