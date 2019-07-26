@@ -8,12 +8,12 @@ import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
 import 'package:example/components/splash/splash_component.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_annotation/router_annotation.dart' as annot;
+import 'package:router_annotation/router_annotation.dart';
 import 'package:router_api/router_api.dart';
 
 part 'app_router.router.dart';
 
-@annot.Router()
+@Router()
 class AppRouter {
   AppRouter._();
 
@@ -22,7 +22,7 @@ class AppRouter {
   ];
 
   static FutureOr<dynamic> _routerLogger(
-    Router router,
+    CRouter router,
     String routeName,
     Object arguments,
     NextDispatcher next,
@@ -32,7 +32,7 @@ class AppRouter {
   }
 
   static FutureOr<dynamic> _shouldLogin(
-    Router router,
+    CRouter router,
     String routeName,
     Object arguments,
     NextDispatcher next,
@@ -47,8 +47,8 @@ class AppRouter {
     return next(router, routeName, arguments);
   }
 
-  static Router defaultRouter(BuildContext context) {
-    return Router.of(context)
+  static CRouter defaultRouter(BuildContext context) {
+    return CRouter.of(context)
         .addInterceptor(_routerLogger)
         .addInterceptor(_shouldLogin)
         .build();

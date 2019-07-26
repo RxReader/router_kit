@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-class Router {
-  Router._(
+class CRouter {
+  CRouter._(
     BuildContext context,
     List<Interceptor> interceptors,
   )   : _context = context,
@@ -33,34 +33,34 @@ class Router {
     // 倒序
     for (Interceptor nextInterceptor in interceptors.reversed) {
       final NextDispatcher next = dispatchers.last;
-      dispatchers.add((Router router, String routeName, Object arguments) {
+      dispatchers.add((CRouter router, String routeName, Object arguments) {
         return nextInterceptor(router, routeName, arguments, next);
       });
     }
     return dispatchers.reversed.toList(); // 倒序
   }
 
-  static RouterBuilder of(BuildContext context) {
-    return RouterBuilder._(context);
+  static CRouterBuilder of(BuildContext context) {
+    return CRouterBuilder._(context);
   }
 }
 
-class RouterBuilder {
-  RouterBuilder._(
+class CRouterBuilder {
+  CRouterBuilder._(
     BuildContext context,
   ) : _context = context;
 
   final BuildContext _context;
   final List<Interceptor> _interceptors = <Interceptor>[];
 
-  RouterBuilder addInterceptor(Interceptor interceptor) {
+  CRouterBuilder addInterceptor(Interceptor interceptor) {
     assert(interceptor != null);
     _interceptors.add(interceptor);
     return this;
   }
 
-  Router build() {
-    return Router._(
+  CRouter build() {
+    return CRouter._(
       _context,
       List.unmodifiable(_interceptors),
     );
@@ -68,13 +68,13 @@ class RouterBuilder {
 }
 
 typedef FutureOr<dynamic> NextDispatcher(
-  Router router,
+  CRouter router,
   String routeName,
   Object arguments,
 );
 
 typedef FutureOr<dynamic> Interceptor(
-  Router router,
+  CRouter router,
   String routeName,
   Object arguments,
   NextDispatcher next,
