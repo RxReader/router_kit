@@ -18,36 +18,35 @@ class Component {
 
 class Field {
   Field({
+    this.encodeTo,
+    this.decodeFrom,
     this.isNullable,
     this.dontEncode = false,
     this.dontDecode = false,
   });
 
+  final String encodeTo;
+  final String decodeFrom;
   final bool isNullable;
   final bool dontEncode;
   final bool dontDecode;
-}
 
-class Alias implements Field {
-  const Alias({
-    @required this.name,
-    this.isNullable,
-    this.dontEncode = false,
-    this.dontDecode = false,
-  }) : assert(name != null);
+  const Field.encode({String alias, this.isNullable})
+      : encodeTo = alias,
+        dontEncode = false,
+        decodeFrom = null,
+        dontDecode = true;
 
-  final String name;
-  final bool isNullable;
-  final bool dontEncode;
-  final bool dontDecode;
-}
+  const Field.decode({String alias, this.isNullable})
+      : decodeFrom = alias,
+        dontEncode = true,
+        encodeTo = null,
+        dontDecode = false;
 
-class Ignore implements Field {
-  const Ignore()
-      : isNullable = null,
+  const Field.ignore()
+      : encodeTo = null,
+        decodeFrom = null,
+        isNullable = null,
         dontEncode = true,
         dontDecode = true;
-  final bool isNullable;
-  final bool dontEncode;
-  final bool dontDecode;
 }
