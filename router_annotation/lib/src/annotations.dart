@@ -2,6 +2,8 @@ import 'package:meta/meta.dart';
 
 typedef String NameFormatter(String fieldName);
 
+class Router {}
+
 class Component {
   const Component({
     @required this.routeName,
