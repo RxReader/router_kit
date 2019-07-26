@@ -92,14 +92,16 @@ class AnnotationParser {
         ignore = annotation.getField('ignore').toBoolValue() ?? ignore;
       }
 
-      fieldInfos[name] = FieldInfo(
-        name: name,
-        type: type,
-        alias: alias,
-        nullable: nullable,
-        ignore: ignore,
-        isFinal: isFinal,
-      );
+      if (autowired || annotation != null) {
+        fieldInfos[name] = FieldInfo(
+          name: name,
+          type: type,
+          alias: alias,
+          nullable: nullable,
+          ignore: ignore,
+          isFinal: isFinal,
+        );
+      }
     }
   }
 

@@ -9,7 +9,7 @@ part of 'params_component.dart';
 class ParamsComponentRoute {
   const ParamsComponentRoute._();
 
-  static WidgetBuilder route = (BuildContext context) {
+  static WidgetBuilder buildRoute = (BuildContext context) {
     Map<dynamic, dynamic> arguments =
         ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return ParamsComponent(
@@ -20,7 +20,7 @@ class ParamsComponentRoute {
     );
   };
 
-  static Map<dynamic, dynamic> arguments(
+  static Map<dynamic, dynamic> buildArguments(
     String paramA, {
     String paramB,
     String paramC,

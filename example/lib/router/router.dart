@@ -2,8 +2,10 @@ import 'dart:async';
 
 import 'package:example/router/navigator_route.dart';
 import 'package:flutter/widgets.dart';
+import 'package:router_annotation/router_annotation.dart';
 import 'package:router_api/router_api.dart';
 
+@Routes()
 class AppRouter {
   AppRouter._();
 

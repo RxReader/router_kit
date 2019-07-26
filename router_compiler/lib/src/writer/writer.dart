@@ -19,7 +19,7 @@ class Writer {
     _buffer.writeln('');
 
     // route
-    _buffer.writeln('static WidgetBuilder route = (BuildContext context) {');
+    _buffer.writeln('static WidgetBuilder buildRoute = (BuildContext context) {');
     _buffer.writeln(
         'Map<dynamic, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;');
     StringBuffer ctor1 = StringBuffer();
@@ -65,7 +65,7 @@ class Writer {
       ctor2.writeln('}');
     }
     _buffer.writeln(
-        'static Map<dynamic, dynamic> arguments(\n${ctor2.toString()}){');
+        'static Map<dynamic, dynamic> buildArguments(\n${ctor2.toString()}){');
     _buffer.writeln('Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
