@@ -24,7 +24,7 @@ class ParamsComponentProvider {
 
   static Map<dynamic, dynamic> routeArgument(
     String paramA, {
-    String paramB,
+    @required String paramB,
     String paramC,
     String Function(String) callback,
   }) {

@@ -63,7 +63,8 @@ class Writer {
           hasOptionalParameters = true;
           ctor2.writeln('{');
         }
-        ctor2.writeln('${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
+        // ignore: deprecated_member_use
+        ctor2.writeln('${ctorNamedParameter.isRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
       }
     }
     if (hasOptionalParameters) {

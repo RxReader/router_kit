@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:example/components/params/params_component.dart';
 import 'package:example/logs/collect-console-logs.dart';
 import 'package:example/router/navigator_route.dart';
 import 'package:example/router/router.dart';
@@ -34,10 +35,10 @@ class _HomeComponentState extends State<HomeComponent> {
           ListTile(
             title: const Text('Params'),
             onTap: () {
-//              AppRouter.defaultRouter(context).pushNamed(
-//                AppNavigator.params,
-//                arguments: ParamsRoute.arguments(paramA: 'aaa', paramC: 'ccc'),
-//              );
+              AppRouter.defaultRouter(context).pushNamed(
+                ParamsComponentProvider.routeName,
+                arguments: ParamsComponentProvider.routeArgument('xxx'),
+              );
             },
           ),
           ListTile(
