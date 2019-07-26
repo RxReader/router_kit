@@ -12,8 +12,6 @@ class PaymentComponentProvider {
   static const String routeName = '/payment';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<dynamic, dynamic> arguments =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return PaymentComponent();
   };
 

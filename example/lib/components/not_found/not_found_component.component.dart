@@ -12,8 +12,6 @@ class NotFoundComponentProvider {
   static const String routeName = '/not_found';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<dynamic, dynamic> arguments =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return NotFoundComponent();
   };
 

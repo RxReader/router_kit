@@ -12,8 +12,6 @@ class HomeComponentProvider {
   static const String routeName = '/';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<dynamic, dynamic> arguments =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return HomeComponent();
   };
 

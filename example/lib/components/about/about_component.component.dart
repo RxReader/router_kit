@@ -12,8 +12,6 @@ class AboutComponentProvider {
   static const String routeName = '/about';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<dynamic, dynamic> arguments =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return AboutComponent();
   };
 

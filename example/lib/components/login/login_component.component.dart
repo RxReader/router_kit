@@ -12,8 +12,6 @@ class LoginComponentProvider {
   static const String routeName = '/login';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<dynamic, dynamic> arguments =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return LoginComponent();
   };
 
