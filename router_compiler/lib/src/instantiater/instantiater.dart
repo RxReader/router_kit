@@ -18,11 +18,13 @@ class AnnotationParser {
           'Component annotation can only be defined on a Widget class.');
     }
 
+    String routeName = annotation.peek('routeName').stringValue;
+    bool ignoreKey = annotation.peek('ignoreKey').boolValue;
     bool autowired = annotation.peek('autowired').boolValue;
     bool nullableFields = annotation.peek('nullableFields').boolValue;
 
     final Map<String, FieldInfo> fieldInfos = <String, FieldInfo>{};
-    _parseModelType(element, autowired, nullableFields, fieldInfos);
+    _parseModelType(element, ignoreKey, autowired, nullableFields, fieldInfos);
 //    for (FieldInfo fieldInfo in fieldInfos.values) {
 //      print('${fieldInfo.name} - ${fieldInfo.alias} - ${fieldInfo.ignore}');
 //    }
@@ -37,6 +39,7 @@ class AnnotationParser {
     return SerializerInfo(
       name: element.displayName,
       importUri: buildStep.inputId.uri,
+      routeName: routeName,
       fieldInfos: fieldInfos,
       ctorParameters: ctorParameters,
       ctorNamedParameters: ctorNamedParameters,
@@ -46,6 +49,7 @@ class AnnotationParser {
 
   static void _parseModelType(
     ClassElement element,
+    bool ignoreKey,
     bool autowired,
     bool nullableFields,
     Map<String, FieldInfo> fieldInfos,
@@ -58,6 +62,7 @@ class AnnotationParser {
     }
     for (FieldElement field in fields) {
       String name = field.displayName;
+      print('name: $name');
       if (name == 'hashCode') {
         continue;
       }
@@ -71,7 +76,7 @@ class AnnotationParser {
       DartType type = field.type;
       String alias = name;
       bool nullable = nullableFields;
-      bool ignore = false;
+      bool ignore = ignoreKey && name == 'key';
       bool isFinal = field.isFinal;
 
       DartObject annotation = field.metadata

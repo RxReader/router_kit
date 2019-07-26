@@ -7,6 +7,7 @@ class SerializerInfo {
   SerializerInfo({
     @required this.name,
     @required this.importUri,
+    @required this.routeName,
     @required this.fieldInfos,
     @required this.ctorParameters,
     @required this.ctorNamedParameters,
@@ -15,6 +16,7 @@ class SerializerInfo {
 
   final String name;
   final Uri importUri;
+  final String routeName;
   final Map<String, FieldInfo> fieldInfos;
   final List<ParameterElement> ctorParameters;
   final List<ParameterElement> ctorNamedParameters;

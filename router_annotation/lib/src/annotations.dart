@@ -5,12 +5,14 @@ typedef String NameFormatter(String fieldName);
 class Component {
   const Component({
     @required this.routeName,
+    this.ignoreKey = true,
     this.autowired = true,
     this.nullableFields = true,
     this.nameFormatter,
   }) : assert(routeName != null);
 
   final String routeName;
+  final bool ignoreKey;
   final bool autowired;
   final bool nullableFields;
   final NameFormatter nameFormatter;
