@@ -5,6 +5,7 @@ A new Flutter application.
 ## router_compiler
 
 ````
+flutter clean
 flutter packages pub run build_runner build --delete-conflicting-outputs
 ````
 
