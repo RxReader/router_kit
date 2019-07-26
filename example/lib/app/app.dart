@@ -1,4 +1,5 @@
-import 'package:example/router/navigator_route.dart';
+import 'package:example/components/not_found/not_found_component.dart';
+import 'package:example/router/app_router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -35,9 +36,9 @@ class _AppState extends State<App> {
   }
 
   Route<dynamic> _onGenerateRoute(RouteSettings settings) {
-    if (AppNavigator.routes.containsKey(settings.name)) {
+    if (AppRouterProvider.routes.containsKey(settings.name)) {
       return MaterialPageRoute<dynamic>(
-        builder: AppNavigator.routes[settings.name],
+        builder: AppRouterProvider.routes[settings.name],
         settings: settings,
       );
     }
@@ -46,7 +47,7 @@ class _AppState extends State<App> {
 
   Route<dynamic> _onUnknownRoute(RouteSettings settings) {
     return MaterialPageRoute<dynamic>(
-      builder: AppNavigator.routes[AppNavigator.notFound],
+      builder: AppRouterProvider.routes[NotFoundComponentProvider.routeName],
       settings: settings,
     );
   }

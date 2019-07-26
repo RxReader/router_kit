@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'params_component.provider.dart';
+part 'params_component.component.dart';
 
 typedef String Callback(String info);
 
 @Component(
   routeName: '/params',
-  nameFormatter: toSnakeCase,
 )
 // ignore: must_be_immutable
 class ParamsComponent extends StatefulWidget {

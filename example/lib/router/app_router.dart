@@ -1,16 +1,24 @@
 import 'dart:async';
 
-import 'package:example/router/navigator_route.dart';
+import 'package:example/components/about/about_component.dart';
+import 'package:example/components/home/home_component.dart';
+import 'package:example/components/login/login_component.dart';
+import 'package:example/components/not_found/not_found_component.dart';
+import 'package:example/components/params/params_component.dart';
+import 'package:example/components/payment/payment_component.dart';
+import 'package:example/components/splash/splash_component.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_annotation/router_annotation.dart';
+import 'package:router_annotation/router_annotation.dart' as annot;
 import 'package:router_api/router_api.dart';
 
-@Routes()
+part 'app_router.router.dart';
+
+@annot.Router()
 class AppRouter {
   AppRouter._();
 
   static const List<String> _shouldLoginRoute = <String>[
-    AppNavigator.payment,
+    PaymentComponentProvider.routeName,
   ];
 
   static FutureOr<dynamic> _routerLogger(
@@ -30,7 +38,7 @@ class AppRouter {
     NextDispatcher next,
   ) async {
     if (_shouldLoginRoute.contains(routeName)) {
-      dynamic resp = await router.pushNamed(AppNavigator.login);
+      dynamic resp = await router.pushNamed(LoginComponentProvider.routeName);
       if (!(resp != null && resp is bool && resp)) {
         return '用户取消登录';
       }

@@ -3,7 +3,7 @@
 part of 'params_component.dart';
 
 // **************************************************************************
-// RouterCompilerGenerator
+// ComponentCompilerGenerator
 // **************************************************************************
 
 class ParamsComponentProvider {

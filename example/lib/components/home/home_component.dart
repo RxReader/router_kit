@@ -1,13 +1,19 @@
 import 'dart:io';
 
 import 'package:example/components/params/params_component.dart';
+import 'package:example/components/payment/payment_component.dart';
 import 'package:example/logs/collect-console-logs.dart';
-import 'package:example/router/navigator_route.dart';
-import 'package:example/router/router.dart';
+import 'package:example/router/app_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:router_annotation/router_annotation.dart';
 
+part 'home_component.component.dart';
+
+@Component(
+  routeName: Navigator.defaultRouteName,
+)
 class HomeComponent extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
@@ -28,7 +34,7 @@ class _HomeComponentState extends State<HomeComponent> {
             title: const Text('Payment'),
             onTap: () {
               AppRouter.defaultRouter(context)
-                  .pushNamed(AppNavigator.payment)
+                  .pushNamed(PaymentComponentProvider.routeName)
                   .then((dynamic resp) => print('resp: $resp'));
             },
           ),

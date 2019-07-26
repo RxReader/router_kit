@@ -1,5 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:router_annotation/router_annotation.dart';
 
+part 'not_found_component.component.dart';
+
+@Component(
+  routeName: '/not_found',
+)
 class NotFoundComponent extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
