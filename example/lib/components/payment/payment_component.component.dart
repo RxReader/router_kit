@@ -14,9 +14,4 @@ class PaymentComponentProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return PaymentComponent();
   };
-
-  static Map<dynamic, dynamic> routeArgument() {
-    Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};
-    return arguments;
-  }
 }

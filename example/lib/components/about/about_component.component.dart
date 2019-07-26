@@ -14,9 +14,4 @@ class AboutComponentProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return AboutComponent();
   };
-
-  static Map<dynamic, dynamic> routeArgument() {
-    Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};
-    return arguments;
-  }
 }

@@ -14,9 +14,4 @@ class SplashComponentProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return SplashComponent();
   };
-
-  static Map<dynamic, dynamic> routeArgument() {
-    Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};
-    return arguments;
-  }
 }

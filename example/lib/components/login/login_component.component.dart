@@ -14,9 +14,4 @@ class LoginComponentProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return LoginComponent();
   };
-
-  static Map<dynamic, dynamic> routeArgument() {
-    Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};
-    return arguments;
-  }
 }

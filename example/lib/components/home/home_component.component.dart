@@ -14,9 +14,4 @@ class HomeComponentProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return HomeComponent();
   };
-
-  static Map<dynamic, dynamic> routeArgument() {
-    Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};
-    return arguments;
-  }
 }
