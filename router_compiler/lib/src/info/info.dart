@@ -22,7 +22,7 @@ class SerializerInfo {
   final List<ParameterElement> ctorNamedParameters;
   final NameFormatter nameFormatter;
 
-  String get clazzRouteName => '${displayName}Route';
+  String get providerDisplayName => '${displayName}Provider';
 }
 
 class FieldInfo {

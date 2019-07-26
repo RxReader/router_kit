@@ -6,10 +6,12 @@ part of 'params_component.dart';
 // RouterCompilerGenerator
 // **************************************************************************
 
-class ParamsComponentRoute {
-  const ParamsComponentRoute._();
+class ParamsComponentProvider {
+  const ParamsComponentProvider._();
 
-  static WidgetBuilder buildRoute = (BuildContext context) {
+  static const String routeName = '/params';
+
+  static WidgetBuilder routeBuilder = (BuildContext context) {
     Map<dynamic, dynamic> arguments =
         ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
     return ParamsComponent(
@@ -20,7 +22,7 @@ class ParamsComponentRoute {
     );
   };
 
-  static Map<dynamic, dynamic> buildArguments(
+  static Map<dynamic, dynamic> routeArgument(
     String paramA, {
     String paramB,
     String paramC,

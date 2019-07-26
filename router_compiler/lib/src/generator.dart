@@ -37,6 +37,6 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Component> {
 
 Builder routerCompilerBuilder({String header}) => PartBuilder(
       [RouterCompilerGenerator()],
-      '.route.dart',
+      '.provider.dart',
       header: header,
     );

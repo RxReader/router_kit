@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'params_component.route.dart';
+part 'params_component.provider.dart';
 
 typedef String Callback(String info);
 

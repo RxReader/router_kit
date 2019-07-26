@@ -10,16 +10,21 @@ class Writer {
 
   void generate() {
     // begin
-    _buffer.writeln('class ${info.clazzRouteName} {');
+    _buffer.writeln('class ${info.providerDisplayName} {');
 
     // constructor
-    _buffer.writeln('const ${info.clazzRouteName}._();');
+    _buffer.writeln('const ${info.providerDisplayName}._();');
+
+    // blank
+    _buffer.writeln('');
+
+    _buffer.writeln('static const String routeName = \'${info.routeName}\';');
 
     // blank
     _buffer.writeln('');
 
     // route
-    _buffer.writeln('static WidgetBuilder buildRoute = (BuildContext context) {');
+    _buffer.writeln('static WidgetBuilder routeBuilder = (BuildContext context) {');
     _buffer.writeln(
         'Map<dynamic, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;');
     StringBuffer ctor1 = StringBuffer();
@@ -65,7 +70,7 @@ class Writer {
       ctor2.writeln('}');
     }
     _buffer.writeln(
-        'static Map<dynamic, dynamic> buildArguments(\n${ctor2.toString()}){');
+        'static Map<dynamic, dynamic> routeArgument(\n${ctor2.toString()}){');
     _buffer.writeln('Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];

@@ -3,6 +3,6 @@ builders:
   router_compiler:
     import: "package:router_compiler/builder.dart"
     builder_factories: ["routerCompiler"]
-    build_extensions: {".dart": [".route.dart"]}
+    build_extensions: {".dart": [".provider.dart"]}
     auto_apply: root_package
     build_to: source
