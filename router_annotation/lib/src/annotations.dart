@@ -16,37 +16,18 @@ class Component {
   final NameFormatter nameFormatter;
 }
 
-class Field {
-  Field({
-    this.encodeTo,
-    this.decodeFrom,
-    this.isNullable,
-    this.dontEncode = false,
-    this.dontDecode = false,
-  });
+abstract class Field {}
 
-  final String encodeTo;
-  final String decodeFrom;
-  final bool isNullable;
-  final bool dontEncode;
-  final bool dontDecode;
+class Alias implements Field {
+  const Alias({
+    @required this.alias,
+    this.nullable,
+  }) : assert(alias != null);
 
-  const Field.encode({String alias, this.isNullable})
-      : encodeTo = alias,
-        dontEncode = false,
-        decodeFrom = null,
-        dontDecode = true;
+  final String alias;
+  final bool nullable;
+}
 
-  const Field.decode({String alias, this.isNullable})
-      : decodeFrom = alias,
-        dontEncode = true,
-        encodeTo = null,
-        dontDecode = false;
-
-  const Field.ignore()
-      : encodeTo = null,
-        decodeFrom = null,
-        isNullable = null,
-        dontEncode = true,
-        dontDecode = true;
+class Ignore implements Field {
+  const Ignore();
 }
