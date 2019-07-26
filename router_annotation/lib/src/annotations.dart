@@ -16,18 +16,36 @@ class Component {
   final NameFormatter nameFormatter;
 }
 
-abstract class Field {}
-
-class Alias implements Field {
-  const Alias({
-    @required this.alias,
+abstract class Field {
+  const Field({
+    this.alias,
     this.nullable,
-  }) : assert(alias != null);
+    this.ignore,
+  });
 
   final String alias;
   final bool nullable;
+  final bool ignore;
+}
+
+class Alias implements Field {
+  const Alias(
+    this.alias, {
+    this.nullable,
+  }) : ignore = false;
+
+  final String alias;
+  final bool nullable;
+  final bool ignore;
 }
 
 class Ignore implements Field {
-  const Ignore();
+  const Ignore()
+      : alias = null,
+        nullable = null,
+        ignore = true;
+
+  final String alias;
+  final bool nullable;
+  final bool ignore;
 }
