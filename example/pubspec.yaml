@@ -28,7 +28,7 @@ dependencies:
 
   scoped_model: ^1.0.1
 
-  fake_path_provider: ^0.1.2
+  fake_path_provider: ^0.1.3
   router_api:
     path: ../router_api
   router_annotation:
