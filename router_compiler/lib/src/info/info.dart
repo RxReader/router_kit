@@ -5,6 +5,7 @@ import 'package:router_annotation/router_annotation.dart';
 
 class ComponentInfo {
   ComponentInfo({
+    @required this.uri,
     @required this.displayName,
     @required this.routeName,
     @required this.fieldInfos,
@@ -13,6 +14,7 @@ class ComponentInfo {
     @required this.nameFormatter,
   });
 
+  final Uri uri;
   final String displayName;
   final String routeName;
   final Map<String, FieldInfo> fieldInfos;

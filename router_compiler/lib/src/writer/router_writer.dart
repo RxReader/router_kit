@@ -10,10 +10,20 @@ class RouterWriter {
   final StringBuffer _buffer = StringBuffer();
 
   void generate() {
-//    // import
-//    for (ComponentInfo info in infos.values) {
-//      _buffer.writeln(info.importUri);
-//    }
+    List<ComponentInfo> infos = <ComponentInfo>[];
+    infos.addAll(infoMap.values);
+    infos.sort((ComponentInfo a, ComponentInfo b) {
+      return a.routeName.compareTo(b.routeName);
+    });
+
+    // import
+    _buffer.writeln('import \'package:flutter/widgets.dart\';');
+    for (ComponentInfo info in infos) {
+      _buffer.writeln('import \'${info.uri}\';');
+    }
+
+    // blank
+    _buffer.writeln('');
 
     String providerDisplayName = '${element.displayName}Provider';
     // begin
@@ -26,11 +36,6 @@ class RouterWriter {
     _buffer.writeln('');
 
     _buffer.writeln('static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{');
-    List<ComponentInfo> infos = <ComponentInfo>[];
-    infos.addAll(infoMap.values);
-    infos.sort((ComponentInfo a, ComponentInfo b) {
-      return a.routeName.compareTo(b.routeName);
-    });
     for (ComponentInfo info in infos) {
       _buffer.writeln('${info.providerDisplayName}.routeName: ${info.providerDisplayName}.routeBuilder,');
     }

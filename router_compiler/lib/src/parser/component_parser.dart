@@ -37,6 +37,7 @@ class ComponentParser {
         _parseFieldFormatter(annotation.peek('nameFormatter')) ?? toSnakeCase;
 
     return ComponentInfo(
+      uri: buildStep.inputId.uri,
       displayName: element.displayName,
       routeName: routeName,
       fieldInfos: fieldInfos,

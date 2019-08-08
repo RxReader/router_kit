@@ -1,17 +1,10 @@
 import 'dart:async';
 
-import 'package:example/components/about/about_component.dart';
-import 'package:example/components/home/home_component.dart';
 import 'package:example/components/login/login_component.dart';
-import 'package:example/components/not_found/not_found_component.dart';
-import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
-import 'package:example/components/splash/splash_component.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_api/router_api.dart';
-
-part 'app_router.router.dart';
 
 @Router()
 class AppRouter {

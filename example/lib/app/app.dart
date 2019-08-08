@@ -1,5 +1,6 @@
 import 'package:example/components/not_found/not_found_component.dart';
 import 'package:example/router/app_router.dart';
+import 'package:example/router/app_router.router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 

@@ -23,8 +23,8 @@ class ComponentCompilerGenerator extends GeneratorForAnnotation<Component> {
     if (element is! ClassElement) throw RouterCompilerException(_onlyClassMsg);
 
     try {
-      ComponentInfo info = ComponentParser.parse(
-          element as ClassElement, annotation, buildStep);
+      ComponentInfo info =
+          ComponentParser.parse(element as ClassElement, annotation, buildStep);
       infoMap[info.routeName] = info;
 
       ComponentWriter writer = ComponentWriter(info);
@@ -44,7 +44,8 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Router> {
       "Router annotation can only be defined on a class.";
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) throw RouterCompilerException(_onlyClassMsg);
 
     try {
@@ -66,8 +67,8 @@ Builder componentCompilerBuilder({String header}) => PartBuilder(
       header: header,
     );
 
-Builder routerCompilerBuilder({String header}) => PartBuilder(
-      [RouterCompilerGenerator()],
-      '.router.dart',
+Builder routerCompilerBuilder({String header}) => LibraryBuilder(
+      RouterCompilerGenerator(),
+      generatedExtension: '.router.dart',
       header: header,
     );
