@@ -65,6 +65,15 @@ class _HomeComponentState extends State<HomeComponent> {
               }
             },
           ),
+          Center(
+            child: Image.asset('images/launch_icon.png'),
+          ),
+          Center(
+            child: Image.asset('images/about_logo.png'),
+          ),
+          Center(
+            child: Image.asset('images/bookshelf_top.png'),
+          ),
         ],
       ),
     );

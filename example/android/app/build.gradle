@@ -48,6 +48,27 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            output.processResources.doFirst { pm ->
+                System.out.println('optimize flutter_assets')
+
+                File flutterAssets = new File(variant.mergeAssets.outputDir, 'flutter_assets')
+                System.out.println("flutter_assets: ${flutterAssets.absolutePath}")
+                exec {
+                    commandLine 'bash', '-lc', "cd ${new File(rootProject.projectDir.parentFile, 'script')} && " +
+//                            "${flutterRoot}/bin/cache/dart-sdk/bin/dart --version && " +
+                            "${flutterRoot}/bin/cache/dart-sdk/bin/pub get > /dev/null && " +
+                            "${flutterRoot}/bin/cache/dart-sdk/bin/dart bin/main.dart --platform android --assets ${flutterAssets.absolutePath}"
+                }
+            }
+        }
+
+        variant.assemble.doLast {
+            System.out.println("flavor variant: ${variant.flavorName} - ${variant.applicationId} - ${variant.versionName}(${variant.versionCode}) - ${variant.signingConfig.name}(${variant.signingConfig.storeFile.name})")
+        }
+    }
 }
 
 flutter {
