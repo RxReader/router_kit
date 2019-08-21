@@ -5,10 +5,8 @@ import 'package:args/args.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
 
-import '../lib/script.dart' as script;
-
-main(List<String> args) {
-  print('args: $args');
+void main(List<String> args) {
+//  print('args: $args');
 
   ArgParser parser = ArgParser();
   parser.addOption('platform');
