@@ -35,10 +35,9 @@ void main(List<String> args) {
 
 //  print('icon path: ${sourceFile.path}');
   Directory outputDir = Directory(path.join(sourceFile.parent.path, 'output'));
-  if (outputDir.existsSync()) {
-    outputDir.deleteSync(recursive: true);
+  if (!outputDir.existsSync()) {
+    outputDir.createSync(recursive: true);
   }
-  outputDir.createSync(recursive: true);
   Directory platformOutputDir = Directory(path.join(outputDir.path, platform));
   if (platformOutputDir.existsSync()) {
     platformOutputDir.deleteSync(recursive: true);

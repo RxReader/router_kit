@@ -1,7 +1,24 @@
+import 'dart:io';
+
 import 'package:args/args.dart';
-import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
+import 'icons.dart' as icons;
 
 void main(List<String> args) {
+  ArgParser parser = ArgParser();
+  parser.addOption('dpi');
+  parser.addOption('srcDir');
 
+  ArgResults results = parser.parse(args);
+  String dpi = results['dpi'];
+  String srcDir = results['srcDir'];
+
+  Directory inputDir = Directory(path.join(Directory.current.path, srcDir));
+  Directory outputDir = Directory(path.join(inputDir.path, 'output'));
+  if (outputDir.existsSync()) {
+    outputDir.deleteSync(recursive: true);
+  }
+  outputDir.createSync(recursive: true);
+
+  icons.createIcons(outputDir, inputDir, int.parse(dpi));
 }

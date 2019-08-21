@@ -8,7 +8,7 @@ flutter pub pub run test/tools/icons/main.dart --platform ios --icon icon/icon_i
 * iconfont
 
 ```shell
-flutter pub pub run test/tools/iconfont/main.dart
+flutter pub pub run test/tools/iconfont/main.dart --dpi 20 --srcDir iconfont
 ```
 
 * tinypng
