@@ -29,6 +29,6 @@ void createDefaultIcons(Directory outputDir, Image image) {
       save.deleteSync(recursive: true);
     }
     save.createSync(recursive: true);
-    save.writeAsBytesSync(encodePng(src));
+    save.writeAsBytesSync(encodePng(src), mode: FileMode.writeOnly, flush: true);
   }
 }
