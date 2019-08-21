@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:image/image.dart';
+
 class IosIconTemplate {
   IosIconTemplate({
     this.name,
@@ -26,4 +30,6 @@ List<IosIconTemplate> iosIcons = <IosIconTemplate>[
   IosIconTemplate(name: 'Icon-App-1024x1024@1x', size: 1024),
 ];
 
-void createDefaultIcons(String icon) {}
+void createDefaultIcons(Directory outputDir, Image image) {
+//  print('icon path: ${sourceFile.path}');
+}

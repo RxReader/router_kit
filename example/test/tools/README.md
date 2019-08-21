@@ -1,17 +1,18 @@
-* flavor
+* icons
 
 ```shell
-dart test/optimize/flavor/main.dart
+flutter pub pub run test/tools/icons/main.dart --platform android --icon icon/icon_android.png
+flutter pub pub run test/tools/icons/main.dart --platform ios --icon icon/icon_ios.png
 ```
 
 * iconfont
 
 ```shell
-dart test/optimize/iconfont/main.dart
+flutter pub pub run test/tools/iconfont/main.dart
 ```
 
 * tinypng
 
 ```shell
-dart test/optimize/tinypng/main.dart
+flutter pub pub run test/tools/tinypng/main.dart
 ```

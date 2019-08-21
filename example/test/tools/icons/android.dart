@@ -1,3 +1,8 @@
+import 'dart:io';
+
+import 'package:image/image.dart';
+import 'package:path/path.dart' as path;
+
 class AndroidIconTemplate {
   AndroidIconTemplate({
     this.size,
@@ -16,4 +21,14 @@ List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
   AndroidIconTemplate(directoryName: 'mipmap-xxxhdpi', size: 192),
 ];
 
-void createDefaultIcons(String icon) {}
+void createDefaultIcons(Directory outputDir, Image image) {
+  for (AndroidIconTemplate androidIcon in androidIcons) {
+    Image src = copyResize(image, width: androidIcon.size, height: androidIcon.size, interpolation: Interpolation.average);
+    File save = File(path.join(outputDir.path, androidIcon.directoryName, 'ic_launcher.png'));
+    if (save.existsSync()) {
+      save.deleteSync(recursive: true);
+    }
+    save.createSync(recursive: true);
+    save.writeAsBytesSync(encodePng(src));
+  }
+}

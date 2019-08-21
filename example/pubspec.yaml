@@ -38,6 +38,11 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  args:
+  mime:
+  path:
+  image:
+
   build_runner:
   router_compiler:
     path: ../router_compiler
