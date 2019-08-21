@@ -55,10 +55,10 @@ android {
                 System.out.println('optimize flutter_assets')
 
                 File flutterAssets = new File(variant.mergeAssets.outputDir, 'flutter_assets')
-                System.out.println("flutter_assets: ${flutterAssets.absolutePath}")
                 exec {
                     commandLine 'bash', '-lc', "cd ${rootProject.projectDir.parentFile.absolutePath} && " +
-                            "${flutterRoot}/bin/cache/dart-sdk/bin/dart test/optimize/assets/main.dart --platform android --assets ${flutterAssets.absolutePath}"
+                            "flutter pub pub run test/optimize/assets/main.dart --platform android --assets ${flutterAssets.absolutePath}"
+//                            "${flutterRoot}/bin/cache/dart-sdk/bin/dart test/optimize/assets/main.dart --platform android --assets ${flutterAssets.absolutePath}"
                 }
             }
         }
