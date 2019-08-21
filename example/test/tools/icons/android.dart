@@ -1,19 +1,20 @@
 import 'dart:io';
 
 import 'package:image/image.dart';
+import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
 class AndroidAppIcon {
-  AndroidAppIcon({
-    this.size,
-    this.directoryName,
+  const AndroidAppIcon({
+    @required this.size,
+    @required this.directoryName,
   });
 
   final String directoryName;
   final int size;
 }
 
-List<AndroidAppIcon> appIcons = <AndroidAppIcon>[
+const List<AndroidAppIcon> appIcons = <AndroidAppIcon>[
   AndroidAppIcon(directoryName: 'mipmap-mdpi', size: 48),
   AndroidAppIcon(directoryName: 'mipmap-hdpi', size: 72),
   AndroidAppIcon(directoryName: 'mipmap-xhdpi', size: 96),
@@ -23,12 +24,22 @@ List<AndroidAppIcon> appIcons = <AndroidAppIcon>[
 
 void createDefaultIcons(Directory outputDir, Image image) {
   for (AndroidAppIcon appIcon in appIcons) {
-    Image src = copyResize(image, width: appIcon.size, height: appIcon.size, interpolation: Interpolation.average);
-    File save = File(path.join(outputDir.path, appIcon.directoryName, 'ic_launcher.png'));
+    Image src = copyResize(
+      image,
+      width: appIcon.size,
+      height: appIcon.size,
+      interpolation: Interpolation.average,
+    );
+    File save = File(
+        path.join(outputDir.path, appIcon.directoryName, 'ic_launcher.png'));
     if (save.existsSync()) {
       save.deleteSync(recursive: true);
     }
     save.createSync(recursive: true);
-    save.writeAsBytesSync(encodePng(src), mode: FileMode.writeOnly, flush: true);
+    save.writeAsBytesSync(
+      encodePng(src),
+      mode: FileMode.writeOnly,
+      flush: true,
+    );
   }
 }

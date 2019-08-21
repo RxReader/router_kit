@@ -22,18 +22,14 @@ void main(List<String> args) {
   if (mimeType != 'image/png') {
     throw UnsupportedError('Unsupported Icon: $icon');
   }
-
   File sourceFile = File(path.join(Directory.current.path, icon));
   Image image = decodeImage(sourceFile.readAsBytesSync());
   if (image.width != image.height) {
     throw UnsupportedError('Unsupported Icon: $icon(${image.width}x${image.height})');
   }
-
   if (image.width < 1024 || image.height < 1024) {
     throw UnsupportedError('Unsupported Icon: $icon(${image.width}x${image.height})');
   }
-
-//  print('icon path: ${sourceFile.path}');
   Directory outputDir = Directory(path.join(sourceFile.parent.path, 'output'));
   if (!outputDir.existsSync()) {
     outputDir.createSync(recursive: true);
@@ -43,7 +39,6 @@ void main(List<String> args) {
     platformOutputDir.deleteSync(recursive: true);
   }
   platformOutputDir.createSync(recursive: true);
-
   switch (platform) {
     case 'android':
       android.createDefaultIcons(platformOutputDir, image);
