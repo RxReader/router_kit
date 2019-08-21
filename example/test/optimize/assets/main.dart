@@ -37,7 +37,17 @@ void optimizeAssets(String platform, String assets) {
         if (value != null && value.isNotEmpty && value.length > 1) {
           value = <dynamic>[...value];
           List<dynamic> remove = <dynamic>[];
-          int start = platform == 'ios' ? value.length - 3 : value.length - 2;
+          int start;
+          switch (platform) {
+            case 'android':
+              start = value.length - 2;
+              break;
+            case 'ios':
+              start = value.length - 3;
+              break;
+            default:
+              throw UnsupportedError('Unsupported Platform: $platform');
+          }
           for (int i = start; i >= 0; i--) {
             remove.add(value[i]);
             File(path.join(assets, value[i])).deleteSync();
