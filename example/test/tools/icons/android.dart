@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:image/image.dart';
 import 'package:path/path.dart' as path;
 
-class AndroidIconTemplate {
-  AndroidIconTemplate({
+class AndroidAppIcon {
+  AndroidAppIcon({
     this.size,
     this.directoryName,
   });
@@ -13,18 +13,18 @@ class AndroidIconTemplate {
   final int size;
 }
 
-List<AndroidIconTemplate> androidIcons = <AndroidIconTemplate>[
-  AndroidIconTemplate(directoryName: 'mipmap-mdpi', size: 48),
-  AndroidIconTemplate(directoryName: 'mipmap-hdpi', size: 72),
-  AndroidIconTemplate(directoryName: 'mipmap-xhdpi', size: 96),
-  AndroidIconTemplate(directoryName: 'mipmap-xxhdpi', size: 144),
-  AndroidIconTemplate(directoryName: 'mipmap-xxxhdpi', size: 192),
+List<AndroidAppIcon> appIcons = <AndroidAppIcon>[
+  AndroidAppIcon(directoryName: 'mipmap-mdpi', size: 48),
+  AndroidAppIcon(directoryName: 'mipmap-hdpi', size: 72),
+  AndroidAppIcon(directoryName: 'mipmap-xhdpi', size: 96),
+  AndroidAppIcon(directoryName: 'mipmap-xxhdpi', size: 144),
+  AndroidAppIcon(directoryName: 'mipmap-xxxhdpi', size: 192),
 ];
 
 void createDefaultIcons(Directory outputDir, Image image) {
-  for (AndroidIconTemplate androidIcon in androidIcons) {
-    Image src = copyResize(image, width: androidIcon.size, height: androidIcon.size, interpolation: Interpolation.average);
-    File save = File(path.join(outputDir.path, androidIcon.directoryName, 'ic_launcher.png'));
+  for (AndroidAppIcon appIcon in appIcons) {
+    Image src = copyResize(image, width: appIcon.size, height: appIcon.size, interpolation: Interpolation.average);
+    File save = File(path.join(outputDir.path, appIcon.directoryName, 'ic_launcher.png'));
     if (save.existsSync()) {
       save.deleteSync(recursive: true);
     }
