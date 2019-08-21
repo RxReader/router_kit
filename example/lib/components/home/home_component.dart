@@ -43,7 +43,8 @@ class _HomeComponentState extends State<HomeComponent> {
             onTap: () {
               AppRouter.defaultRouter(context).pushNamed(
                 ParamsComponentProvider.routeName,
-                arguments: ParamsComponentProvider.routeArgument('aaa', paramB: 'bbb'),
+                arguments:
+                    ParamsComponentProvider.routeArgument('aaa', paramB: 'bbb'),
               );
             },
           ),

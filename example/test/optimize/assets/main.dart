@@ -31,11 +31,14 @@ void optimizeAssets(String platform, String assets) {
     List<dynamic> value = map[key] as List<dynamic>;
     if (key is String) {
       String mimeType = mime.lookupMimeType(key);
-      if (mimeType != null && mimeType.isNotEmpty && mimeType.startsWith('image/')) {
+      if (mimeType != null &&
+          mimeType.isNotEmpty &&
+          mimeType.startsWith('image/')) {
         if (value != null && value.isNotEmpty && value.length > 1) {
           value = <dynamic>[...value];
           List<dynamic> remove = <dynamic>[];
-          for (int i = platform == 'ios' ? value.length - 3 : value.length - 2; i >= 0; i --) {
+          int start = platform == 'ios' ? value.length - 3 : value.length - 2;
+          for (int i = start; i >= 0; i--) {
             remove.add(value[i]);
             File(path.join(assets, value[i])).deleteSync();
           }
@@ -47,5 +50,9 @@ void optimizeAssets(String platform, String assets) {
     }
     result[key] = value;
   }
-  manifest.writeAsStringSync(json.encode(result), mode: FileMode.write, flush: true);
+  manifest.writeAsStringSync(
+    json.encode(result),
+    mode: FileMode.write,
+    flush: true,
+  );
 }

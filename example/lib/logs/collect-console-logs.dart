@@ -30,7 +30,7 @@ class CollectConsoleLogs {
         _logs.createSync(recursive: true);
       }
     }
-     _logs.writeAsStringSync(
+    _logs.writeAsStringSync(
       '$line\r\n',
       mode: FileMode.append,
       encoding: utf8,
