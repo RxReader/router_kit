@@ -14,5 +14,5 @@ flutter pub pub run test/tools/iconfont/main.dart --dpi 20 --srcDir iconfont
 * tinypng
 
 ```shell
-flutter pub pub run test/tools/tinypng/main.dart
+flutter pub pub run test/tools/tinify/main.dart
 ```
