@@ -1,8 +1,8 @@
 * icons
 
 ```shell
-flutter pub pub run test/tools/icons/main.dart --platform android --icon icon/icon_android.png --tinify
-flutter pub pub run test/tools/icons/main.dart --platform ios --icon icon/icon_ios.png --tinify
+flutter pub pub run test/tools/icons/main.dart --platform android --icon icons/icon_android.png --tinify
+flutter pub pub run test/tools/icons/main.dart --platform ios --icon icons/icon_ios.png --tinify
 ```
 
 * iconfont
