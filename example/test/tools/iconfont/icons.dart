@@ -19,8 +19,8 @@ class Resolution {
 
 const List<Resolution> resolutions = <Resolution>[
   Resolution(nx: 1.0),
-//  Resolution(nx: 2.0, nxDir: '2.0x'),
-//  Resolution(nx: 3.0, nxDir: '3.0x'),
+  Resolution(nx: 2.0, nxDir: '2.0x'),
+  Resolution(nx: 3.0, nxDir: '3.0x'),
 ];
 
 Future<void> createIcons(
