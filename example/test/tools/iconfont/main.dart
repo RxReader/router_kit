@@ -8,7 +8,7 @@ void main(List<String> args) {
   ArgParser parser = ArgParser();
   parser.addOption('dpi');
   parser.addOption('srcDir');
-  parser.addFlag('tinify', defaultsTo: true);
+  parser.addFlag('tinify', defaultsTo: false);
 
   ArgResults results = parser.parse(args);
   String dpi = results['dpi'];

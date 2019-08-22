@@ -32,7 +32,7 @@ class TinifyManager {
     if (_tinify == null) {
       throw UnsupportedError('no available tinify');
     }
-    return null;
+    return _tinify.compress(bytes);
   }
 
   Tinify _createTinify() {

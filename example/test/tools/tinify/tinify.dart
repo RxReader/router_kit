@@ -13,13 +13,13 @@ class Tinify {
   bool get available => _compressionCount < _apiKey.maxAccessCount;
 
   List<int> compress(List<int> bytes) {
-    return null;
+    return bytes;
   }
 }
 
 class ApiKey {
   const ApiKey({
-    @required this.email,
+    this.email,
     @required this.apiKey,
     this.maxAccessCount = 500,
   });

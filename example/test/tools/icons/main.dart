@@ -13,7 +13,7 @@ void main(List<String> args) {
   ArgParser parser = ArgParser();
   parser.addOption('platform');
   parser.addOption('icon');
-  parser.addFlag('tinify', defaultsTo: true);
+  parser.addFlag('tinify', defaultsTo: false);
 
   ArgResults results = parser.parse(args);
   String platform = results['platform'];
