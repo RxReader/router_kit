@@ -19,12 +19,12 @@ class Resolution {
 
 const List<Resolution> resolutions = <Resolution>[
   Resolution(nx: 1.0),
-  Resolution(nx: 2.0, nxDir: '2.0x'),
-  Resolution(nx: 3.0, nxDir: '3.0x'),
+//  Resolution(nx: 2.0, nxDir: '2.0x'),
+//  Resolution(nx: 3.0, nxDir: '3.0x'),
 ];
 
-void createIcons(
-    Directory outputDir, Directory inputDir, int dpi, bool tinify) {
+Future<void> createIcons(
+    Directory outputDir, Directory inputDir, int dpi, bool tinify) async {
   List<FileSystemEntity> files = inputDir.listSync();
   for (FileSystemEntity file in files) {
     if (file is File) {
@@ -40,7 +40,7 @@ void createIcons(
       }
       if (image.width < dpi * 3 || image.height < dpi * 3) {
         throw UnsupportedError(
-            'Unsupported Icon: $relativePath(${image.width}x${image.height})');
+            'Unsupported Icon: $relativePath(${image.width}x${image.height} < ${dpi * 3}x${dpi * 3})');
       }
       for (Resolution resolution in resolutions) {
         Image src = copyResize(
@@ -54,10 +54,9 @@ void createIcons(
         if (save.existsSync()) {
           save.deleteSync(recursive: true);
         }
-        save.createSync(recursive: true);
         save.writeAsBytesSync(
           tinify
-              ? TinifyManager.get().compress(encodePng(src))
+              ? await TinifyManager.get().compress(encodePng(src))
               : encodePng(src),
           mode: FileMode.writeOnly,
           flush: true,

@@ -24,7 +24,7 @@ const List<AndroidAppIcon> appIcons = <AndroidAppIcon>[
   AndroidAppIcon(directoryName: 'mipmap-xxxhdpi', size: 192),
 ];
 
-void createDefaultIcons(Directory outputDir, Image image, bool tinify) {
+Future<void> createDefaultIcons(Directory outputDir, Image image, bool tinify) async {
   for (AndroidAppIcon appIcon in appIcons) {
     Image src = copyResize(
       image,
@@ -37,9 +37,8 @@ void createDefaultIcons(Directory outputDir, Image image, bool tinify) {
     if (save.existsSync()) {
       save.deleteSync(recursive: true);
     }
-    save.createSync(recursive: true);
     save.writeAsBytesSync(
-      tinify ? TinifyManager.get().compress(encodePng(src)) : encodePng(src),
+      tinify ? await TinifyManager.get().compress(encodePng(src)) : encodePng(src),
       mode: FileMode.writeOnly,
       flush: true,
     );

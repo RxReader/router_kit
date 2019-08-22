@@ -25,14 +25,14 @@ class TinifyManager {
   int _cursor = 0;
   Tinify _tinify;
 
-  List<int> compress(List<int> bytes) {
+  Future<List<int>> compress(List<int> bytes) async {
     if (_tinify == null || !_tinify.available) {
       _tinify = _createTinify();
     }
     if (_tinify == null) {
       throw UnsupportedError('no available tinify');
     }
-    return _tinify.compress(bytes);
+    return await _tinify.compress(bytes);
   }
 
   Tinify _createTinify() {

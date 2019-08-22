@@ -8,8 +8,6 @@ import 'android.dart' as android;
 import 'ios.dart' as ios;
 
 void main(List<String> args) {
-//  print('args: $args');
-
   ArgParser parser = ArgParser();
   parser.addOption('platform');
   parser.addOption('icon');
@@ -32,7 +30,7 @@ void main(List<String> args) {
   }
   if (image.width < 1024 || image.height < 1024) {
     throw UnsupportedError(
-        'Unsupported Icon: $icon(${image.width}x${image.height})');
+        'Unsupported Icon: $icon(${image.width}x${image.height} < 1024x1024)');
   }
   Directory outputDir = Directory(path.join(sourceFile.parent.path, 'output'));
   if (!outputDir.existsSync()) {

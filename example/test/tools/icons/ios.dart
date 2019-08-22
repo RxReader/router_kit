@@ -34,7 +34,7 @@ const List<IosAppIcon> appIcons = <IosAppIcon>[
   IosAppIcon(name: 'Icon-App-1024x1024@1x.png', size: 1024),
 ];
 
-void createDefaultIcons(Directory outputDir, Image image, bool tinify) {
+Future<void> createDefaultIcons(Directory outputDir, Image image, bool tinify) async {
   for (IosAppIcon appIcon in appIcons) {
     Image src = copyResize(
       image,
@@ -46,9 +46,8 @@ void createDefaultIcons(Directory outputDir, Image image, bool tinify) {
     if (save.existsSync()) {
       save.deleteSync(recursive: true);
     }
-    save.createSync(recursive: true);
     save.writeAsBytesSync(
-      tinify ? TinifyManager.get().compress(encodePng(src)) : encodePng(src),
+      tinify ? await TinifyManager.get().compress(encodePng(src)) : encodePng(src),
       mode: FileMode.writeOnly,
       flush: true,
     );
