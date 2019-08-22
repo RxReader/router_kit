@@ -31,7 +31,7 @@ class Tinify {
             .build())
         .enqueue();
     String compressionCount = response.header('Compression-Count');
-    print('compressionCount: $compressionCount');
+//    print('compressionCount: $compressionCount');
     if (compressionCount != null && compressionCount.isNotEmpty) {
       _compressionCount = int.parse(compressionCount);
     }
@@ -46,7 +46,7 @@ class Tinify {
                 .addHeader(
                     HttpHeaders.contentTypeHeader, MediaType.json.toString())
                 .addHeader(HttpHeaders.authorizationHeader,
-                    'Basic ${base64.encode(utf8.encode('api:${_apiKey.apiKey}'))}')
+                    'Basic ${base64.encode(Encoding.getByName('iso-8859-1').encode('api:${_apiKey.apiKey}'))}')
                 .build())
             .enqueue();
         if (response.code() >= HttpStatus.ok &&

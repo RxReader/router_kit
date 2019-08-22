@@ -37,6 +37,9 @@ Future<void> createDefaultIcons(Directory outputDir, Image image, bool tinify) a
     if (save.existsSync()) {
       save.deleteSync(recursive: true);
     }
+    if (!save.parent.existsSync()) {
+      save.parent.createSync(recursive: true);
+    }
     save.writeAsBytesSync(
       tinify ? await TinifyManager.get().compress(encodePng(src)) : encodePng(src),
       mode: FileMode.writeOnly,
