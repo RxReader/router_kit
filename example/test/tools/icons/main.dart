@@ -13,10 +13,12 @@ void main(List<String> args) {
   ArgParser parser = ArgParser();
   parser.addOption('platform');
   parser.addOption('icon');
+  parser.addFlag('tinify', defaultsTo: true);
 
   ArgResults results = parser.parse(args);
   String platform = results['platform'];
   String icon = results['icon'];
+  bool tinify = results['tinify'];
 
   String mimeType = mime.lookupMimeType(icon);
   if (mimeType != 'image/png') {
@@ -25,10 +27,12 @@ void main(List<String> args) {
   File sourceFile = File(path.join(Directory.current.path, icon));
   Image image = decodeImage(sourceFile.readAsBytesSync());
   if (image.width != image.height) {
-    throw UnsupportedError('Unsupported Icon: $icon(${image.width}x${image.height})');
+    throw UnsupportedError(
+        'Unsupported Icon: $icon(${image.width}x${image.height})');
   }
   if (image.width < 1024 || image.height < 1024) {
-    throw UnsupportedError('Unsupported Icon: $icon(${image.width}x${image.height})');
+    throw UnsupportedError(
+        'Unsupported Icon: $icon(${image.width}x${image.height})');
   }
   Directory outputDir = Directory(path.join(sourceFile.parent.path, 'output'));
   if (!outputDir.existsSync()) {
@@ -41,10 +45,10 @@ void main(List<String> args) {
   platformOutputDir.createSync(recursive: true);
   switch (platform) {
     case 'android':
-      android.createDefaultIcons(platformOutputDir, image);
+      android.createDefaultIcons(platformOutputDir, image, tinify);
       break;
     case 'ios':
-      ios.createDefaultIcons(platformOutputDir, image);
+      ios.createDefaultIcons(platformOutputDir, image, tinify);
       break;
     default:
       throw UnsupportedError('Unsupported Platform: $platform');

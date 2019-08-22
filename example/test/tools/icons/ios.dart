@@ -4,6 +4,8 @@ import 'package:image/image.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
+import '../tinify/tinify_manager.dart';
+
 class IosAppIcon {
   const IosAppIcon({
     @required this.name,
@@ -32,7 +34,7 @@ const List<IosAppIcon> appIcons = <IosAppIcon>[
   IosAppIcon(name: 'Icon-App-1024x1024@1x.png', size: 1024),
 ];
 
-void createDefaultIcons(Directory outputDir, Image image) {
+void createDefaultIcons(Directory outputDir, Image image, bool tinify) {
   for (IosAppIcon appIcon in appIcons) {
     Image src = copyResize(
       image,
@@ -46,7 +48,7 @@ void createDefaultIcons(Directory outputDir, Image image) {
     }
     save.createSync(recursive: true);
     save.writeAsBytesSync(
-      encodePng(src),
+      tinify ? TinifyManager.get().compress(encodePng(src)) : encodePng(src),
       mode: FileMode.writeOnly,
       flush: true,
     );

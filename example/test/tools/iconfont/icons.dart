@@ -5,6 +5,8 @@ import 'package:meta/meta.dart';
 import 'package:mime/mime.dart' as mime;
 import 'package:path/path.dart' as path;
 
+import '../tinify/tinify_manager.dart';
+
 class Resolution {
   const Resolution({
     @required this.nx,
@@ -21,7 +23,8 @@ const List<Resolution> resolutions = <Resolution>[
   Resolution(nx: 3.0, nxDir: '3.0x'),
 ];
 
-void createIcons(Directory outputDir, Directory inputDir, int dpi) {
+void createIcons(
+    Directory outputDir, Directory inputDir, int dpi, bool tinify) {
   List<FileSystemEntity> files = inputDir.listSync();
   for (FileSystemEntity file in files) {
     if (file is File) {
@@ -53,7 +56,9 @@ void createIcons(Directory outputDir, Directory inputDir, int dpi) {
         }
         save.createSync(recursive: true);
         save.writeAsBytesSync(
-          encodePng(src),
+          tinify
+              ? TinifyManager.get().compress(encodePng(src))
+              : encodePng(src),
           mode: FileMode.writeOnly,
           flush: true,
         );

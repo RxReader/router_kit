@@ -4,6 +4,8 @@ import 'package:image/image.dart';
 import 'package:meta/meta.dart';
 import 'package:path/path.dart' as path;
 
+import '../tinify/tinify_manager.dart';
+
 class AndroidAppIcon {
   const AndroidAppIcon({
     @required this.size,
@@ -22,7 +24,7 @@ const List<AndroidAppIcon> appIcons = <AndroidAppIcon>[
   AndroidAppIcon(directoryName: 'mipmap-xxxhdpi', size: 192),
 ];
 
-void createDefaultIcons(Directory outputDir, Image image) {
+void createDefaultIcons(Directory outputDir, Image image, bool tinify) {
   for (AndroidAppIcon appIcon in appIcons) {
     Image src = copyResize(
       image,
@@ -37,7 +39,7 @@ void createDefaultIcons(Directory outputDir, Image image) {
     }
     save.createSync(recursive: true);
     save.writeAsBytesSync(
-      encodePng(src),
+      tinify ? TinifyManager.get().compress(encodePng(src)) : encodePng(src),
       mode: FileMode.writeOnly,
       flush: true,
     );
