@@ -39,6 +39,7 @@ class _NestedScrollComponentState extends State<NestedScrollComponent> {
                   bottom: TabBar(
                     tabs: _tabs.map((String name) => Tab(text: name,),).toList(),
                   ),
+//                  backgroundColor: Colors.transparent,
                 ),
               ),
             ];

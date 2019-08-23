@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'dart:math';
 
 class NestedScrollRefreshListPage extends StatefulWidget {
   const NestedScrollRefreshListPage({
@@ -17,12 +18,12 @@ class NestedScrollRefreshListPage extends StatefulWidget {
 
 class _NestedScrollRefreshListPageState
     extends State<NestedScrollRefreshListPage> {
-
   int _childCount = 10;
 
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
+      displacement: NestedScrollView.sliverOverlapAbsorberHandleFor(context).layoutExtent + 40,
       child: CustomScrollView(
         key: PageStorageKey<String>(widget.name),
         physics: AlwaysScrollableScrollPhysics(),
@@ -34,7 +35,7 @@ class _NestedScrollRefreshListPageState
             padding: const EdgeInsets.all(8.0),
             sliver: SliverFixedExtentList(
               delegate: SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                (BuildContext context, int index) {
                   return ListTile(
                     title: Text('Item $index'),
                   );
@@ -48,7 +49,7 @@ class _NestedScrollRefreshListPageState
       ),
       onRefresh: () async {
         print('xxxxxxxxxxxxxxxxxxxxxxxx');
-        await Future.delayed(Duration(seconds: 30));
+        await Future.delayed(Duration(seconds: 3));
         _childCount = 10;
         print('yyyyyyyyyyyyyyyyyyyyyyyy');
       },
