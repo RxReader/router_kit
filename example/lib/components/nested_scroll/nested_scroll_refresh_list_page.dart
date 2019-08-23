@@ -1,5 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class NestedScrollRefreshListPage extends StatefulWidget {
   const NestedScrollRefreshListPage({
@@ -25,7 +27,7 @@ class _NestedScrollRefreshListPageState
     return RefreshIndicator(
       displacement: NestedScrollView.sliverOverlapAbsorberHandleFor(context)
               .layoutExtent +
-          40,
+          40.0,
       child: NotificationListener<ScrollNotification>(
         child: CustomScrollView(
           physics: AlwaysScrollableScrollPhysics(),
@@ -51,7 +53,8 @@ class _NestedScrollRefreshListPageState
         ),
         onNotification: (ScrollNotification notification) {
           ScrollMetrics metrics = notification.metrics;
-          if (metrics.axisDirection == AxisDirection.down && metrics.extentAfter == 0) {
+          if (metrics.axisDirection == AxisDirection.down &&
+              metrics.extentAfter == 0) {
             _onLoadMore();
           }
           return false;
@@ -89,5 +92,16 @@ class _NestedScrollRefreshListPageState
       });
       print('yyyyyyyyyyyyyyyyyyyyyyyy');
     }
+  }
+}
+
+class NestedScrollModel extends Model {
+
+  bool isLoading() {
+    return false;
+  }
+
+  bool isEnd() {
+    return false;
   }
 }

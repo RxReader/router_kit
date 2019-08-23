@@ -20,7 +20,7 @@ class Tinify {
 
   Future<List<int>> compress(List<int> bytes) async {
     OkHttpClient client = OkHttpClientBuilder()
-        .addNetworkInterceptor(HttpLoggingInterceptor(level: LoggingLevel.body))
+        .addNetworkInterceptor(HttpLoggingInterceptor(LoggingLevel.body))
         .build();
     Response response = await client
         .newCall(RequestBuilder()

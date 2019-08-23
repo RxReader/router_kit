@@ -30,22 +30,24 @@ class _NestedScrollComponentState extends State<NestedScrollComponent> {
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
               SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                handle:
+                    NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 child: SliverAppBar(
                   title: Text('Nested Scroll Demo'),
                   pinned: true,
                   expandedHeight: 250.0,
                   forceElevated: innerBoxIsScrolled,
                   bottom: TabBar(
-                    tabs: _tabs.map((String name) => Tab(text: name,),).toList(),
+                    tabs: _tabs.map((String name) => Tab(text: name)).toList(),
                   ),
-//                  backgroundColor: Colors.transparent,
                 ),
               ),
             ];
           },
           body: TabBarView(
-            children: _tabs.map((String name) => NestedScrollRefreshListPage()).toList(),
+            children: _tabs
+                .map((String name) => NestedScrollRefreshListPage())
+                .toList(),
           ),
         ),
       ),
