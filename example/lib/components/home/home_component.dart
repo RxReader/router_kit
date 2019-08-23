@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:example/components/nested_scroll/nested_scroll_component.dart';
 import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
 import 'package:example/logs/collect-console-logs.dart';
@@ -46,6 +47,13 @@ class _HomeComponentState extends State<HomeComponent> {
                 arguments:
                     ParamsComponentProvider.routeArgument('aaa', paramB: 'bbb'),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('Nested Scroll'),
+            onTap: () {
+              AppRouter.defaultRouter(context)
+                  .pushNamed(NestedScrollComponentProvider.routeName);
             },
           ),
           ListTile(
