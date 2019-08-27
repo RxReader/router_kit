@@ -10,3 +10,9 @@ flutter pub pub run test/tools/icons/main.dart --platform ios --icon icons/icon_
 ```shell
 flutter pub pub run test/tools/iconfont/main.dart --dpi 20 --srcDir iconfont --tinify
 ```
+
+* zip
+
+```shell
+flutter pub pub run test/tools/zip/main.dart --file zip/config.hdpi.apk
+```
