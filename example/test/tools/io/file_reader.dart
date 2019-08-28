@@ -8,9 +8,11 @@ class FileReader {
 
   final RandomAccessFile _raf;
 
+  int offset() => _raf.positionSync();
+
   bool isEOF() => _raf.positionSync() >= _raf.lengthSync();
 
-  void seek(int position) => _raf.setPositionSync(position);
+  void seek(int offset) => _raf.setPositionSync(offset);
 
   void skip(int n) => _raf.setPositionSync(_raf.positionSync() + n);
 
