@@ -2,9 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fake_okhttp/fake_okhttp.dart';
-import 'package:fake_okhttp/okhttp3/tools/curl_interceptor.dart';
 import 'package:meta/meta.dart';
-import 'package:path/path.dart' as path;
 
 class Tinify {
   Tinify({
