@@ -1,5 +1,13 @@
 part of 'zip_file.dart';
 
+bool _isEncrypted(int bitFlag) {
+  return (bitFlag & 0x0001) == 0x0001;
+}
+
+bool _utf8Encoded(int bitFlag) {
+  return (bitFlag & 0x0800) == 0x0800;
+}
+
 int _checkLength(FileReader reader) {
   // Error out early if the file is too short or non-existent.
   int length = reader.length();
@@ -105,8 +113,7 @@ Zip64EndOfCentralDirectoryRecord _parseZip64EndOfCentralDirectoryRecord(
   );
 }
 
-List<CentralDirectoryFileHeader> _parseCentralDirectory(FileReader reader,
-    Encoding charset, int centralDirectoryOffset, int centralDirectorySize) {
+List<CentralDirectoryFileHeader> _parseCentralDirectory(FileReader reader, Encoding charset, int centralDirectoryOffset, int centralDirectorySize) {
   List<CentralDirectoryFileHeader> fileHeaders = <CentralDirectoryFileHeader>[];
   reader.seek(centralDirectoryOffset);
   while (reader.offset() < centralDirectoryOffset + centralDirectorySize) {
@@ -129,13 +136,12 @@ List<CentralDirectoryFileHeader> _parseCentralDirectory(FileReader reader,
         int internalFileAttributes = reader.readUint16(Endian.little);
         int externalFileAttributes = reader.readUint32(Endian.little);
         int relativeOffsetOfLocalHeader = reader.readUint32(Endian.little);
-        String fileName = reader.readString(fileNameLength, charset);
+        String fileName = reader.readString(fileNameLength, _utf8Encoded(generalPurposeBitFlag) ? utf8 : charset);
 //          extra field (variable size)
         int offset = reader.offset();
         while (reader.offset() < offset + extraFieldLength) {
           int headerID = reader.readUint16(Endian.little);
           int dataSize = reader.readUint16(Endian.little);
-          print('headerID: 0x${headerID.toRadixString(16)}');
           switch (headerID) {
             case 0x0001:
               // ZIP64 extended information extra field
@@ -146,7 +152,6 @@ List<CentralDirectoryFileHeader> _parseCentralDirectory(FileReader reader,
               break;
             case 0x0017:
               // Strong Encryption Header
-              print('Strong Encryption Header');
               reader.skip(dataSize);
               break;
             default:
@@ -202,11 +207,11 @@ LocalFile _parseLocalFile(File file, String password, Encoding charset,
   int uncompressedSize = reader.readUint32(Endian.little);
   int fileNameLength = reader.readUint16(Endian.little);
   int extraFieldLength = reader.readUint16(Endian.little);
-  String fileName = reader.readString(fileNameLength, charset);
+  String fileName = reader.readString(fileNameLength, _utf8Encoded(generalPurposeBitFlag) ? utf8 : charset);
   reader.skip(extraFieldLength);
   int fileDataOffset = reader.offset();
   reader.skip(compressedSize);
-  if (generalPurposeBitFlag & 0x08 != 0) {
+  if (generalPurposeBitFlag & 0x0008 != 0x0008) {
     int sigOrCrc = reader.readUint32(Endian.little);
     if (sigOrCrc == 0x08074b50) {
       crc32 = reader.readUint32(Endian.little);

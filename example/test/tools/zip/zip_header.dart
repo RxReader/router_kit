@@ -39,6 +39,10 @@ class LocalFile extends ZipField {
   final int fileDataOffset;
   final File file;
   final String password;
+
+  bool isEncrypted() {
+    return _isEncrypted(generalPurposeBitFlag);
+  }
 }
 
 class CentralDirectoryFileHeader extends ZipField {
@@ -76,6 +80,10 @@ class CentralDirectoryFileHeader extends ZipField {
   final int externalFileAttributes;
   final int relativeOffsetOfLocalHeader;
   final String fileName;
+
+  bool isEncrypted() {
+    return _isEncrypted(generalPurposeBitFlag);
+  }
 
   @override
   String toString() {
