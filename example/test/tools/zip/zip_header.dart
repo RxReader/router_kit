@@ -10,22 +10,46 @@ abstract class ZipField {
 
 class LocalFileHeader {}
 
-class CentralDirectory {
-  CentralDirectory({
-    this.fileHeaders,
-    this.digitalSignature,
+class CentralDirectoryFileHeader extends ZipField {
+  CentralDirectoryFileHeader({
+    @required int signature,
+    @required this.versionMadeBy,
+    @required this.versionNeededToExtract,
+    @required this.generalPurposeBitFlag,
+    @required this.compressionMethod,
+    @required this.lastModFileTime,
+    @required this.lastModFileDate,
+    @required this.crc32,
+    @required this.compressedSize,
+    @required this.uncompressedSize,
+    @required this.diskNumberStart,
+    @required this.internalFileAttributes,
+    @required this.externalFileAttributes,
+    @required this.relativeOffsetOfLocalHeader,
+    @required this.fileName,
   });
 
-  final List<CentralDirectoryFileHeader> fileHeaders;
-  final CentralDirectoryDigitalSignature digitalSignature;
-}
-
-class CentralDirectoryFileHeader extends ZipField {
   static const int headerSignature = 0x02014b50;
-}
 
-class CentralDirectoryDigitalSignature extends ZipField {
-  static const int headerSignature = 0x05054b50;
+  final int versionMadeBy;
+  final int versionNeededToExtract;
+  final int generalPurposeBitFlag;
+  final int compressionMethod;
+  final int lastModFileTime;
+  final int lastModFileDate;
+  final int crc32;
+  final int compressedSize;
+  final int uncompressedSize;
+  final int diskNumberStart;
+  final int internalFileAttributes;
+  final int externalFileAttributes;
+  final int relativeOffsetOfLocalHeader;
+  final String fileName;
+
+  @override
+  String toString() {
+    return 'CentralDirectoryFileHeader{signature: $signature, versionMadeBy: $versionMadeBy, versionNeededToExtract: $versionNeededToExtract, generalPurposeBitFlag: $generalPurposeBitFlag, compressionMethod: $compressionMethod, lastModFileTime: $lastModFileTime, lastModFileDate: $lastModFileDate, crc32: $crc32, compressedSize: $compressedSize, uncompressedSize: $uncompressedSize, diskNumberStart: $diskNumberStart, internalFileAttributes: $internalFileAttributes, externalFileAttributes: $externalFileAttributes, relativeOffsetOfLocalHeader: $relativeOffsetOfLocalHeader, fileName: $fileName}';
+  }
 }
 
 class Zip64EndOfCentralDirectoryRecord extends ZipField {
@@ -90,7 +114,6 @@ class EndOfCentralDirectoryRecord extends ZipField {
     @required this.totalEntriesInCentralDirectory,
     @required this.centralDirectorySize,
     @required this.centralDirectoryOffset,
-    @required this.fileCommentLength,
   }) : super(signature: signature);
 
   static const int headerSignature = 0x06054b50;
@@ -104,10 +127,9 @@ class EndOfCentralDirectoryRecord extends ZipField {
   final int totalEntriesInCentralDirectory;
   final int centralDirectorySize;
   final int centralDirectoryOffset;
-  final int fileCommentLength;
 
   @override
   String toString() {
-    return 'EndOfCentralDirectoryRecord{signature: $signature, numberOfDisk: $numberOfDisk, numberOfDiskWithCentralDirectory: $numberOfDiskWithCentralDirectory, totalEntriesOfDisk: $totalEntriesOfDisk, totalEntriesInCentralDirectory: $totalEntriesInCentralDirectory, centralDirectorySize: $centralDirectorySize, startOffset: $centralDirectoryOffset, fileCommentLength: $fileCommentLength}';
+    return 'EndOfCentralDirectoryRecord{signature: $signature, numberOfDisk: $numberOfDisk, numberOfDiskWithCentralDirectory: $numberOfDiskWithCentralDirectory, totalEntriesOfDisk: $totalEntriesOfDisk, totalEntriesInCentralDirectory: $totalEntriesInCentralDirectory, centralDirectorySize: $centralDirectorySize, startOffset: $centralDirectoryOffset}';
   }
 }
