@@ -135,14 +135,23 @@ List<CentralDirectoryFileHeader> _parseCentralDirectory(FileReader reader,
         while (reader.offset() < offset + extraFieldLength) {
           int headerID = reader.readUint16(Endian.little);
           int dataSize = reader.readUint16(Endian.little);
-          if (headerID == 0x0001) {
-            uncompressedSize = reader.readUint64(Endian.little);
-            compressedSize = reader.readUint64(Endian.little);
-            relativeOffsetOfLocalHeader = reader.readUint64(Endian.little);
-            diskNumberStart = reader.readUint32(Endian.little);
-            break;
-          } else {
-            reader.skip(dataSize);
+          print('headerID: 0x${headerID.toRadixString(16)}');
+          switch (headerID) {
+            case 0x0001:
+              // ZIP64 extended information extra field
+              uncompressedSize = reader.readUint64(Endian.little);
+              compressedSize = reader.readUint64(Endian.little);
+              relativeOffsetOfLocalHeader = reader.readUint64(Endian.little);
+              diskNumberStart = reader.readUint32(Endian.little);
+              break;
+            case 0x0017:
+              // Strong Encryption Header
+              print('Strong Encryption Header');
+              reader.skip(dataSize);
+              break;
+            default:
+              reader.skip(dataSize);
+              break;
           }
         }
         reader.seek(offset + extraFieldLength);
