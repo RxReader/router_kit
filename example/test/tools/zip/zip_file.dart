@@ -62,6 +62,9 @@ class ZipFile {
       List<CentralDirectoryFileHeader> centralDirectoryFileHeaders =
           _parseCentralDirectory(
               reader, centralDirectoryOffset, centralDirectorySize);
+      for (CentralDirectoryFileHeader centralDirectoryFileHeader in centralDirectoryFileHeaders) {
+
+      }
     } finally {
       reader?.close();
     }

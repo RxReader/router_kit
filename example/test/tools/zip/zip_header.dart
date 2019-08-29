@@ -8,7 +8,7 @@ abstract class ZipField {
   final int signature;
 }
 
-class LocalFileHeader {}
+class LocalFileHeader extends ZipField {}
 
 class CentralDirectoryFileHeader extends ZipField {
   CentralDirectoryFileHeader({
