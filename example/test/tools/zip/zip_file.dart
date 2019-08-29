@@ -27,36 +27,36 @@ class ZipFile {
     try {
       reader = FileReader(file.openSync());
       int length = _checkLength(reader);
-      int eocdRecordOffset = _checkEOCDRecord(reader, length);
-      EOCDRecord eocdRecord = _parseEOCDRecord(reader, eocdRecordOffset);
-      numberThisDisk = eocdRecord.numberOfDisk;
-      numberOfDiskWithCentralDirectory = eocdRecord.numberOfDiskWithCentralDirectory;
-      totalEntriesOfDisk = eocdRecord.totalEntriesOfDisk;
-      totalEntriesInCentralDirectory = eocdRecord.totalEntriesInCentralDirectory;
-      centralDirectorySize = eocdRecord.centralDirectorySize;
-      centralDirectoryOffset = eocdRecord.centralDirectoryOffset;
+      int eocdOffset = _checkEOCDOffset(reader, length);
+      EndOfCentralDirectoryRecord eocd = _parseEndOfCentralDirectoryRecord(reader, eocdOffset);
+      numberThisDisk = eocd.numberOfDisk;
+      numberOfDiskWithCentralDirectory = eocd.numberOfDiskWithCentralDirectory;
+      totalEntriesOfDisk = eocd.totalEntriesOfDisk;
+      totalEntriesInCentralDirectory = eocd.totalEntriesInCentralDirectory;
+      centralDirectorySize = eocd.centralDirectorySize;
+      centralDirectoryOffset = eocd.centralDirectoryOffset;
       int zip64EOCDLocatorOffset =
-          eocdRecordOffset - Zip64EOCDLocator.zip64EOCDLocatorLength;
+          eocdOffset - Zip64EndOfCentralDirectoryLocator.locatorLength;
       if (zip64EOCDLocatorOffset > 0) {
-        Zip64EOCDLocator zip64eocdLocator =
-            _parseZip64EOCDLocator(reader, zip64EOCDLocatorOffset);
-        if (zip64eocdLocator != null) {
-          Zip64EOCDRecord zip64eocdRecord =
-              _parseZip64EOCDRecord(reader, zip64eocdLocator.relativeOffset);
-          if (zip64eocdRecord != null) {
-            numberThisDisk = zip64eocdRecord.numberOfDisk;
-            numberOfDiskWithCentralDirectory = zip64eocdRecord.numberOfDiskWithCentralDirectory;
-            totalEntriesOfDisk = zip64eocdRecord.totalEntriesOfDisk;
-            totalEntriesInCentralDirectory = zip64eocdRecord.totalEntriesInCentralDirectory;
-            centralDirectorySize = zip64eocdRecord.centralDirectorySize;
-            centralDirectoryOffset = zip64eocdRecord.centralDirectoryOffset;
+        Zip64EndOfCentralDirectoryLocator zip64EOCDLocator =
+            _parseZip64EndOfCentralDirectoryLocator(reader, zip64EOCDLocatorOffset);
+        if (zip64EOCDLocator != null) {
+          Zip64EndOfCentralDirectoryRecord zip64EOCDRecord =
+              _parseZip64EndOfCentralDirectoryRecord(reader, zip64EOCDLocator.relativeOffset);
+          if (zip64EOCDRecord != null) {
+            numberThisDisk = zip64EOCDRecord.numberOfDisk;
+            numberOfDiskWithCentralDirectory = zip64EOCDRecord.numberOfDiskWithCentralDirectory;
+            totalEntriesOfDisk = zip64EOCDRecord.totalEntriesOfDisk;
+            totalEntriesInCentralDirectory = zip64EOCDRecord.totalEntriesInCentralDirectory;
+            centralDirectorySize = zip64EOCDRecord.centralDirectorySize;
+            centralDirectoryOffset = zip64EOCDRecord.centralDirectoryOffset;
           }
         }
       }
-//      reader.seek(centralDirectoryOffset);
-//      while (reader.offset() < centralDirectorySize) {
-//
-//      }
+      reader.seek(centralDirectoryOffset);
+      while (reader.offset() < centralDirectoryOffset + centralDirectorySize) {
+
+      }
       print('$length - ${centralDirectoryOffset + centralDirectorySize}');
       print('$numberThisDisk -$numberOfDiskWithCentralDirectory - $totalEntriesOfDisk - $totalEntriesInCentralDirectory - $centralDirectorySize - $centralDirectoryOffset');
 
@@ -71,35 +71,35 @@ class ZipFile {
   int _checkLength(FileReader reader) {
     // Error out early if the file is too short or non-existent.
     int length = reader.length();
-    if (length < EOCDRecord.eocdRecordLength) {
+    if (length < EndOfCentralDirectoryRecord.eocdLength) {
       throw ZipException('File too short to be a zip file: $length');
     }
     return length;
   }
 
-  int _checkEOCDRecord(FileReader reader, int length) {
+  int _checkEOCDOffset(FileReader reader, int length) {
     // The directory and archive contents are written to the end of the zip
     // file.  We need to search from the end to find these structures,
     // starting with the 'End of central directory' record (EOCD).
     int eocdSearchLength =
-        math.min(length, EOCDRecord.eocdRecordSearchLengthMax);
-    int eocdRecordOffset;
-    for (int i = EOCDRecord.eocdRecordLength; i <= eocdSearchLength; i++) {
+        math.min(length, EndOfCentralDirectoryRecord.eocdSearchLengthMax);
+    int eocdOffset;
+    for (int i = EndOfCentralDirectoryRecord.eocdLength; i <= eocdSearchLength; i++) {
       int offset = length - i;
       reader.seek(offset);
-      if (reader.readUint32(Endian.little) == EOCDRecord.eocdRecordSignature) {
-        eocdRecordOffset = offset;
+      if (reader.readUint32(Endian.little) == EndOfCentralDirectoryRecord.headerSignature) {
+        eocdOffset = offset;
         break;
       }
     }
-    if (eocdRecordOffset == null) {
+    if (eocdOffset == null) {
       throw ZipException('Could not find End of Central Directory Record');
     }
-    return eocdRecordOffset;
+    return eocdOffset;
   }
 
-  EOCDRecord _parseEOCDRecord(FileReader reader, int eocdRecordOffset) {
-    reader.seek(eocdRecordOffset);
+  EndOfCentralDirectoryRecord _parseEndOfCentralDirectoryRecord(FileReader reader, int eocdOffset) {
+    reader.seek(eocdOffset);
     int signature = reader.readUint32(Endian.little);
     int numberOfDisk = reader.readUint16(Endian.little);
     int numberOfDiskWithCentralDirectory = reader.readUint16(Endian.little);
@@ -108,7 +108,7 @@ class ZipFile {
     int centralDirectorySize = reader.readUint32(Endian.little);
     int centralDirectoryOffset = reader.readUint32(Endian.little);
     int commentLength = reader.readUint16(Endian.little);
-    return EOCDRecord(
+    return EndOfCentralDirectoryRecord(
       signature: signature,
       numberOfDisk: numberOfDisk,
       numberOfDiskWithCentralDirectory: numberOfDiskWithCentralDirectory,
@@ -120,17 +120,17 @@ class ZipFile {
     );
   }
 
-  Zip64EOCDLocator _parseZip64EOCDLocator(
+  Zip64EndOfCentralDirectoryLocator _parseZip64EndOfCentralDirectoryLocator(
       FileReader reader, int zip64EOCDLocatorOffset) {
     reader.seek(zip64EOCDLocatorOffset);
     int signature = reader.readUint32(Endian.little);
-    if (signature != Zip64EOCDLocator.zip64EOCDLocatorSignature) {
+    if (signature != Zip64EndOfCentralDirectoryLocator.headerSignature) {
       return null;
     }
     int numberOfDiskWithCentralDirectory = reader.readUint32(Endian.little);
     int relativeOffset = reader.readUint64(Endian.little);
     int totalDisks = reader.readUint32(Endian.little);
-    return Zip64EOCDLocator(
+    return Zip64EndOfCentralDirectoryLocator(
       signature: signature,
       numberOfDiskWithCentralDirectory: numberOfDiskWithCentralDirectory,
       relativeOffset: relativeOffset,
@@ -138,11 +138,11 @@ class ZipFile {
     );
   }
 
-  Zip64EOCDRecord _parseZip64EOCDRecord(
+  Zip64EndOfCentralDirectoryRecord _parseZip64EndOfCentralDirectoryRecord(
       FileReader reader, int zip64EOCDRecordOffset) {
     reader.seek(zip64EOCDRecordOffset);
     int signature = reader.readUint32(Endian.little);
-    if (signature != Zip64EOCDRecord.zip64EOCDRecordSignature) {
+    if (signature != Zip64EndOfCentralDirectoryRecord.headerSignature) {
       return null;
     }
     int sizeOfEndOfCentralDirectoryRecord = reader.readUint64(Endian.little);
@@ -154,7 +154,7 @@ class ZipFile {
     int totalEntriesInCentralDirectory = reader.readUint64(Endian.little);
     int centralDirectorySize = reader.readUint64(Endian.little);
     int centralDirectoryOffset = reader.readUint64(Endian.little);
-    return Zip64EOCDRecord(
+    return Zip64EndOfCentralDirectoryRecord(
       signature: signature,
       sizeOfEndOfCentralDirectoryRecord: sizeOfEndOfCentralDirectoryRecord,
       versionMadeBy: versionMadeBy,
