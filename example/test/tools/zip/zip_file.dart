@@ -50,7 +50,9 @@ class ZipFile {
       List<CentralDirectoryFileHeader> centralDirectoryFileHeaders =
           _parseCentralDirectory(
               reader, charset, centralDirectoryOffset, centralDirectorySize);
-      _localFiles = centralDirectoryFileHeaders.map(_parseLocalFile);
+      _localFiles = centralDirectoryFileHeaders.map(
+          (CentralDirectoryFileHeader fileHeader) =>
+              _parseLocalFile(file, password, charset, reader, fileHeader)).toList();
     } finally {
       reader?.close();
     }

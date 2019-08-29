@@ -8,7 +8,38 @@ abstract class ZipField {
   final int signature;
 }
 
-class LocalFile extends ZipField {}
+class LocalFile extends ZipField {
+  LocalFile({
+    @required int signature,
+    @required this.versionNeededToExtract,
+    @required this.generalPurposeBitFlag,
+    @required this.compressionMethod,
+    @required this.lastModFileTime,
+    @required this.lastModFileDate,
+    @required this.crc32,
+    @required this.compressedSize,
+    @required this.uncompressedSize,
+    @required this.fileName,
+    @required this.fileDataOffset,
+    @required this.file,
+    @required this.password,
+  }) : super(signature: signature);
+
+  static const int headerSignature = 0x04034b50;
+
+  final int versionNeededToExtract;
+  final int generalPurposeBitFlag;
+  final int compressionMethod;
+  final int lastModFileTime;
+  final int lastModFileDate;
+  final int crc32;
+  final int compressedSize;
+  final int uncompressedSize;
+  final String fileName;
+  final int fileDataOffset;
+  final File file;
+  final String password;
+}
 
 class CentralDirectoryFileHeader extends ZipField {
   CentralDirectoryFileHeader({
@@ -27,7 +58,7 @@ class CentralDirectoryFileHeader extends ZipField {
     @required this.externalFileAttributes,
     @required this.relativeOffsetOfLocalHeader,
     @required this.fileName,
-  });
+  }) : super(signature: signature);
 
   static const int headerSignature = 0x02014b50;
 
@@ -64,7 +95,7 @@ class Zip64EndOfCentralDirectoryRecord extends ZipField {
     @required this.totalEntriesInCentralDirectory,
     @required this.centralDirectorySize,
     @required this.centralDirectoryOffset,
-  });
+  }) : super(signature: signature);
 
   static const int headerSignature = 0x06064b50;
 

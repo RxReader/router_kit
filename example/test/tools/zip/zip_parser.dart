@@ -14,11 +14,11 @@ int _checkEOCDOffset(FileReader reader, int length) {
   // file.  We need to search from the end to find these structures,
   // starting with the 'End of central directory' record (EOCD).
   int eocdSearchLength =
-  math.min(length, EndOfCentralDirectoryRecord.eocdSearchLengthMax);
+      math.min(length, EndOfCentralDirectoryRecord.eocdSearchLengthMax);
   int eocdOffset;
   for (int i = EndOfCentralDirectoryRecord.eocdLength;
-  i <= eocdSearchLength;
-  i++) {
+      i <= eocdSearchLength;
+      i++) {
     int offset = length - i;
     reader.seek(offset);
     if (reader.readUint32(Endian.little) ==
@@ -105,10 +105,9 @@ Zip64EndOfCentralDirectoryRecord _parseZip64EndOfCentralDirectoryRecord(
   );
 }
 
-List<CentralDirectoryFileHeader> _parseCentralDirectory(
-    FileReader reader, Encoding charset, int centralDirectoryOffset, int centralDirectorySize) {
-  List<CentralDirectoryFileHeader> fileHeaders =
-  <CentralDirectoryFileHeader>[];
+List<CentralDirectoryFileHeader> _parseCentralDirectory(FileReader reader,
+    Encoding charset, int centralDirectoryOffset, int centralDirectorySize) {
+  List<CentralDirectoryFileHeader> fileHeaders = <CentralDirectoryFileHeader>[];
   reader.seek(centralDirectoryOffset);
   while (reader.offset() < centralDirectoryOffset + centralDirectorySize) {
     int signature = reader.readUint32(Endian.little);
@@ -168,7 +167,7 @@ List<CentralDirectoryFileHeader> _parseCentralDirectory(
         fileHeaders.add(fileHeader);
         break;
       case 0x05054b50:
-      // Digital signature
+        // Digital signature
         int sizeOfData = reader.readUint16(Endian.little);
         reader.skip(sizeOfData);
         break;
@@ -177,6 +176,50 @@ List<CentralDirectoryFileHeader> _parseCentralDirectory(
   return fileHeaders;
 }
 
-LocalFile _parseLocalFile(CentralDirectoryFileHeader fileHeader) {
-
+LocalFile _parseLocalFile(File file, String password, Encoding charset,
+    FileReader reader, CentralDirectoryFileHeader fileHeader) {
+  reader.seek(fileHeader.relativeOffsetOfLocalHeader);
+  int signature = reader.readUint32(Endian.little);
+  if (signature != LocalFile.headerSignature) {
+    throw ZipException('Invalid Zip Signature');
+  }
+  int versionNeededToExtract = reader.readUint16(Endian.little);
+  int generalPurposeBitFlag = reader.readUint16(Endian.little);
+  int compressionMethod = reader.readUint16(Endian.little);
+  int lastModFileTime = reader.readUint16(Endian.little);
+  int lastModFileDate = reader.readUint16(Endian.little);
+  int crc32 = reader.readUint32(Endian.little);
+  int compressedSize = reader.readUint32(Endian.little);
+  int uncompressedSize = reader.readUint32(Endian.little);
+  int fileNameLength = reader.readUint16(Endian.little);
+  int extraFieldLength = reader.readUint16(Endian.little);
+  String fileName = reader.readString(fileNameLength, charset);
+  reader.skip(extraFieldLength);
+  int fileDataOffset = reader.offset();
+  reader.skip(compressedSize);
+  if (generalPurposeBitFlag & 0x08 != 0) {
+    int sigOrCrc = reader.readUint32(Endian.little);
+    if (sigOrCrc == 0x08074b50) {
+      crc32 = reader.readUint32(Endian.little);
+    } else {
+      crc32 = sigOrCrc;
+    }
+    compressedSize = reader.readUint32(Endian.little);
+    uncompressedSize = reader.readUint32(Endian.little);
+  }
+  return LocalFile(
+    signature: signature,
+    versionNeededToExtract: versionNeededToExtract,
+    generalPurposeBitFlag: generalPurposeBitFlag,
+    compressionMethod: compressionMethod,
+    lastModFileTime: lastModFileTime,
+    lastModFileDate: lastModFileDate,
+    crc32: crc32,
+    compressedSize: compressedSize,
+    uncompressedSize: uncompressedSize,
+    fileName: fileName,
+    fileDataOffset: fileDataOffset,
+    file: file,
+    password: password,
+  );
 }
