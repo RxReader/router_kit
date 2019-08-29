@@ -53,13 +53,9 @@ class ZipFile {
           }
         }
       }
-      reader.seek(centralDirectoryOffset);
-      while (reader.offset() < centralDirectoryOffset + centralDirectorySize) {
-
-      }
       print('$length - ${centralDirectoryOffset + centralDirectorySize}');
       print('$numberThisDisk -$numberOfDiskWithCentralDirectory - $totalEntriesOfDisk - $totalEntriesInCentralDirectory - $centralDirectorySize - $centralDirectoryOffset');
-
+      CentralDirectory centralDirectory = _parseCentralDirectory(reader, centralDirectoryOffset, centralDirectorySize);
     } finally {
       reader?.close();
     }
@@ -107,7 +103,8 @@ class ZipFile {
     int totalEntriesInCentralDirectory = reader.readUint16(Endian.little);
     int centralDirectorySize = reader.readUint32(Endian.little);
     int centralDirectoryOffset = reader.readUint32(Endian.little);
-    int commentLength = reader.readUint16(Endian.little);
+    int fileCommentLength = reader.readUint16(Endian.little);
+    reader.skip(fileCommentLength);// fileComment
     return EndOfCentralDirectoryRecord(
       signature: signature,
       numberOfDisk: numberOfDisk,
@@ -116,7 +113,7 @@ class ZipFile {
       totalEntriesInCentralDirectory: totalEntriesInCentralDirectory,
       centralDirectorySize: centralDirectorySize,
       centralDirectoryOffset: centralDirectoryOffset,
-      commentLength: commentLength,
+      fileCommentLength: fileCommentLength,
     );
   }
 
@@ -154,6 +151,7 @@ class ZipFile {
     int totalEntriesInCentralDirectory = reader.readUint64(Endian.little);
     int centralDirectorySize = reader.readUint64(Endian.little);
     int centralDirectoryOffset = reader.readUint64(Endian.little);
+    // reader.skip(extensibleDataSectorLength);// zip64 extensible data sector
     return Zip64EndOfCentralDirectoryRecord(
       signature: signature,
       sizeOfEndOfCentralDirectoryRecord: sizeOfEndOfCentralDirectoryRecord,
@@ -166,5 +164,45 @@ class ZipFile {
       centralDirectorySize: centralDirectorySize,
       centralDirectoryOffset: centralDirectoryOffset,
     );
+  }
+
+  CentralDirectory _parseCentralDirectory(FileReader reader, int centralDirectoryOffset, int centralDirectorySize) {
+    reader.seek(centralDirectoryOffset);
+    List<CentralDirectoryFileHeader> fileHeaders = <CentralDirectoryFileHeader>[];
+    CentralDirectoryDigitalSignature digitalSignature;
+    while (reader.offset() < centralDirectoryOffset + centralDirectorySize) {
+      int signature = reader.readUint32(Endian.little);
+      switch (signature) {
+        case CentralDirectoryFileHeader.headerSignature:
+          int versionMadeBy = reader.readUint16(Endian.little);
+          int versionNeededToExtract = reader.readUint16(Endian.little);
+          int generalPurposeBitFlag = reader.readUint16(Endian.little);
+          int compressionMethod = reader.readUint16(Endian.little);
+          int lastModFileTime = reader.readUint16(Endian.little);
+          int lastModFileDate = reader.readUint16(Endian.little);
+          int crc32 = reader.readUint32(Endian.little);
+          int compressedSize = reader.readUint32(Endian.little);
+          int uncompressedSize = reader.readUint32(Endian.little);
+          int fileNameLength = reader.readUint16(Endian.little);
+          int extraFieldLength = reader.readUint16(Endian.little);
+          int fileCommentLength = reader.readUint16(Endian.little);
+          int diskNumberStart = reader.readUint16(Endian.little);
+          int internalFileAttributes = reader.readUint16(Endian.little);
+          int externalFileAttributes = reader.readUint32(Endian.little);
+          int relativeOffsetOfLocalHeader = reader.readUint32(Endian.little);
+          String fileName = reader.readString(fileNameLength, _charset);
+          int offset = reader.offset();
+//          extra field (variable size)
+          reader.seek(offset + extraFieldLength);
+          reader.skip(fileCommentLength);// fileComment
+
+          CentralDirectoryFileHeader fileHeader = null;
+          break;
+        case CentralDirectoryDigitalSignature.headerSignature:
+          digitalSignature = null;
+          break;
+      }
+    }
+    return null;
   }
 }

@@ -20,9 +20,13 @@ class CentralDirectory {
   final CentralDirectoryDigitalSignature digitalSignature;
 }
 
-class CentralDirectoryFileHeader extends ZipField {}
+class CentralDirectoryFileHeader extends ZipField {
+  static const int headerSignature = 0x02014b50;
+}
 
-class CentralDirectoryDigitalSignature extends ZipField {}
+class CentralDirectoryDigitalSignature extends ZipField {
+  static const int headerSignature = 0x05054b50;
+}
 
 class Zip64EndOfCentralDirectoryRecord extends ZipField {
   Zip64EndOfCentralDirectoryRecord({
@@ -86,7 +90,7 @@ class EndOfCentralDirectoryRecord extends ZipField {
     @required this.totalEntriesInCentralDirectory,
     @required this.centralDirectorySize,
     @required this.centralDirectoryOffset,
-    @required this.commentLength,
+    @required this.fileCommentLength,
   }) : super(signature: signature);
 
   static const int headerSignature = 0x06054b50;
@@ -100,10 +104,10 @@ class EndOfCentralDirectoryRecord extends ZipField {
   final int totalEntriesInCentralDirectory;
   final int centralDirectorySize;
   final int centralDirectoryOffset;
-  final int commentLength;
+  final int fileCommentLength;
 
   @override
   String toString() {
-    return 'EndOfCentralDirectoryRecord{signature: $signature, numberOfDisk: $numberOfDisk, numberOfDiskWithCentralDirectory: $numberOfDiskWithCentralDirectory, totalEntriesOfDisk: $totalEntriesOfDisk, totalEntriesInCentralDirectory: $totalEntriesInCentralDirectory, centralDirectorySize: $centralDirectorySize, startOffset: $centralDirectoryOffset, commentLength: $commentLength}';
+    return 'EndOfCentralDirectoryRecord{signature: $signature, numberOfDisk: $numberOfDisk, numberOfDiskWithCentralDirectory: $numberOfDiskWithCentralDirectory, totalEntriesOfDisk: $totalEntriesOfDisk, totalEntriesInCentralDirectory: $totalEntriesInCentralDirectory, centralDirectorySize: $centralDirectorySize, startOffset: $centralDirectoryOffset, fileCommentLength: $fileCommentLength}';
   }
 }

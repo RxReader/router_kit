@@ -16,6 +16,10 @@ class FileReader {
 
   void skip(int n) => _raf.setPositionSync(_raf.positionSync() + n);
 
+  List<int> read(int bytes) {
+    return _raf.readSync(bytes);
+  }
+
   int readUint8() {
     List<int> bytes = _raf.readSync(1);
     return ByteData.view(Uint8List.fromList(bytes).buffer).getUint8(0);
