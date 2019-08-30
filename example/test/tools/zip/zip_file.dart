@@ -12,10 +12,9 @@ part 'zip_header.dart';
 
 part 'zip_parser.dart';
 
-/// 不支持分卷压缩
 /// https://pkware.cachefly.net/webdocs/APPNOTE/APPNOTE-6.2.0.txt
 class ZipFile {
-  ZipFile(
+  ZipFile._open(
     File file, [
     String password,
     Encoding charset = utf8,
@@ -27,46 +26,65 @@ class ZipFile {
       final int eocdOffset = _checkEOCDOffset(reader, length);
       _endOfCentralDirectoryRecord =
           _parseEndOfCentralDirectoryRecord(reader, eocdOffset);
-      int centralDirectorySize =
-          _endOfCentralDirectoryRecord.centralDirectorySize;
-      int centralDirectoryOffset =
-          _endOfCentralDirectoryRecord.centralDirectoryOffset;
-      final int zip64EOCDLocatorOffset =
+      // If file is Zip64 format, Zip64 headers have to be read before reading central directory
+      final int zip64eocdLocatorOffset =
           eocdOffset - Zip64EndOfCentralDirectoryLocator.locatorLength;
-      if (zip64EOCDLocatorOffset > 0) {
-        Zip64EndOfCentralDirectoryLocator zip64EOCDLocator =
+      if (zip64eocdLocatorOffset > 0) {
+        _zip64endOfCentralDirectoryLocator =
             _parseZip64EndOfCentralDirectoryLocator(
-                reader, zip64EOCDLocatorOffset);
-        if (zip64EOCDLocator != null) {
-          Zip64EndOfCentralDirectoryRecord zip64EOCDRecord =
+                reader, zip64eocdLocatorOffset);
+        if (_zip64endOfCentralDirectoryLocator != null) {
+          _zip64endOfCentralDirectoryRecord =
               _parseZip64EndOfCentralDirectoryRecord(
-                  reader, zip64EOCDLocator.relativeOffset);
-          if (zip64EOCDRecord != null) {
-            centralDirectorySize = zip64EOCDRecord.centralDirectorySize;
-            centralDirectoryOffset = zip64EOCDRecord.centralDirectoryOffset;
-          }
+                  reader,
+                  _zip64endOfCentralDirectoryLocator
+                      .offsetZip64EndOfCentralDirectoryRecord);
         }
       }
-      List<CentralDirectoryFileHeader> centralDirectoryFileHeaders =
+      int offsetOfStartOfCentralDirectory = isZip64Format
+          ? _zip64endOfCentralDirectoryRecord
+              .offsetStartCentralDirectoryWRTStartDiskNumber
+          : _endOfCentralDirectoryRecord.offsetOfStartOfCentralDirectory;
+      int numberOfEntriesInCentralDirectory = isZip64Format
+          ? _zip64endOfCentralDirectoryRecord
+              .totalNumberOfEntriesInCentralDirectory
+          : _endOfCentralDirectoryRecord.totalNumberOfEntriesInCentralDirectory;
+      _centralDirectory =
           _parseCentralDirectory(
-              reader, charset, centralDirectoryOffset, centralDirectorySize);
-      _localFiles = centralDirectoryFileHeaders.map(
-          (CentralDirectoryFileHeader fileHeader) =>
-              _parseLocalFile(file, password, charset, reader, fileHeader)).toList();
+              reader, charset, offsetOfStartOfCentralDirectory, numberOfEntriesInCentralDirectory);
+//      _localFiles = centralDirectoryFileHeaders
+//          .map((CentralDirectoryFileHeader fileHeader) =>
+//              _parseLocalFile(file, password, charset, reader, fileHeader))
+//          .toList();
     } finally {
       reader?.close();
     }
   }
 
-  List<LocalFile> _localFiles;
-  List<CentralDirectoryFileHeader> _centralDirectoryFileHeaders;
+  CentralDirectory _centralDirectory;
+  Zip64EndOfCentralDirectoryRecord _zip64endOfCentralDirectoryRecord;
+  Zip64EndOfCentralDirectoryLocator _zip64endOfCentralDirectoryLocator;
   EndOfCentralDirectoryRecord _endOfCentralDirectoryRecord;
 
-  List<LocalFile> get localFiles => _localFiles;
+  bool get isSplitArchive {
+    if (isZip64Format) {
+      return _zip64endOfCentralDirectoryRecord != null &&
+          _zip64endOfCentralDirectoryRecord.numberOfThisDisk > 0;
+    }
+    return _endOfCentralDirectoryRecord.numberOfThisDisk > 0;
+  }
 
-  List<CentralDirectoryFileHeader> get centralDirectoryFileHeaders =>
-      _centralDirectoryFileHeaders;
+  bool get isZip64Format => _zip64endOfCentralDirectoryLocator != null;
 
-  EndOfCentralDirectoryRecord get endOfCentralDirectoryRecord =>
-      _endOfCentralDirectoryRecord;
+  Future<void> extractAll() async {}
+
+  Future<void> extractFile() async {}
+
+  static Future<ZipFile> open(
+    File file, [
+    String password,
+    Encoding charset = utf8, // 默认 'cp437'，但是 Dart 暂不支持 'cp437'
+  ]) async {
+    return ZipFile._open(file, password, charset);
+  }
 }

@@ -12,5 +12,5 @@ void main(List<String> args) {
   ArgResults results = parser.parse(args);
   String file = results['file'];
 
-  ZipFile(File(path.join(Directory.current.path, file)));
+  ZipFile.open(File(path.join(Directory.current.path, file)));
 }
