@@ -117,9 +117,22 @@ class ZipFile {
         }
       } else {
         File destFile = File(path.join(destinationPath, localFile.localFileHeader.fileName));
-        destFile.parent.createSync(recursive: true);
-        // unzip
+        destFile.createSync(recursive: true);
+        Stream<List<int>> stream = _file.openRead(localFile.fileDataOffset, fileHeader.compressedSize);
+        if (fileHeader.isEncrypted) {
+          if (fileHeader.aesExtraDataRecord != null) {
 
+          } else {
+
+          }
+        }
+        if (fileHeader.compressionMethod == CompressionMethod.deflate) {
+          stream.transform(ZLibCodec(raw: true).decoder);
+        }
+        IOSink sink = destFile.openWrite();
+        await sink.addStream(stream);
+        await sink.flush();
+        await sink.close();
         DateTime lastModFileTime = _parseDosTime(fileHeader.lastModFileDate, fileHeader.lastModFileTime);
         destFile.setLastModifiedSync(lastModFileTime);
         destFile.setLastAccessedSync(lastModFileTime);
