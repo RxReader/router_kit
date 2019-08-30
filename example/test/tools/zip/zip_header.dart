@@ -16,20 +16,11 @@ class AesKeyStrength {
   static const int keyStrength256 = 3;
 }
 
-abstract class ZipField {
-  ZipField({
-    @required this.signature,
-  });
-
-  final int signature;
-}
-
-abstract class ExtraField extends ZipField {
+abstract class ExtraField {
   ExtraField({
-    @required int signature,
     @required this.headerID,
     @required this.dataSize,
-  }) : super(signature: signature);
+  });
 
   final int headerID;
   final int dataSize;
@@ -37,25 +28,25 @@ abstract class ExtraField extends ZipField {
 
 class GeneralExtraField extends ExtraField {
   GeneralExtraField({
-    @required int signature,
     @required int headerID,
     @required int dataSize,
     @required this.extraData,
-  }) : super(signature: signature, headerID: headerID, dataSize: dataSize);
+  }) : super(headerID: headerID, dataSize: dataSize);
 
   List<int> extraData;
 }
 
 class Zip64ExtendedInfo extends ExtraField {
   Zip64ExtendedInfo({
-    @required int signature,
     @required int headerID,
     @required int dataSize,
     @required this.uncompressedSize,
     @required this.compressedSize,
     @required this.offsetOfLocalHeader,
     @required this.diskNumberStart,
-  }) : super(signature: signature, headerID: headerID, dataSize: dataSize);
+  }) : super(headerID: headerID, dataSize: dataSize);
+
+  static const int headerSignature = 0x0001;
 
   final int uncompressedSize;
   final int compressedSize;
@@ -64,58 +55,102 @@ class Zip64ExtendedInfo extends ExtraField {
 }
 
 class AesExtraDataRecord extends ExtraField {
-  final int aesVersion;
-  final String vendorID;
-  final int aesKeyStrength;
-  final int compressionMethod;
-
   AesExtraDataRecord({
-    @required int signature,
     @required int headerID,
     @required int dataSize,
     @required this.aesVersion,
     @required this.vendorID,
     @required this.aesKeyStrength,
     @required this.compressionMethod,
-  }) : super(signature: signature, headerID: headerID, dataSize: dataSize);
+  }) : super(headerID: headerID, dataSize: dataSize);
+
+  static const int headerSignature = 0x9901;
+
+  final int aesVersion;
+  final String vendorID;
+  final int aesKeyStrength;
+  final int compressionMethod;
 }
 
-//class LocalFile extends ZipField {
-//  LocalFile({
-//    @required int signature,
-//    @required this.versionNeededToExtract,
-//    @required this.generalPurposeBitFlag,
-//    @required this.compressionMethod,
-//    @required this.lastModFileTime,
-//    @required this.lastModFileDate,
-//    @required this.crc32,
-//    @required this.compressedSize,
-//    @required this.uncompressedSize,
-//    @required this.fileName,
-//    @required this.fileDataOffset,
-//    @required this.file,
-//    @required this.password,
-//  }) : super(signature: signature);
-//
-//  static const int headerSignature = 0x04034b50;
-//
-//  final int versionNeededToExtract;
-//  final int generalPurposeBitFlag;
-//  final int compressionMethod;
-//  final int lastModFileTime;
-//  final int lastModFileDate;
-//  final int crc32;
-//  final int compressedSize;
-//  final int uncompressedSize;
-//  final String fileName;
-//  final int fileDataOffset;
-//  final File file;
-//  final String password;
-//
-//  bool isEncrypted() {
-//    return _isEncrypted(generalPurposeBitFlag);
-//  }
-//}
+abstract class ZipField {
+  ZipField({
+    @required this.signature,
+  });
+
+  final int signature;
+}
+
+class LocalFile {
+  LocalFile({
+    @required this.fileHeader,
+    @required this.fileDataOffset,
+    @required this.dataDescriptor,
+  });
+
+  final LocalFileHeader fileHeader;
+  final int fileDataOffset;
+  final DataDescriptor dataDescriptor;
+}
+
+class LocalFileHeader extends ZipField {
+  LocalFileHeader({
+    @required int signature,
+    @required this.versionNeededToExtract,
+    @required this.generalPurposeBitFlag,
+    @required this.compressionMethod,
+    @required this.lastModFileTime,
+    @required this.lastModFileDate,
+    @required this.crc32,
+    @required this.compressedSize,
+    @required this.uncompressedSize,
+    @required this.fileName,
+    @required this.extraFields,
+    @required this.zip64extendedInfo,
+    @required this.aesExtraDataRecord,
+  }) : super(signature: signature);
+
+  static const int headerSignature = 0x04034b50;
+
+  final int versionNeededToExtract;
+  final int generalPurposeBitFlag;
+  final int compressionMethod;
+  final int lastModFileTime;
+  final int lastModFileDate;
+  final int crc32;
+  final int compressedSize;
+  final int uncompressedSize;
+  final String fileName;
+  final List<ExtraField> extraFields;
+  final Zip64ExtendedInfo zip64extendedInfo;
+  final AesExtraDataRecord aesExtraDataRecord;
+
+  bool get isEncrypted => _isEncrypted(generalPurposeBitFlag);
+
+  bool get isDataDescriptorExists =>
+      _isDataDescriptorExists(generalPurposeBitFlag);
+
+  bool get isStrongEncryption => _isStrongEncryption(generalPurposeBitFlag);
+
+  bool get isFileNameUTF8Encoded =>
+      _isFileNameUTF8Encoded(generalPurposeBitFlag);
+
+  bool get isDirectory => fileName.endsWith('/') || fileName.endsWith('\\');
+}
+
+class DataDescriptor extends ZipField {
+  DataDescriptor({
+    @required int signature,
+    @required this.crc,
+    @required this.compressedSize,
+    @required this.uncompressedSize,
+  }) : super(signature: signature);
+
+  static const int extraDataRecord = 0x08074b50;
+
+  final int crc;
+  final int compressedSize;
+  final int uncompressedSize;
+}
 
 class CentralDirectory {
   CentralDirectory({
@@ -175,6 +210,8 @@ class CentralDirectoryFileHeader extends ZipField {
 
   bool get isDataDescriptorExists =>
       _isDataDescriptorExists(generalPurposeBitFlag);
+
+  bool get isStrongEncryption => _isStrongEncryption(generalPurposeBitFlag);
 
   bool get isFileNameUTF8Encoded =>
       _isFileNameUTF8Encoded(generalPurposeBitFlag);

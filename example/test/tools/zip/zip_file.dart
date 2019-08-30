@@ -18,7 +18,9 @@ class ZipFile {
     File file, [
     String password,
     Encoding charset = utf8,
-  ]) {
+  ])  : _file = file,
+        _password = password,
+        _charset = charset {
     FileReader reader;
     try {
       reader = FileReader(file.openSync());
@@ -49,17 +51,16 @@ class ZipFile {
           ? _zip64endOfCentralDirectoryRecord
               .totalNumberOfEntriesInCentralDirectory
           : _endOfCentralDirectoryRecord.totalNumberOfEntriesInCentralDirectory;
-      _centralDirectory =
-          _parseCentralDirectory(
-              reader, charset, offsetOfStartOfCentralDirectory, numberOfEntriesInCentralDirectory);
-//      _localFiles = centralDirectoryFileHeaders
-//          .map((CentralDirectoryFileHeader fileHeader) =>
-//              _parseLocalFile(file, password, charset, reader, fileHeader))
-//          .toList();
+      _centralDirectory = _parseCentralDirectory(reader, charset,
+          offsetOfStartOfCentralDirectory, numberOfEntriesInCentralDirectory);
     } finally {
       reader?.close();
     }
   }
+
+  final File _file;
+  final String _password;
+  final Encoding _charset;
 
   CentralDirectory _centralDirectory;
   Zip64EndOfCentralDirectoryRecord _zip64endOfCentralDirectoryRecord;
@@ -76,9 +77,38 @@ class ZipFile {
 
   bool get isZip64Format => _zip64endOfCentralDirectoryLocator != null;
 
-  Future<void> extractAll() async {}
+  bool get isEncrypted {
+    for (CentralDirectoryFileHeader fileHeader
+        in _centralDirectory.fileHeaders) {
+      if (fileHeader.isEncrypted) {
+        return true;
+      }
+    }
+    return false;
+  }
 
-  Future<void> extractFile() async {}
+  Future<void> extractAll(String destinationPath) async {
+    for (CentralDirectoryFileHeader fileHeader
+        in _centralDirectory.fileHeaders) {
+      await extractFile(fileHeader, destinationPath);
+    }
+  }
+
+  Future<void> extractFile(
+      CentralDirectoryFileHeader fileHeader, String destinationPath) async {
+    FileReader reader;
+    try {
+      File unzipFile = _file;
+      if (isSplitArchive) {
+        unzipFile = null;
+      }
+      reader = FileReader(unzipFile.openSync());
+      LocalFile localFile = _parseLocalFile(reader, _charset, fileHeader);
+
+    } finally {
+      reader?.close();
+    }
+  }
 
   static Future<ZipFile> open(
     File file, [

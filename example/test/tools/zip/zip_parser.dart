@@ -8,6 +8,10 @@ bool _isDataDescriptorExists(int bitFlag) {
   return (bitFlag & 0x0008) == 0x0008;
 }
 
+bool _isStrongEncryption(int bitFlag) {
+  return (bitFlag & 0x0020) == 0x0020;
+}
+
 bool _isFileNameUTF8Encoded(int bitFlag) {
   return (bitFlag & 0x0800) == 0x0800;
 }
@@ -167,60 +171,15 @@ CentralDirectory _parseCentralDirectory(FileReader reader, Encoding charset,
     if (fileName.contains(':\\')) {
       fileName = fileName.substring(fileName.indexOf(':\\') + 2);
     }
-    List<ExtraField> extraFields = <ExtraField>[];
     // extra field (variable size)
+    List<ExtraField> extraFields = _readExtraFields(reader, extraFieldLength);
     Zip64ExtendedInfo zip64extendedInfo;
     AesExtraDataRecord aesExtraDataRecord;
-    int offset = reader.offset();
-    while (reader.offset() < offset + extraFieldLength) {
-      int headerID = reader.readUint16(Endian.little);
-      int dataSize = reader.readUint16(Endian.little);
-      switch (headerID) {
-        case 0x0001:
-          int uncompressedSize = reader.readUint64(Endian.little);
-          int compressedSize = reader.readUint64(Endian.little);
-          int offsetOfLocalHeader = reader.readUint64(Endian.little);
-          int diskNumberStart = reader.readUint32(Endian.little);
-          zip64extendedInfo = Zip64ExtendedInfo(
-            signature: signature,
-            headerID: headerID,
-            dataSize: dataSize,
-            uncompressedSize: uncompressedSize,
-            compressedSize: compressedSize,
-            offsetOfLocalHeader: offsetOfLocalHeader,
-            diskNumberStart: diskNumberStart,
-          );
-          extraFields.add(zip64extendedInfo);
-          break;
-        case 0x9901:
-          // 摘自：zip4j
-          int offsetMark = reader.offset();
-          int aesVersion = reader.readUint16(Endian.little);
-          String vendorID = reader.readString(2);
-          int aesKeyStrength = reader.readUint8();
-          int compressionMethod = reader.readUint16(Endian.little);
-          aesExtraDataRecord = AesExtraDataRecord(
-            signature: signature,
-            headerID: headerID,
-            dataSize: dataSize,
-            aesVersion: aesVersion,
-            vendorID: vendorID,
-            aesKeyStrength: aesKeyStrength,
-            compressionMethod: compressionMethod,
-          );
-          extraFields.add(aesExtraDataRecord);
-          reader.seek(offsetMark);
-          reader.skip(dataSize);
-          break;
-        default:
-          List<int> extraData = reader.read(dataSize);
-          extraFields.add(GeneralExtraField(
-            signature: signature,
-            headerID: headerID,
-            dataSize: dataSize,
-            extraData: extraData,
-          ));
-          break;
+    for (ExtraField extraField in extraFields) {
+      if (extraField is Zip64ExtendedInfo) {
+        zip64extendedInfo = extraField;
+      } else if (extraField is AesExtraDataRecord) {
+        aesExtraDataRecord = extraField;
       }
     }
     String fileComment = fileCommentLength > 0
@@ -265,50 +224,132 @@ CentralDirectory _parseCentralDirectory(FileReader reader, Encoding charset,
   );
 }
 
-//LocalFile _parseLocalFile(File file, String password, Encoding charset,
-//    FileReader reader, CentralDirectoryFileHeader fileHeader) {
-//  reader.seek(fileHeader.relativeOffsetOfLocalHeader);
-//  int signature = reader.readUint32(Endian.little);
-//  if (signature != LocalFile.headerSignature) {
-//    throw ZipException('Invalid Zip Signature');
-//  }
-//  int versionNeededToExtract = reader.readUint16(Endian.little);
-//  int generalPurposeBitFlag = reader.readUint16(Endian.little);
-//  int compressionMethod = reader.readUint16(Endian.little);
-//  int lastModFileTime = reader.readUint16(Endian.little);
-//  int lastModFileDate = reader.readUint16(Endian.little);
-//  int crc32 = reader.readUint32(Endian.little);
-//  int compressedSize = reader.readUint32(Endian.little);
-//  int uncompressedSize = reader.readUint32(Endian.little);
-//  int fileNameLength = reader.readUint16(Endian.little);
-//  int extraFieldLength = reader.readUint16(Endian.little);
-//  String fileName = reader.readString(fileNameLength, _utf8Encoded(generalPurposeBitFlag) ? utf8 : charset);
-//  reader.skip(extraFieldLength);
-//  int fileDataOffset = reader.offset();
-//  reader.skip(compressedSize);
-//  if (generalPurposeBitFlag & 0x0008 != 0x0008) {
-//    int sigOrCrc = reader.readUint32(Endian.little);
-//    if (sigOrCrc == 0x08074b50) {
-//      crc32 = reader.readUint32(Endian.little);
-//    } else {
-//      crc32 = sigOrCrc;
-//    }
-//    compressedSize = reader.readUint32(Endian.little);
-//    uncompressedSize = reader.readUint32(Endian.little);
-//  }
-//  return LocalFile(
-//    signature: signature,
-//    versionNeededToExtract: versionNeededToExtract,
-//    generalPurposeBitFlag: generalPurposeBitFlag,
-//    compressionMethod: compressionMethod,
-//    lastModFileTime: lastModFileTime,
-//    lastModFileDate: lastModFileDate,
-//    crc32: crc32,
-//    compressedSize: compressedSize,
-//    uncompressedSize: uncompressedSize,
-//    fileName: fileName,
-//    fileDataOffset: fileDataOffset,
-//    file: file,
-//    password: password,
-//  );
-//}
+List<ExtraField> _readExtraFields(FileReader reader, int extraFieldLength) {
+  List<ExtraField> extraFields = <ExtraField>[];
+  int offset = reader.offset();
+  while (reader.offset() < offset + extraFieldLength) {
+    int headerID = reader.readUint16(Endian.little);
+    int dataSize = reader.readUint16(Endian.little);
+    switch (headerID) {
+      case Zip64ExtendedInfo.headerSignature:
+        int uncompressedSize = reader.readUint64(Endian.little);
+        int compressedSize = reader.readUint64(Endian.little);
+        int offsetOfLocalHeader = reader.readUint64(Endian.little);
+        int diskNumberStart = reader.readUint32(Endian.little);
+        Zip64ExtendedInfo zip64extendedInfo = Zip64ExtendedInfo(
+          headerID: headerID,
+          dataSize: dataSize,
+          uncompressedSize: uncompressedSize,
+          compressedSize: compressedSize,
+          offsetOfLocalHeader: offsetOfLocalHeader,
+          diskNumberStart: diskNumberStart,
+        );
+        extraFields.add(zip64extendedInfo);
+        break;
+      case AesExtraDataRecord.headerSignature:
+        // 摘自：zip4j
+        int offsetMark = reader.offset();
+        int aesVersion = reader.readUint16(Endian.little);
+        String vendorID = reader.readString(2);
+        int aesKeyStrength = reader.readUint8();
+        int compressionMethod = reader.readUint16(Endian.little);
+        AesExtraDataRecord aesExtraDataRecord = AesExtraDataRecord(
+          headerID: headerID,
+          dataSize: dataSize,
+          aesVersion: aesVersion,
+          vendorID: vendorID,
+          aesKeyStrength: aesKeyStrength,
+          compressionMethod: compressionMethod,
+        );
+        extraFields.add(aesExtraDataRecord);
+        reader.seek(offsetMark);
+        reader.skip(dataSize);
+        break;
+      default:
+        List<int> extraData = reader.read(dataSize);
+        GeneralExtraField generalExtraField = GeneralExtraField(
+          headerID: headerID,
+          dataSize: dataSize,
+          extraData: extraData,
+        );
+        extraFields.add(generalExtraField);
+        break;
+    }
+  }
+  return extraFields;
+}
+
+LocalFile _parseLocalFile(
+    FileReader reader, Encoding charset, CentralDirectoryFileHeader header) {
+  reader.seek(header.offsetOfLocalHeader);
+  int signature = reader.readUint32(Endian.little);
+  if (signature != LocalFileHeader.headerSignature) {
+    throw ZipException('Invalid Zip Signature');
+  }
+  int versionNeededToExtract = reader.readUint16(Endian.little);
+  int generalPurposeBitFlag = reader.readUint16(Endian.little);
+  int compressionMethod = reader.readUint16(Endian.little);
+  int lastModFileTime = reader.readUint16(Endian.little);
+  int lastModFileDate = reader.readUint16(Endian.little);
+  int crc32 = reader.readUint32(Endian.little);
+  int compressedSize = reader.readUint32(Endian.little);
+  int uncompressedSize = reader.readUint32(Endian.little);
+  int fileNameLength = reader.readUint16(Endian.little);
+  int extraFieldLength = reader.readUint16(Endian.little);
+  String fileName = reader.readString(fileNameLength,
+      _isFileNameUTF8Encoded(generalPurposeBitFlag) ? utf8 : charset);
+  if (fileName.contains(':\\')) {
+    fileName = fileName.substring(fileName.indexOf(':\\') + 2);
+  }
+  // extra field (variable size)
+  List<ExtraField> extraFields = _readExtraFields(reader, extraFieldLength);
+  Zip64ExtendedInfo zip64extendedInfo;
+  AesExtraDataRecord aesExtraDataRecord;
+  for (ExtraField extraField in extraFields) {
+    if (extraField is Zip64ExtendedInfo) {
+      zip64extendedInfo = extraField;
+    } else if (extraField is AesExtraDataRecord) {
+      aesExtraDataRecord = extraField;
+    }
+  }
+  LocalFileHeader fileHeader = LocalFileHeader(
+    signature: signature,
+    versionNeededToExtract: versionNeededToExtract,
+    generalPurposeBitFlag: generalPurposeBitFlag,
+    compressionMethod: compressionMethod,
+    lastModFileTime: lastModFileTime,
+    lastModFileDate: lastModFileDate,
+    crc32: crc32,
+    compressedSize: compressedSize,
+    uncompressedSize: uncompressedSize,
+    fileName: fileName,
+    extraFields: extraFields,
+    zip64extendedInfo: zip64extendedInfo,
+    aesExtraDataRecord: aesExtraDataRecord,
+  );
+  int fileDataOffset = reader.offset();
+  reader.skip(header.compressedSize);
+  DataDescriptor dataDescriptor;
+  if (_isDataDescriptorExists(generalPurposeBitFlag)) {
+    int sigOrCrc = reader.readUint32(Endian.little);
+    int crc32;
+    if (sigOrCrc == DataDescriptor.extraDataRecord) {
+      crc32 = reader.readUint32(Endian.little);
+    } else {
+      crc32 = sigOrCrc;
+    }
+    int compressedSize = reader.readUint32(Endian.little);
+    int uncompressedSize = reader.readUint32(Endian.little);
+    dataDescriptor = DataDescriptor(
+      signature: sigOrCrc,
+      crc: crc32,
+      compressedSize: compressedSize,
+      uncompressedSize: uncompressedSize,
+    );
+  }
+  return LocalFile(
+    fileHeader: fileHeader,
+    fileDataOffset: fileDataOffset,
+    dataDescriptor: dataDescriptor,
+  );
+}
