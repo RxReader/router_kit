@@ -121,9 +121,9 @@ class ZipFile {
         Stream<List<int>> stream = _file.openRead(localFile.fileDataOffset, fileHeader.compressedSize);
         if (fileHeader.isEncrypted) {
           if (fileHeader.aesExtraDataRecord != null) {
-
+            // aes
           } else {
-
+            // standard
           }
         }
         if (fileHeader.compressionMethod == CompressionMethod.deflate) {
