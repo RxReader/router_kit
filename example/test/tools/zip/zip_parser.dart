@@ -16,6 +16,18 @@ bool _isFileNameUTF8Encoded(int bitFlag) {
   return (bitFlag & 0x0800) == 0x0800;
 }
 
+DateTime _parseDosTime(List<int> fileDate, List<int> fileTime) {
+  ByteData byteData = Int8List.fromList(<int>[...fileTime, ...fileDate]).buffer.asByteData();
+  int dosTime = byteData.getUint32(0, Endian.little);
+  int year = ((dosTime >> 25) & 0x7f) + 1980;
+  int month = (dosTime >> 21) & 0xf;
+  int day = (dosTime >> 16) & 0x1f;
+  int hour = (dosTime >> 11) & 0x1f;
+  int minute = (dosTime >> 5) & 0x3f;
+  int second = 2 * (dosTime & 0x1f);
+  return DateTime(year, month, day, hour, minute, second);
+}
+
 int _checkLength(FileReader reader) {
   // Error out early if the file is too short or non-existent.
   int length = reader.length();
@@ -154,8 +166,8 @@ CentralDirectory _parseCentralDirectory(FileReader reader, Encoding charset,
     int versionNeededToExtract = reader.readUint16(Endian.little);
     int generalPurposeBitFlag = reader.readUint16(Endian.little);
     int compressionMethod = reader.readUint16(Endian.little);
-    int lastModFileTime = reader.readUint16(Endian.little);
-    int lastModFileDate = reader.readUint16(Endian.little);
+    List<int> lastModFileTime = reader.read(2);
+    List<int> lastModFileDate = reader.read(2);
     int crc32 = reader.readUint32(Endian.little);
     int compressedSize = reader.readUint32(Endian.little);
     int uncompressedSize = reader.readUint32(Endian.little);
@@ -279,9 +291,9 @@ List<ExtraField> _readExtraFields(FileReader reader, int extraFieldLength) {
   return extraFields;
 }
 
-LocalFile _parseLocalFile(
-    FileReader reader, Encoding charset, CentralDirectoryFileHeader header) {
-  reader.seek(header.offsetOfLocalHeader);
+LocalFile _parseLocalFile(FileReader reader, Encoding charset,
+    CentralDirectoryFileHeader fileHeader) {
+  reader.seek(fileHeader.offsetOfLocalHeader);
   int signature = reader.readUint32(Endian.little);
   if (signature != LocalFileHeader.headerSignature) {
     throw ZipException('Invalid Zip Signature');
@@ -289,8 +301,8 @@ LocalFile _parseLocalFile(
   int versionNeededToExtract = reader.readUint16(Endian.little);
   int generalPurposeBitFlag = reader.readUint16(Endian.little);
   int compressionMethod = reader.readUint16(Endian.little);
-  int lastModFileTime = reader.readUint16(Endian.little);
-  int lastModFileDate = reader.readUint16(Endian.little);
+  List<int> lastModFileTime = reader.read(2);
+  List<int> lastModFileDate = reader.read(2);
   int crc32 = reader.readUint32(Endian.little);
   int compressedSize = reader.readUint32(Endian.little);
   int uncompressedSize = reader.readUint32(Endian.little);
@@ -312,7 +324,7 @@ LocalFile _parseLocalFile(
       aesExtraDataRecord = extraField;
     }
   }
-  LocalFileHeader fileHeader = LocalFileHeader(
+  LocalFileHeader localFileHeader = LocalFileHeader(
     signature: signature,
     versionNeededToExtract: versionNeededToExtract,
     generalPurposeBitFlag: generalPurposeBitFlag,
@@ -328,27 +340,27 @@ LocalFile _parseLocalFile(
     aesExtraDataRecord: aesExtraDataRecord,
   );
   int fileDataOffset = reader.offset();
-  reader.skip(header.compressedSize);
+  reader.skip(fileHeader.compressedSize);
   DataDescriptor dataDescriptor;
   if (_isDataDescriptorExists(generalPurposeBitFlag)) {
-    int sigOrCrc = reader.readUint32(Endian.little);
+    int sigOrCrc32 = reader.readUint32(Endian.little);
     int crc32;
-    if (sigOrCrc == DataDescriptor.extraDataRecord) {
+    if (sigOrCrc32 == DataDescriptor.extraDataRecord) {
       crc32 = reader.readUint32(Endian.little);
     } else {
-      crc32 = sigOrCrc;
+      crc32 = sigOrCrc32;
     }
     int compressedSize = reader.readUint32(Endian.little);
     int uncompressedSize = reader.readUint32(Endian.little);
     dataDescriptor = DataDescriptor(
-      signature: sigOrCrc,
+      signature: sigOrCrc32,
       crc: crc32,
       compressedSize: compressedSize,
       uncompressedSize: uncompressedSize,
     );
   }
   return LocalFile(
-    fileHeader: fileHeader,
+    localFileHeader: localFileHeader,
     fileDataOffset: fileDataOffset,
     dataDescriptor: dataDescriptor,
   );

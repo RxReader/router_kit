@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'dart:typed_data';
 
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as path;
 import '../io/file_reader.dart';
 
 part 'zip_exception.dart';
@@ -100,11 +101,29 @@ class ZipFile {
     try {
       File unzipFile = _file;
       if (isSplitArchive) {
-        unzipFile = null;
+        String extensionSubString = ".z0";
+        if (fileHeader.diskNumberStart >= 9) {
+          extensionSubString = ".z";
+        }
+        unzipFile = File('${_file.path.substring(0, _file.path.lastIndexOf('.'))}$extensionSubString${fileHeader.diskNumberStart + 1}');
       }
       reader = FileReader(unzipFile.openSync());
       LocalFile localFile = _parseLocalFile(reader, _charset, fileHeader);
+      reader.seek(localFile.fileDataOffset);
+      if (fileHeader.isDirectory) {
+        Directory destDir = Directory(path.join(destinationPath, localFile.localFileHeader.fileName));
+        if (!destDir.existsSync()) {
+          destDir.createSync(recursive: true);
+        }
+      } else {
+        File destFile = File(path.join(destinationPath, localFile.localFileHeader.fileName));
+        destFile.parent.createSync(recursive: true);
+        // unzip
 
+        DateTime lastModFileTime = _parseDosTime(fileHeader.lastModFileDate, fileHeader.lastModFileTime);
+        destFile.setLastModifiedSync(lastModFileTime);
+        destFile.setLastAccessedSync(lastModFileTime);
+      }
     } finally {
       reader?.close();
     }

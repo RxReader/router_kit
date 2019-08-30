@@ -4,8 +4,8 @@ class CompressionMethod {
   CompressionMethod._();
 
   static const int store = 0;
-  static const int deflate = 0;
-  static const int aesInternalOnly = 0;
+  static const int deflate = 8;
+  static const int aesInternalOnly = 99;
 }
 
 class AesKeyStrength {
@@ -82,12 +82,12 @@ abstract class ZipField {
 
 class LocalFile {
   LocalFile({
-    @required this.fileHeader,
+    @required this.localFileHeader,
     @required this.fileDataOffset,
     @required this.dataDescriptor,
   });
 
-  final LocalFileHeader fileHeader;
+  final LocalFileHeader localFileHeader;
   final int fileDataOffset;
   final DataDescriptor dataDescriptor;
 }
@@ -114,8 +114,8 @@ class LocalFileHeader extends ZipField {
   final int versionNeededToExtract;
   final int generalPurposeBitFlag;
   final int compressionMethod;
-  final int lastModFileTime;
-  final int lastModFileDate;
+  final List<int> lastModFileTime;
+  final List<int> lastModFileDate;
   final int crc32;
   final int compressedSize;
   final int uncompressedSize;
@@ -191,8 +191,8 @@ class CentralDirectoryFileHeader extends ZipField {
   final int versionNeededToExtract;
   final int generalPurposeBitFlag;
   final int compressionMethod;
-  final int lastModFileTime;
-  final int lastModFileDate;
+  final List<int> lastModFileTime;
+  final List<int> lastModFileDate;
   final int crc32;
   final int compressedSize;
   final int uncompressedSize;
