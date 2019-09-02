@@ -25,7 +25,7 @@ abstract class RefreshPageableListModel<T> extends Model {
     notifyListeners();
 
     List<T> newData = await onList();
-    _data = newData;
+    _data = newData ?? <T>[];
 
     _mode = null;
     notifyListeners();
@@ -37,7 +37,7 @@ abstract class RefreshPageableListModel<T> extends Model {
     notifyListeners();
 
     List<T> pageableData = await onPageable();
-    _data.addAll(pageableData);
+    _data.addAll(pageableData ?? <T>[]);
 
     _mode = null;
     notifyListeners();
@@ -49,7 +49,7 @@ abstract class RefreshPageableListModel<T> extends Model {
     notifyListeners();
 
     List<T> newData = await onRefresh();
-    _data = newData;
+    _data = newData ?? <T>[];
 
     _mode = null;
     notifyListeners();
