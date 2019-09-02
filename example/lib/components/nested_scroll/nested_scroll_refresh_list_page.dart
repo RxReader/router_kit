@@ -1,4 +1,3 @@
-import 'package:example/widgets/basic_types.dart';
 import 'package:example/widgets/refresh_pageable_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -22,14 +21,14 @@ class TestModel extends RefreshPageableListModel<String> {
   int _pageIndex = 0;
 
   @override
-  void onAnalytics(int page) {
-    super.onAnalytics(page);
+  void onScrollTo(int page) {
+    super.onScrollTo(page);
     print('page: $page');
   }
 
   @override
   bool isEnd() {
-    return _pageIndex == 9;
+    return _pageIndex >= 9;
   }
 
   @override

@@ -1,8 +1,86 @@
-import 'package:example/widgets/basic_types.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:scoped_model/scoped_model.dart';
+
+typedef SliverHeaderBuilder = Widget Function();
+typedef SliverItemBuilder<T> = Widget Function(T item);
+typedef SliverFooterBuilder = Widget Function(bool isEnd);
+
+enum _RefreshPageableListViewMode {
+  list,
+  pageable,
+  refresh,
+}
+
+abstract class RefreshPageableListModel<T> extends Model {
+  _RefreshPageableListViewMode _mode;
+  List<T> _data = <T>[];
+
+  @protected
+  Future<void> list() async {
+    _mode = _RefreshPageableListViewMode.list;
+    notifyListeners();
+
+    List<T> newData = await onList();
+    _data = newData;
+
+    _mode = null;
+    notifyListeners();
+  }
+
+  @protected
+  Future<void> pageable() async {
+    _mode = _RefreshPageableListViewMode.pageable;
+    notifyListeners();
+
+    List<T> pageableData = await onPageable();
+    _data.addAll(pageableData);
+
+    onScrollTo(1);
+    _mode = null;
+    notifyListeners();
+  }
+
+  @protected
+  Future<void> refresh() async {
+    _mode = _RefreshPageableListViewMode.refresh;
+    notifyListeners();
+
+    List<T> newData = await onRefresh();
+    _data = newData;
+
+    _mode = null;
+    notifyListeners();
+  }
+
+  List<T> getData() {
+    return _data;
+  }
+
+  bool isIdle() {
+    return _mode == null;
+  }
+
+  bool isRefresh() {
+    return _mode == _RefreshPageableListViewMode.refresh;
+  }
+
+  bool isRefreshDisable() {
+    return _mode == _RefreshPageableListViewMode.list ||
+        _mode == _RefreshPageableListViewMode.pageable;
+  }
+
+  void onScrollTo(int page) {}
+
+  Future<List<T>> onRefresh();
+
+  Future<List<T>> onList();
+
+  Future<List<T>> onPageable();
+
+  bool isEnd();
+}
 
 class RefreshPageableListView<T> extends StatefulWidget {
   const RefreshPageableListView({
@@ -30,32 +108,24 @@ class RefreshPageableListView<T> extends StatefulWidget {
   }
 }
 
-enum _RefreshPageableListViewMode {
-  list,
-  pageable,
-  refresh,
-}
-
 class _RefreshPageableListViewState<T>
     extends State<RefreshPageableListView<T>> {
-  _RefreshPageableListViewMode _mode;
-  List<T> data = <T>[];
   GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
 
   @override
   void initState() {
     super.initState();
-    _onList();
+    widget.model.list();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<RefreshPageableListModel>(
+    return ScopedModel<RefreshPageableListModel<T>>(
       model: widget.model,
-      child: ScopedModelDescendant<RefreshPageableListModel>(
+      child: ScopedModelDescendant<RefreshPageableListModel<T>>(
         builder: (BuildContext context, Widget child,
-            RefreshPageableListModel model) {
+            RefreshPageableListModel<T> model) {
           return RefreshIndicator(
             key: _refreshKey,
             child: NotificationListener<ScrollNotification>(
@@ -66,17 +136,16 @@ class _RefreshPageableListViewState<T>
                           .roundToDouble()
                           .toInt() +
                       1;
-                  widget.model.onAnalytics(page);
+                  model.onScrollTo(page);
                   if (notification.metrics.axisDirection ==
                           AxisDirection.down &&
                       notification.metrics.extentAfter == 0) {
-                    if (_mode == null && !model.isEnd()) {
-                      _onPageable(model);
+                    if (model.isIdle() && !model.isEnd()) {
+                      model.pageable();
                     }
                   }
                 }
-                if (_mode == _RefreshPageableListViewMode.list ||
-                    _mode == _RefreshPageableListViewMode.pageable) {
+                if (model.isRefreshDisable()) {
                   // 加载更多的适合，不让下拉刷新
                   return true;
                 }
@@ -85,15 +154,15 @@ class _RefreshPageableListViewState<T>
               child: CustomScrollView(
                 physics: widget.physics,
                 slivers: <Widget>[
-                  data.isNotEmpty && widget.sliverHeaderBuilder != null
+                  model.getData().isNotEmpty && widget.sliverHeaderBuilder != null
                       ? widget.sliverHeaderBuilder()
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
                         ),
-                  ...data.map((T item) {
+                  ...model.getData().map((T item) {
                     return widget.sliverItemBuilder(item);
                   }).toList(),
-                  data.isNotEmpty && widget.sliverFooterBuilder != null
+                  model.getData().isNotEmpty && widget.sliverFooterBuilder != null
                       ? widget.sliverFooterBuilder(model.isEnd())
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
@@ -102,44 +171,10 @@ class _RefreshPageableListViewState<T>
               ),
             ),
             displacement: widget.displacement,
-            onRefresh: () => _onRefresh(model),
+            onRefresh: model.refresh,
           );
         },
       ),
     );
-  }
-
-  Future<void> _onList() async {
-    setState(() {
-      _mode = _RefreshPageableListViewMode.list;
-    });
-    List<T> newData = await widget.model.onList();
-    data = newData;
-    setState(() {
-      _mode = null;
-    });
-  }
-
-  Future<void> _onPageable(RefreshPageableListModel model) async {
-    setState(() {
-      _mode = _RefreshPageableListViewMode.pageable;
-    });
-    List<T> pageableData = await model.onPageable();
-    data.addAll(pageableData);
-    setState(() {
-      widget.model.onAnalytics(1);
-      _mode = null;
-    });
-  }
-
-  Future<void> _onRefresh(RefreshPageableListModel model) async {
-    setState(() {
-      _mode = _RefreshPageableListViewMode.refresh;
-    });
-    List<T> newData = await model.onRefresh();
-    data = newData;
-    setState(() {
-      _mode = null;
-    });
   }
 }
