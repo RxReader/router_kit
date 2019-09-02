@@ -6,6 +6,7 @@ import 'package:scoped_model/scoped_model.dart';
 typedef SliverHeaderBuilder = Widget Function();
 typedef SliverItemBuilder<T> = Widget Function(T item);
 typedef SliverFooterBuilder = Widget Function(bool isEnd);
+typedef ScrollNotificationCallback = void Function(ScrollNotification notification);
 
 enum _RefreshPageableListViewMode {
   list,
@@ -37,7 +38,6 @@ abstract class RefreshPageableListModel<T> extends Model {
     List<T> pageableData = await onPageable();
     _data.addAll(pageableData);
 
-    onScrollTo(1);
     _mode = null;
     notifyListeners();
   }
@@ -71,8 +71,6 @@ abstract class RefreshPageableListModel<T> extends Model {
         _mode == _RefreshPageableListViewMode.pageable;
   }
 
-  void onScrollTo(int page) {}
-
   Future<List<T>> onRefresh();
 
   Future<List<T>> onList();
@@ -91,6 +89,7 @@ class RefreshPageableListView<T> extends StatefulWidget {
     this.sliverFooterBuilder,
     this.physics,
     this.displacement = 40.0,
+    this.notificationCallback,
   })  : assert(model != null),
         assert(sliverItemBuilder != null),
         super(key: key);
@@ -101,14 +100,15 @@ class RefreshPageableListView<T> extends StatefulWidget {
   final SliverFooterBuilder sliverFooterBuilder;
   final ScrollPhysics physics;
   final double displacement;
+  final ScrollNotificationCallback notificationCallback;
 
   @override
   State<StatefulWidget> createState() {
-    return _RefreshPageableListViewState<T>();
+    return RefreshPageableListViewState<T>();
   }
 }
 
-class _RefreshPageableListViewState<T>
+class RefreshPageableListViewState<T>
     extends State<RefreshPageableListView<T>> {
   GlobalKey<RefreshIndicatorState> _refreshKey =
       GlobalKey<RefreshIndicatorState>();
@@ -130,13 +130,10 @@ class _RefreshPageableListViewState<T>
             key: _refreshKey,
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification notification) {
+                if (widget.notificationCallback != null) {
+                  widget.notificationCallback(notification);
+                }
                 if (notification is ScrollEndNotification) {
-                  int page = (notification.metrics.pixels /
-                              _refreshKey.currentContext.size.height)
-                          .roundToDouble()
-                          .toInt() +
-                      1;
-                  model.onScrollTo(page);
                   if (notification.metrics.axisDirection ==
                           AxisDirection.down &&
                       notification.metrics.extentAfter == 0) {
@@ -146,7 +143,7 @@ class _RefreshPageableListViewState<T>
                   }
                 }
                 if (model.isRefreshDisable()) {
-                  // 加载更多的适合，不让下拉刷新
+                  // 加载更多的时候，不让下拉刷新
                   return true;
                 }
                 return false;

@@ -21,12 +21,6 @@ class TestModel extends RefreshPageableListModel<String> {
   int _pageIndex = 0;
 
   @override
-  void onScrollTo(int page) {
-    super.onScrollTo(page);
-    print('page: $page');
-  }
-
-  @override
   bool isEnd() {
     return _pageIndex >= 9;
   }
@@ -64,17 +58,20 @@ class TestModel extends RefreshPageableListModel<String> {
 
 class _NestedScrollRefreshListPageState
     extends State<NestedScrollRefreshListPage> {
+  GlobalKey<RefreshPageableListViewState> _refreshKey = GlobalKey<RefreshPageableListViewState>();
   TestModel _model;
 
   @override
   void initState() {
     super.initState();
     _model = TestModel();
+    print('page: 1');
   }
 
   @override
   Widget build(BuildContext context) {
     return RefreshPageableListView<String>(
+      key: _refreshKey,
       model: _model,
       sliverHeaderBuilder: () => SliverOverlapInjector(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
@@ -95,6 +92,16 @@ class _NestedScrollRefreshListPageState
       displacement: NestedScrollView.sliverOverlapAbsorberHandleFor(context)
               .layoutExtent +
           40.0,
+      notificationCallback: (ScrollNotification notification) {
+        if (notification is ScrollEndNotification) {
+          int page = (notification.metrics.pixels /
+                      _refreshKey.currentContext.size.height)
+                  .roundToDouble()
+                  .toInt() +
+              1;
+          print('page: $page');
+        }
+      },
     );
   }
 }
