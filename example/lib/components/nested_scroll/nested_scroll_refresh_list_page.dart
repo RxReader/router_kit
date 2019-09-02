@@ -26,11 +26,6 @@ class TestModel extends RefreshPageableListModel<String> {
   int _pageIndex = 0;
 
   @override
-  String getName() {
-    return name;
-  }
-
-  @override
   bool isEnd() {
     return _pageIndex >= 9;
   }

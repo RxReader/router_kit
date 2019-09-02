@@ -19,8 +19,6 @@ abstract class RefreshPageableListModel<T> extends Model {
   _RefreshPageableListViewMode _mode;
   List<T> _data = <T>[];
 
-  String getName();
-
   @protected
   Future<void> list() async {
     _mode = _RefreshPageableListViewMode.list;
