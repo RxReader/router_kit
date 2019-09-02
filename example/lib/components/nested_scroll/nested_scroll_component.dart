@@ -46,7 +46,7 @@ class _NestedScrollComponentState extends State<NestedScrollComponent> {
           },
           body: TabBarView(
             children: _tabs
-                .map((String name) => NestedScrollRefreshListPage())
+                .map((String name) => NestedScrollRefreshListPage(name: name,))
                 .toList(),
           ),
         ),

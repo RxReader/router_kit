@@ -65,7 +65,7 @@ class _NestedScrollRefreshListPageState
   void initState() {
     super.initState();
     _model = TestModel();
-    print('page: 1');
+    print('page: ${widget.name} - 1');
   }
 
   @override
@@ -99,7 +99,7 @@ class _NestedScrollRefreshListPageState
                   .roundToDouble()
                   .toInt() +
               1;
-          print('page: $page');
+          print('page: ${widget.name} - $page');
         }
       },
     );
