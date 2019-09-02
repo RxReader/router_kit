@@ -291,7 +291,7 @@ List<ExtraField> _readExtraFields(FileReader reader, int extraFieldLength) {
   return extraFields;
 }
 
-LocalFile _parseLocalFile(FileReader reader, Encoding charset,
+LocalFileHeader _parseLocalFileHeader(FileReader reader, Encoding charset,
     CentralDirectoryFileHeader fileHeader) {
   reader.seek(fileHeader.offsetOfLocalHeader);
   int signature = reader.readUint32(Endian.little);
@@ -339,29 +339,25 @@ LocalFile _parseLocalFile(FileReader reader, Encoding charset,
     zip64extendedInfo: zip64extendedInfo,
     aesExtraDataRecord: aesExtraDataRecord,
   );
-  int fileDataOffset = reader.offset();
-  reader.skip(fileHeader.compressedSize);
-  DataDescriptor dataDescriptor;
-  if (_isDataDescriptorExists(generalPurposeBitFlag)) {
-    int sigOrCrc32 = reader.readUint32(Endian.little);
-    int crc32;
-    if (sigOrCrc32 == DataDescriptor.extraDataRecord) {
-      crc32 = reader.readUint32(Endian.little);
-    } else {
-      crc32 = sigOrCrc32;
-    }
-    int compressedSize = reader.readUint32(Endian.little);
-    int uncompressedSize = reader.readUint32(Endian.little);
-    dataDescriptor = DataDescriptor(
-      signature: sigOrCrc32,
-      crc: crc32,
-      compressedSize: compressedSize,
-      uncompressedSize: uncompressedSize,
-    );
-  }
-  return LocalFile(
-    localFileHeader: localFileHeader,
-    fileDataOffset: fileDataOffset,
-    dataDescriptor: dataDescriptor,
-  );
+//  int fileDataOffset = reader.offset();
+//  reader.skip(fileHeader.compressedSize);
+//  DataDescriptor dataDescriptor;
+//  if (_isDataDescriptorExists(generalPurposeBitFlag)) {
+//    int sigOrCrc32 = reader.readUint32(Endian.little);
+//    int crc32;
+//    if (sigOrCrc32 == DataDescriptor.extraDataRecord) {
+//      crc32 = reader.readUint32(Endian.little);
+//    } else {
+//      crc32 = sigOrCrc32;
+//    }
+//    int compressedSize = reader.readUint32(Endian.little);
+//    int uncompressedSize = reader.readUint32(Endian.little);
+//    dataDescriptor = DataDescriptor(
+//      signature: sigOrCrc32,
+//      crc: crc32,
+//      compressedSize: compressedSize,
+//      uncompressedSize: uncompressedSize,
+//    );
+//  }
+  return localFileHeader;
 }

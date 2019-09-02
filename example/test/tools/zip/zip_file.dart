@@ -108,35 +108,52 @@ class ZipFile {
         unzipFile = File('${_file.path.substring(0, _file.path.lastIndexOf('.'))}$extensionSubString${fileHeader.diskNumberStart + 1}');
       }
       reader = FileReader(unzipFile.openSync());
-      LocalFile localFile = _parseLocalFile(reader, _charset, fileHeader);
-      reader.seek(localFile.fileDataOffset);
-      if (fileHeader.isDirectory) {
-        Directory destDir = Directory(path.join(destinationPath, localFile.localFileHeader.fileName));
-        if (!destDir.existsSync()) {
-          destDir.createSync(recursive: true);
-        }
-      } else {
-        File destFile = File(path.join(destinationPath, localFile.localFileHeader.fileName));
-        destFile.createSync(recursive: true);
-        Stream<List<int>> stream = _file.openRead(localFile.fileDataOffset, fileHeader.compressedSize);
-        if (fileHeader.isEncrypted) {
-          if (fileHeader.aesExtraDataRecord != null) {
-            // aes
-          } else {
-            // standard
-          }
-        }
-        if (fileHeader.compressionMethod == CompressionMethod.deflate) {
-          stream.transform(ZLibCodec(raw: true).decoder);
-        }
-        IOSink sink = destFile.openWrite();
-        await sink.addStream(stream);
-        await sink.flush();
-        await sink.close();
-        DateTime lastModFileTime = _parseDosTime(fileHeader.lastModFileDate, fileHeader.lastModFileTime);
-        destFile.setLastModifiedSync(lastModFileTime);
-        destFile.setLastAccessedSync(lastModFileTime);
-      }
+      LocalFileHeader localFileHeader = _parseLocalFileHeader(reader, _charset, fileHeader);
+
+
+
+//      LocalFile localFile = _parseLocalFile(reader, _charset, fileHeader);
+//      reader.seek(localFile.fileDataOffset);
+//      if (fileHeader.isDirectory) {
+//        Directory destDir = Directory(path.join(destinationPath, localFile.localFileHeader.fileName));
+//        if (!destDir.existsSync()) {
+//          destDir.createSync(recursive: true);
+//        }
+//      } else {
+//        File destFile = File(path.join(destinationPath, localFile.localFileHeader.fileName));
+//        destFile.createSync(recursive: true);
+//        int compressedSize;
+//        int compressionMethod;
+//        if (fileHeader.compressionMethod != CompressionMethod.aesInternalOnly) {
+//          compressionMethod = fileHeader.compressionMethod;
+//        } else {
+//          if (fileHeader.aesExtraDataRecord == null) {
+//            throw ZipException("AesExtraDataRecord not present in local header for aes encrypted data");
+//          }
+//          compressionMethod = fileHeader.aesExtraDataRecord.compressionMethod;
+//        }
+//        if (compressionMethod == CompressionMethod.store) {
+//
+//        }
+//        Stream<List<int>> stream = _file.openRead(localFile.fileDataOffset, fileHeader.compressedSize);
+//        if (fileHeader.isEncrypted) {
+//          if (fileHeader.aesExtraDataRecord != null) {
+//            // aes
+//          } else {
+//            // standard
+//          }
+//        }
+//        if (fileHeader.compressionMethod == CompressionMethod.deflate) {
+//          stream.transform(ZLibCodec(raw: true).decoder);
+//        }
+//        IOSink sink = destFile.openWrite();
+//        await sink.addStream(stream);
+//        await sink.flush();
+//        await sink.close();
+//        DateTime lastModFileTime = _parseDosTime(fileHeader.lastModFileDate, fileHeader.lastModFileTime);
+//        destFile.setLastModifiedSync(lastModFileTime);
+//        destFile.setLastAccessedSync(lastModFileTime);
+//      }
     } finally {
       reader?.close();
     }

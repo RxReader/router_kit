@@ -80,18 +80,6 @@ abstract class ZipField {
   final int signature;
 }
 
-class LocalFile {
-  LocalFile({
-    @required this.localFileHeader,
-    @required this.fileDataOffset,
-    @required this.dataDescriptor,
-  });
-
-  final LocalFileHeader localFileHeader;
-  final int fileDataOffset;
-  final DataDescriptor dataDescriptor;
-}
-
 class LocalFileHeader extends ZipField {
   LocalFileHeader({
     @required int signature,
