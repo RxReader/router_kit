@@ -17,8 +17,18 @@ class NestedScrollRefreshListPage extends StatefulWidget {
 }
 
 class TestModel extends RefreshPageableListModel<String> {
+  TestModel(this.name);
+
   static const int _pageSize = 10;
+
+  final String name;
+
   int _pageIndex = 0;
+
+  @override
+  String getName() {
+    return name;
+  }
 
   @override
   bool isEnd() {
@@ -27,7 +37,7 @@ class TestModel extends RefreshPageableListModel<String> {
 
   @override
   Future<List<String>> onRefresh() async {
-    print('onRefresh');
+    print('onRefresh: $name');
     await Future<void>.delayed(Duration(seconds: 10));
     _pageIndex = 0;
     List<String> result =
@@ -37,7 +47,7 @@ class TestModel extends RefreshPageableListModel<String> {
 
   @override
   Future<List<String>> onPageable() async {
-    print('onPageable: ${_pageIndex + 1}');
+    print('onPageable: $name - ${_pageIndex + 1}');
     await Future<void>.delayed(Duration(seconds: 10));
     _pageIndex++;
     List<String> result = List<String>.generate(
@@ -47,7 +57,7 @@ class TestModel extends RefreshPageableListModel<String> {
 
   @override
   Future<List<String>> onList() async {
-    print('onList');
+    print('onList: $name');
     await Future<void>.delayed(Duration(seconds: 10));
     _pageIndex = 0;
     List<String> result =
@@ -58,13 +68,14 @@ class TestModel extends RefreshPageableListModel<String> {
 
 class _NestedScrollRefreshListPageState
     extends State<NestedScrollRefreshListPage> {
-  GlobalKey<RefreshPageableListViewState> _refreshKey = GlobalKey<RefreshPageableListViewState>();
+  GlobalKey<RefreshPageableListViewState> _refreshKey =
+      GlobalKey<RefreshPageableListViewState>();
   TestModel _model;
 
   @override
   void initState() {
     super.initState();
-    _model = TestModel();
+    _model = TestModel(widget.name);
     print('page: ${widget.name} - 1');
   }
 

@@ -6,7 +6,8 @@ import 'package:scoped_model/scoped_model.dart';
 typedef SliverHeaderBuilder = Widget Function();
 typedef SliverItemBuilder<T> = Widget Function(T item);
 typedef SliverFooterBuilder = Widget Function(bool isEnd);
-typedef ScrollNotificationCallback = void Function(ScrollNotification notification);
+typedef ScrollNotificationCallback = void Function(
+    ScrollNotification notification);
 
 enum _RefreshPageableListViewMode {
   list,
@@ -17,6 +18,8 @@ enum _RefreshPageableListViewMode {
 abstract class RefreshPageableListModel<T> extends Model {
   _RefreshPageableListViewMode _mode;
   List<T> _data = <T>[];
+
+  String getName();
 
   @protected
   Future<void> list() async {
@@ -110,9 +113,6 @@ class RefreshPageableListView<T> extends StatefulWidget {
 
 class RefreshPageableListViewState<T>
     extends State<RefreshPageableListView<T>> {
-  GlobalKey<RefreshIndicatorState> _refreshKey =
-      GlobalKey<RefreshIndicatorState>();
-
   @override
   void initState() {
     super.initState();
@@ -127,7 +127,6 @@ class RefreshPageableListViewState<T>
         builder: (BuildContext context, Widget child,
             RefreshPageableListModel<T> model) {
           return RefreshIndicator(
-            key: _refreshKey,
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification notification) {
                 if (widget.notificationCallback != null) {
@@ -151,7 +150,8 @@ class RefreshPageableListViewState<T>
               child: CustomScrollView(
                 physics: widget.physics,
                 slivers: <Widget>[
-                  model.getData().isNotEmpty && widget.sliverHeaderBuilder != null
+                  model.getData().isNotEmpty &&
+                          widget.sliverHeaderBuilder != null
                       ? widget.sliverHeaderBuilder()
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
@@ -159,7 +159,8 @@ class RefreshPageableListViewState<T>
                   ...model.getData().map((T item) {
                     return widget.sliverItemBuilder(item);
                   }).toList(),
-                  model.getData().isNotEmpty && widget.sliverFooterBuilder != null
+                  model.getData().isNotEmpty &&
+                          widget.sliverFooterBuilder != null
                       ? widget.sliverFooterBuilder(model.isEnd())
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
