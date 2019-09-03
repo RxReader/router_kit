@@ -209,6 +209,7 @@ class RefreshPageableListViewState<T>
                 return false;
               },
               child: CustomScrollView(
+                scrollDirection: Axis.vertical,
                 physics: widget.physics,
                 controller: widget.controller,
                 slivers: <Widget>[
