@@ -82,12 +82,13 @@ class _NestedScrollRefreshListPageState
       sliverHeaderBuilder: () => SliverOverlapInjector(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
       ),
-      sliverItemBuilder: (List<String> items, String item) =>
-          SliverToBoxAdapter(
-        child: ListTile(
-          title: Text(item),
+      sliverItemBuilder: (List<String> items, String item) => <Widget>[
+        SliverToBoxAdapter(
+          child: ListTile(
+            title: Text(item),
+          ),
         ),
-      ),
+      ],
       physics: AlwaysScrollableScrollPhysics(),
       displacement: NestedScrollView.sliverOverlapAbsorberHandleFor(context)
               .layoutExtent +

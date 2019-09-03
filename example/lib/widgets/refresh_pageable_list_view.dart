@@ -4,7 +4,7 @@ import 'package:meta/meta.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 typedef SliverHeaderBuilder = Widget Function();
-typedef SliverItemBuilder<T> = Widget Function(List<T> items, T item);
+typedef SliverItemBuilder<T> = List<Widget> Function(List<T> items, T item);
 typedef SliverFooterBuilder = Widget Function(
     bool isEnd, bool isPageableFailure, VoidCallback onPageableRetry);
 typedef ScrollNotificationCallback = void Function(
@@ -188,21 +188,23 @@ class RefreshPageableListViewState<T>
           return RefreshIndicator(
             child: NotificationListener<ScrollNotification>(
               onNotification: (ScrollNotification notification) {
-                if (widget.notificationCallback != null) {
-                  widget.notificationCallback(notification);
-                }
-                if (notification is ScrollEndNotification) {
-                  if (notification.metrics.axisDirection ==
-                          AxisDirection.down &&
-                      notification.metrics.extentAfter == 0) {
-                    if (model.isIdle() && !model.isEnd()) {
-                      model.pageable();
+                if (notification.metrics.axis == Axis.vertical) {
+                  if (widget.notificationCallback != null) {
+                    widget.notificationCallback(notification);
+                  }
+                  if (notification is ScrollEndNotification) {
+                    if (notification.metrics.axisDirection ==
+                            AxisDirection.down &&
+                        notification.metrics.extentAfter == 0) {
+                      if (model.isIdle() && !model.isEnd()) {
+                        model.pageable();
+                      }
                     }
                   }
-                }
-                if (model.isRefreshDisable()) {
-                  // 加载更多的时候，不让下拉刷新
-                  return true;
+                  if (model.isRefreshDisable()) {
+                    // 加载更多的时候，不让下拉刷新
+                    return true;
+                  }
                 }
                 return false;
               },
@@ -216,9 +218,16 @@ class RefreshPageableListViewState<T>
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
                         ),
-                  ...model.getData().map((T item) {
-                    return widget.sliverItemBuilder(model.getData(), item);
-                  }).toList(),
+                  ...model
+                      .getData()
+                      .map((T item) {
+                        return widget.sliverItemBuilder(
+                          model.getData(),
+                          item,
+                        );
+                      })
+                      .expand((List<Widget> pairs) => pairs)
+                      .toList(),
                   model.getData().isNotEmpty &&
                           widget.sliverFooterBuilder != null
                       ? widget.sliverFooterBuilder(
