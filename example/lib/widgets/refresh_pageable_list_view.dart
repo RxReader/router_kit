@@ -3,31 +3,80 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-typedef SliverHeaderBuilder<T> = Widget Function(RefreshPageableListModel<T> model);
-typedef SliverItemBuilder<T> = Widget Function(RefreshPageableListModel<T> model, List<T> items, T item);
-typedef SliverFooterBuilder<T> = Widget Function(RefreshPageableListModel<T> model);
+typedef SliverHeaderBuilder<T> = Widget Function(
+    RefreshPageableListModel<T> model);
+typedef SliverItemBuilder<T> = Widget Function(
+    RefreshPageableListModel<T> model, List<T> items, T item);
+typedef SliverFooterBuilder<T> = Widget Function(
+    RefreshPageableListModel<T> model);
 typedef ScrollNotificationCallback = void Function(
     ScrollNotification notification);
 
+Widget _defaultSliverFooterBuilder<T>(RefreshPageableListModel<T> model) {
+  return SliverToBoxAdapter(
+    child: Builder(
+      builder: (BuildContext context) {
+        if (model.isEnd()) {
+          return Container(
+            height: 60,
+            alignment: Alignment.center,
+            child: Text('--- 我是有底线的 ---'),
+          );
+        }
+        if (model.isPageableFailure()) {
+          return GestureDetector(
+            onTap: () {
+              if (model.isIdle() && !model.isEnd()) {
+                model.pageable();
+              }
+            },
+            child: Container(
+              height: 60,
+              alignment: Alignment.center,
+              child: Text('加载失败，点击重试'),
+            ),
+          );
+        }
+        return Container(
+          height: 60,
+          alignment: Alignment.center,
+          child: SizedBox(
+            width: 24.0,
+            height: 24.0,
+            child: CircularProgressIndicator(
+              strokeWidth: 2.0,
+              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+          ),
+        );
+      },
+    ),
+  );
+}
+
 enum _RefreshPageableListViewMode {
-  list,
+  normal,
+  init,
   pageable,
+  pageableFailure,
   refresh,
 }
 
 abstract class RefreshPageableListModel<T> extends Model {
-  _RefreshPageableListViewMode _mode;
+  _RefreshPageableListViewMode _mode = _RefreshPageableListViewMode.normal;
   List<T> _data = <T>[];
 
   @protected
-  Future<void> list() async {
-    _mode = _RefreshPageableListViewMode.list;
+  Future<void> init() async {
+    _mode = _RefreshPageableListViewMode.init;
     notifyListeners();
 
-    List<T> newData = await onList();
-    _data = newData ?? <T>[];
+    try {
+      List<T> newData = await onInit();
+      _data = newData ?? <T>[];
+    } catch (e) {}
 
-    _mode = null;
+    _mode = _RefreshPageableListViewMode.normal;
     notifyListeners();
   }
 
@@ -36,47 +85,62 @@ abstract class RefreshPageableListModel<T> extends Model {
     _mode = _RefreshPageableListViewMode.pageable;
     notifyListeners();
 
-    List<T> pageableData = await onPageable();
-    _data.addAll(pageableData ?? <T>[]);
+    try {
+      List<T> pageableData = await onPageable();
+      _data.addAll(pageableData ?? <T>[]);
+      _mode = _RefreshPageableListViewMode.normal;
+    } catch (e) {
+      _mode = _RefreshPageableListViewMode.pageableFailure;
+    }
 
-    _mode = null;
     notifyListeners();
   }
 
-  @protected
   Future<void> refresh() async {
     _mode = _RefreshPageableListViewMode.refresh;
     notifyListeners();
 
-    List<T> newData = await onRefresh();
-    _data = newData ?? <T>[];
+    try {
+      List<T> newData = await onRefresh();
+      _data = newData ?? <T>[];
+    } catch (e) {}
 
-    _mode = null;
+    _mode = _RefreshPageableListViewMode.normal;
     notifyListeners();
   }
 
+  @protected
   List<T> getData() {
-    return _data;
+    return List<T>.unmodifiable(_data);
   }
 
+  @protected
   bool isIdle() {
-    return _mode == null;
+    return _mode == _RefreshPageableListViewMode.normal ||
+        _mode == _RefreshPageableListViewMode.pageableFailure;
   }
 
+  @protected
   bool isRefresh() {
     return _mode == _RefreshPageableListViewMode.refresh;
   }
 
+  @protected
+  bool isPageableFailure() {
+    return _mode == _RefreshPageableListViewMode.pageableFailure;
+  }
+
+  @protected
   bool isRefreshDisable() {
-    return _mode == _RefreshPageableListViewMode.list ||
+    return _mode == _RefreshPageableListViewMode.init ||
         _mode == _RefreshPageableListViewMode.pageable;
   }
 
-  Future<List<T>> onRefresh();
-
-  Future<List<T>> onList();
+  Future<List<T>> onInit();
 
   Future<List<T>> onPageable();
+
+  Future<List<T>> onRefresh();
 
   bool isEnd();
 }
@@ -87,9 +151,10 @@ class RefreshPageableListView<T> extends StatefulWidget {
     @required this.model,
     this.sliverHeaderBuilder,
     @required this.sliverItemBuilder,
-    this.sliverFooterBuilder,
-    this.physics,
+    this.sliverFooterBuilder = _defaultSliverFooterBuilder,
     this.displacement = 40.0,
+    this.physics,
+    this.controller,
     this.notificationCallback,
   })  : assert(model != null),
         assert(sliverItemBuilder != null),
@@ -99,8 +164,9 @@ class RefreshPageableListView<T> extends StatefulWidget {
   final SliverHeaderBuilder<T> sliverHeaderBuilder;
   final SliverItemBuilder<T> sliverItemBuilder;
   final SliverFooterBuilder<T> sliverFooterBuilder;
-  final ScrollPhysics physics;
   final double displacement;
+  final ScrollPhysics physics;
+  final ScrollController controller;
   final ScrollNotificationCallback notificationCallback;
 
   @override
@@ -114,7 +180,7 @@ class RefreshPageableListViewState<T>
   @override
   void initState() {
     super.initState();
-    widget.model.list();
+    widget.model.init();
   }
 
   @override
@@ -147,6 +213,7 @@ class RefreshPageableListViewState<T>
               },
               child: CustomScrollView(
                 physics: widget.physics,
+                controller: widget.controller,
                 slivers: <Widget>[
                   model.getData().isNotEmpty &&
                           widget.sliverHeaderBuilder != null
@@ -155,7 +222,8 @@ class RefreshPageableListViewState<T>
                           child: SizedBox.shrink(),
                         ),
                   ...model.getData().map((T item) {
-                    return widget.sliverItemBuilder(model, model.getData(), item);
+                    return widget.sliverItemBuilder(
+                        model, model.getData(), item);
                   }).toList(),
                   model.getData().isNotEmpty &&
                           widget.sliverFooterBuilder != null

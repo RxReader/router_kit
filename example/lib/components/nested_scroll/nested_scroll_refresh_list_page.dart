@@ -31,8 +31,8 @@ class TestModel extends RefreshPageableListModel<String> {
   }
 
   @override
-  Future<List<String>> onRefresh() async {
-    print('onRefresh: $name');
+  Future<List<String>> onInit() async {
+    print('onInit: $name');
     await Future<void>.delayed(Duration(seconds: 10));
     _pageIndex = 0;
     List<String> result =
@@ -51,8 +51,8 @@ class TestModel extends RefreshPageableListModel<String> {
   }
 
   @override
-  Future<List<String>> onList() async {
-    print('onList: $name');
+  Future<List<String>> onRefresh() async {
+    print('onRefresh: $name');
     await Future<void>.delayed(Duration(seconds: 10));
     _pageIndex = 0;
     List<String> result =
@@ -79,19 +79,15 @@ class _NestedScrollRefreshListPageState
     return RefreshPageableListView<String>(
       key: _refreshKey,
       model: _model,
-      sliverHeaderBuilder: (RefreshPageableListModel<String> model) => SliverOverlapInjector(
+      sliverHeaderBuilder: (RefreshPageableListModel<String> model) =>
+          SliverOverlapInjector(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
       ),
-      sliverItemBuilder: (RefreshPageableListModel<String> model, List<String> items, String item) => SliverToBoxAdapter(
+      sliverItemBuilder: (RefreshPageableListModel<String> model,
+              List<String> items, String item) =>
+          SliverToBoxAdapter(
         child: ListTile(
           title: Text(item),
-        ),
-      ),
-      sliverFooterBuilder: (RefreshPageableListModel<String> model) => SliverToBoxAdapter(
-        child: Container(
-          alignment: AlignmentDirectional.center,
-          height: kToolbarHeight,
-          child: Text(model.isEnd() ? '--- 我是有底线的 ---' : '加载中...'),
         ),
       ),
       physics: AlwaysScrollableScrollPhysics(),
