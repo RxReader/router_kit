@@ -79,19 +79,19 @@ class _NestedScrollRefreshListPageState
     return RefreshPageableListView<String>(
       key: _refreshKey,
       model: _model,
-      sliverHeaderBuilder: () => SliverOverlapInjector(
+      sliverHeaderBuilder: (RefreshPageableListModel<String> model) => SliverOverlapInjector(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
       ),
-      sliverItemBuilder: (String item) => SliverToBoxAdapter(
+      sliverItemBuilder: (RefreshPageableListModel<String> model, List<String> items, String item) => SliverToBoxAdapter(
         child: ListTile(
           title: Text(item),
         ),
       ),
-      sliverFooterBuilder: (bool isEnd) => SliverToBoxAdapter(
+      sliverFooterBuilder: (RefreshPageableListModel<String> model) => SliverToBoxAdapter(
         child: Container(
           alignment: AlignmentDirectional.center,
           height: kToolbarHeight,
-          child: Text(isEnd ? '--- 我是有底线的 ---' : '加载中...'),
+          child: Text(model.isEnd() ? '--- 我是有底线的 ---' : '加载中...'),
         ),
       ),
       physics: AlwaysScrollableScrollPhysics(),

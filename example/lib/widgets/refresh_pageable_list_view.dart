@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-typedef SliverHeaderBuilder = Widget Function();
-typedef SliverItemBuilder<T> = Widget Function(T item);
-typedef SliverFooterBuilder = Widget Function(bool isEnd);
+typedef SliverHeaderBuilder<T> = Widget Function(RefreshPageableListModel<T> model);
+typedef SliverItemBuilder<T> = Widget Function(RefreshPageableListModel<T> model, List<T> items, T item);
+typedef SliverFooterBuilder<T> = Widget Function(RefreshPageableListModel<T> model);
 typedef ScrollNotificationCallback = void Function(
     ScrollNotification notification);
 
@@ -96,9 +96,9 @@ class RefreshPageableListView<T> extends StatefulWidget {
         super(key: key);
 
   final RefreshPageableListModel<T> model;
-  final SliverHeaderBuilder sliverHeaderBuilder;
+  final SliverHeaderBuilder<T> sliverHeaderBuilder;
   final SliverItemBuilder<T> sliverItemBuilder;
-  final SliverFooterBuilder sliverFooterBuilder;
+  final SliverFooterBuilder<T> sliverFooterBuilder;
   final ScrollPhysics physics;
   final double displacement;
   final ScrollNotificationCallback notificationCallback;
@@ -150,16 +150,16 @@ class RefreshPageableListViewState<T>
                 slivers: <Widget>[
                   model.getData().isNotEmpty &&
                           widget.sliverHeaderBuilder != null
-                      ? widget.sliverHeaderBuilder()
+                      ? widget.sliverHeaderBuilder(model)
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
                         ),
                   ...model.getData().map((T item) {
-                    return widget.sliverItemBuilder(item);
+                    return widget.sliverItemBuilder(model, model.getData(), item);
                   }).toList(),
                   model.getData().isNotEmpty &&
                           widget.sliverFooterBuilder != null
-                      ? widget.sliverFooterBuilder(model.isEnd())
+                      ? widget.sliverFooterBuilder(model)
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
                         ),
