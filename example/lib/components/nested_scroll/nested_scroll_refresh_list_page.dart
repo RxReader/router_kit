@@ -79,12 +79,10 @@ class _NestedScrollRefreshListPageState
     return RefreshPageableListView<String>(
       key: _refreshKey,
       model: _model,
-      sliverHeaderBuilder: (RefreshPageableListModel<String> model) =>
-          SliverOverlapInjector(
+      sliverHeaderBuilder: () => SliverOverlapInjector(
         handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
       ),
-      sliverItemBuilder: (RefreshPageableListModel<String> model,
-              List<String> items, String item) =>
+      sliverItemBuilder: (List<String> items, String item) =>
           SliverToBoxAdapter(
         child: ListTile(
           title: Text(item),

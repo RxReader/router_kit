@@ -3,33 +3,28 @@ import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-typedef SliverHeaderBuilder<T> = Widget Function(
-    RefreshPageableListModel<T> model);
-typedef SliverItemBuilder<T> = Widget Function(
-    RefreshPageableListModel<T> model, List<T> items, T item);
-typedef SliverFooterBuilder<T> = Widget Function(
-    RefreshPageableListModel<T> model);
+typedef SliverHeaderBuilder = Widget Function();
+typedef SliverItemBuilder<T> = Widget Function(List<T> items, T item);
+typedef SliverFooterBuilder = Widget Function(
+    bool isEnd, bool isPageableFailure, VoidCallback onPageableRetry);
 typedef ScrollNotificationCallback = void Function(
     ScrollNotification notification);
 
-Widget _defaultSliverFooterBuilder<T>(RefreshPageableListModel<T> model) {
+Widget _defaultSliverFooterBuilder<T>(
+    bool isEnd, bool isPageableFailure, VoidCallback onPageableRetry) {
   return SliverToBoxAdapter(
     child: Builder(
       builder: (BuildContext context) {
-        if (model.isEnd()) {
+        if (isEnd) {
           return Container(
             height: 60,
             alignment: Alignment.center,
             child: Text('--- 我是有底线的 ---'),
           );
         }
-        if (model.isPageableFailure()) {
+        if (isPageableFailure) {
           return GestureDetector(
-            onTap: () {
-              if (model.isIdle() && !model.isEnd()) {
-                model.pageable();
-              }
-            },
+            onTap: onPageableRetry,
             child: Container(
               height: 60,
               alignment: Alignment.center,
@@ -161,9 +156,9 @@ class RefreshPageableListView<T> extends StatefulWidget {
         super(key: key);
 
   final RefreshPageableListModel<T> model;
-  final SliverHeaderBuilder<T> sliverHeaderBuilder;
+  final SliverHeaderBuilder sliverHeaderBuilder;
   final SliverItemBuilder<T> sliverItemBuilder;
-  final SliverFooterBuilder<T> sliverFooterBuilder;
+  final SliverFooterBuilder sliverFooterBuilder;
   final double displacement;
   final ScrollPhysics physics;
   final ScrollController controller;
@@ -217,17 +212,24 @@ class RefreshPageableListViewState<T>
                 slivers: <Widget>[
                   model.getData().isNotEmpty &&
                           widget.sliverHeaderBuilder != null
-                      ? widget.sliverHeaderBuilder(model)
+                      ? widget.sliverHeaderBuilder()
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
                         ),
                   ...model.getData().map((T item) {
-                    return widget.sliverItemBuilder(
-                        model, model.getData(), item);
+                    return widget.sliverItemBuilder(model.getData(), item);
                   }).toList(),
                   model.getData().isNotEmpty &&
                           widget.sliverFooterBuilder != null
-                      ? widget.sliverFooterBuilder(model)
+                      ? widget.sliverFooterBuilder(
+                          model.isEnd(),
+                          model.isPageableFailure(),
+                          () {
+                            if (model.isIdle() && !model.isEnd()) {
+                              model.pageable();
+                            }
+                          },
+                        )
                       : SliverToBoxAdapter(
                           child: SizedBox.shrink(),
                         ),
