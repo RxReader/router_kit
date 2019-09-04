@@ -1,4 +1,5 @@
 import 'package:example/components/nested_scroll/nested_scroll_refresh_list_page.dart';
+import 'package:example/components/nested_scroll/nested_scroll_refresh_list_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
@@ -16,10 +17,21 @@ class NestedScrollComponent extends StatefulWidget {
 }
 
 class _NestedScrollComponentState extends State<NestedScrollComponent> {
-  List<String> _tabs = <String>[
+  static const List<String> _tabs = <String>[
     'idea',
     'discover',
   ];
+
+  List<TestModel> _models;
+  List<PageStorageKey<String>> _scrollKeys;
+
+  @override
+  void initState() {
+    super.initState();
+    _models = _tabs.map((String name) => TestModel(name)).toList();
+    _scrollKeys =
+        _tabs.map((String name) => PageStorageKey<String>(name)).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +57,14 @@ class _NestedScrollComponentState extends State<NestedScrollComponent> {
             ];
           },
           body: TabBarView(
-            children: _tabs
-                .map((String name) => NestedScrollRefreshListPage(name: name,))
-                .toList(),
+            children: _tabs.map((String name) {
+              int index = _tabs.indexOf(name);
+              return NestedScrollRefreshListPage(
+                name: name,
+                model: _models[index],
+                scrollKey: _scrollKeys[index],
+              );
+            }).toList(),
           ),
         ),
       ),

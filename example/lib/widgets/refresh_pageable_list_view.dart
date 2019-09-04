@@ -60,6 +60,11 @@ enum _RefreshPageableListViewMode {
 abstract class RefreshPageableListModel<T> extends Model {
   _RefreshPageableListViewMode _mode = _RefreshPageableListViewMode.normal;
   List<T> _data = <T>[];
+  bool _inited = false;
+
+  bool isInited() {
+    return _inited;
+  }
 
   @protected
   Future<void> init() async {
@@ -72,6 +77,7 @@ abstract class RefreshPageableListModel<T> extends Model {
     } catch (e) {}
 
     _mode = _RefreshPageableListViewMode.normal;
+    _inited = true;
     notifyListeners();
   }
 
@@ -143,6 +149,7 @@ abstract class RefreshPageableListModel<T> extends Model {
 class RefreshPageableListView<T> extends StatefulWidget {
   const RefreshPageableListView({
     Key key,
+    this.scrollKey,
     @required this.model,
     this.sliverHeaderBuilder,
     @required this.sliverItemBuilder,
@@ -155,6 +162,7 @@ class RefreshPageableListView<T> extends StatefulWidget {
         assert(sliverItemBuilder != null),
         super(key: key);
 
+  final Key scrollKey;
   final RefreshPageableListModel<T> model;
   final SliverHeaderBuilder sliverHeaderBuilder;
   final SliverItemBuilder<T> sliverItemBuilder;
@@ -175,7 +183,9 @@ class RefreshPageableListViewState<T>
   @override
   void initState() {
     super.initState();
-    widget.model.init();
+    if (!widget.model.isInited()) {
+      widget.model.init();
+    }
   }
 
   @override
@@ -209,6 +219,7 @@ class RefreshPageableListViewState<T>
                 return false;
               },
               child: CustomScrollView(
+                key: widget.scrollKey,
                 scrollDirection: Axis.vertical,
                 physics: widget.physics,
                 controller: widget.controller,
