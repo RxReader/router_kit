@@ -213,12 +213,12 @@ class RefreshPageableListViewState<T>
                 physics: widget.physics,
                 controller: widget.controller,
                 slivers: <Widget>[
-                  model.getData().isNotEmpty &&
+                  ...(model.getData().isNotEmpty &&
                           widget.sliverHeaderBuilder != null
-                      ? widget.sliverHeaderBuilder()
-                      : SliverToBoxAdapter(
-                          child: SizedBox.shrink(),
-                        ),
+                      ? <Widget>[
+                          widget.sliverHeaderBuilder(),
+                        ]
+                      : <Widget>[]),
                   ...model
                       .getData()
                       .map((T item) {
@@ -229,20 +229,20 @@ class RefreshPageableListViewState<T>
                       })
                       .expand((List<Widget> pairs) => pairs)
                       .toList(),
-                  model.getData().isNotEmpty &&
+                  ...(model.getData().isNotEmpty &&
                           widget.sliverFooterBuilder != null
-                      ? widget.sliverFooterBuilder(
-                          model.isEnd(),
-                          model.isPageableFailure(),
-                          () {
-                            if (model.isIdle() && !model.isEnd()) {
-                              model.pageable();
-                            }
-                          },
-                        )
-                      : SliverToBoxAdapter(
-                          child: SizedBox.shrink(),
-                        ),
+                      ? <Widget>[
+                          widget.sliverFooterBuilder(
+                            model.isEnd(),
+                            model.isPageableFailure(),
+                            () {
+                              if (model.isIdle() && !model.isEnd()) {
+                                model.pageable();
+                              }
+                            },
+                          ),
+                        ]
+                      : <Widget>[]),
                 ],
               ),
             ),
