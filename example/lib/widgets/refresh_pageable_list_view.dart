@@ -76,8 +76,8 @@ abstract class RefreshPageableListModel<T> extends Model {
       _data = newData ?? <T>[];
     } catch (e) {}
 
-    _mode = _RefreshPageableListViewMode.normal;
     _inited = true;
+    _mode = _RefreshPageableListViewMode.normal;
     notifyListeners();
   }
 
