@@ -7,6 +7,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:example/components/home/home_component.dart';
 import 'package:example/components/about/about_component.dart';
+import 'package:example/components/banner/banner_component.dart';
 import 'package:example/components/login/login_component.dart';
 import 'package:example/components/nested_scroll/nested_scroll_component.dart';
 import 'package:example/components/not_found/not_found_component.dart';
@@ -20,6 +21,7 @@ class AppRouterProvider {
   static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{
     HomeComponentProvider.routeName: HomeComponentProvider.routeBuilder,
     AboutComponentProvider.routeName: AboutComponentProvider.routeBuilder,
+    BannerComponentProvider.routeName: BannerComponentProvider.routeBuilder,
     LoginComponentProvider.routeName: LoginComponentProvider.routeBuilder,
     NestedScrollComponentProvider.routeName:
         NestedScrollComponentProvider.routeBuilder,
