@@ -21,6 +21,16 @@ class _BannerComponentState extends State<BannerComponent> {
       appBar: AppBar(
         title: const Text('Banner'),
       ),
+      body: CustomScrollView(
+        slivers: <Widget>[
+          SliverToBoxAdapter(
+            child: Container(
+              height: 200,
+              color: Colors.red,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

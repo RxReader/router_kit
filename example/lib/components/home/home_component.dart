@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:example/components/banner/banner_component.dart';
 import 'package:example/components/nested_scroll/nested_scroll_component.dart';
 import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
@@ -31,6 +32,13 @@ class _HomeComponentState extends State<HomeComponent> {
       ),
       body: ListView(
         children: <Widget>[
+          ListTile(
+            title: const Text('Banner'),
+            onTap: () {
+              AppRouter.defaultRouter(context)
+                  .pushNamed(BannerComponentProvider.routeName);
+            },
+          ),
           ListTile(
             title: const Text('Payment'),
             onTap: () {
