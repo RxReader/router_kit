@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:fake_path_provider/fake_path_provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as path;
 
@@ -19,7 +19,7 @@ class CollectConsoleLogs {
 
   Future<void> print(Zone zone, String line) async {
     if (_logs == null) {
-      Directory doc = await PathProvider.getDocumentsDirectory();
+      Directory doc = await getApplicationDocumentsDirectory();
       Directory console = Directory(path.join(doc.path, 'console'));
       if (!console.existsSync()) {
         console.createSync(recursive: true);
@@ -39,7 +39,7 @@ class CollectConsoleLogs {
   }
 
   Future<List<File>> getAllLogs() async {
-    Directory doc = await PathProvider.getDocumentsDirectory();
+    Directory doc = await getApplicationDocumentsDirectory();
     Directory console = Directory(path.join(doc.path, 'console'));
     if (!console.existsSync()) {
       console.createSync(recursive: true);
