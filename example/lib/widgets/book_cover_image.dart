@@ -25,10 +25,8 @@ class BookCoverImage extends StatelessWidget {
         ],
         borderRadius: BorderRadius.circular(radius),
       ),
-      child: Material(
-        color: Colors.transparent,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(radius)),
-        clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(radius),
         child: AspectRatio(
           aspectRatio: 3 / 4,
           child: Stack(
@@ -41,7 +39,7 @@ class BookCoverImage extends StatelessWidget {
                 height: double.infinity,
               ),
               FlatButton(
-                onPressed: onTap ?? () {},
+                onPressed: onTap,
                 padding: EdgeInsets.zero,
                 child: SizedBox(
                   width: double.infinity,

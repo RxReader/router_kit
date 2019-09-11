@@ -1,3 +1,5 @@
+import 'package:example/widgets/book_cover_image.dart';
+import 'package:example/widgets/transformer_page_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
@@ -15,6 +17,29 @@ class BannerComponent extends StatefulWidget {
 }
 
 class _BannerComponentState extends State<BannerComponent> {
+  static const List<String> imageUrls = <String>[
+    'https://qcdn.zhangzhongyun.com/covers/2054.png?imageView2/0/w/300/q/75',
+    'https://qcdn.zhangzhongyun.com/covers/1513.png?imageView2/0/w/300/q/75',
+    'https://qcdn.zhangzhongyun.com/covers/4148.png?imageView2/0/w/300/q/75',
+    'https://qcdn.zhangzhongyun.com/covers/833.png?imageView2/0/w/300/q/75',
+    'https://qcdn.zhangzhongyun.com/covers/993.png?imageView2/0/w/300/q/75',
+    'https://qcdn.zhangzhongyun.com/covers/542.png?imageView2/0/w/300/q/75',
+  ];
+
+  PageController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = PageController(viewportFraction: 0.5);
+  }
+
+  @override
+  void dispose() {
+    _controller?.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,8 +50,38 @@ class _BannerComponentState extends State<BannerComponent> {
         slivers: <Widget>[
           SliverToBoxAdapter(
             child: Container(
-              height: 200,
-              color: Colors.red,
+              height: 142,
+              child: TransformerPageView(
+                controller: _controller,
+                transformer: (
+                  BuildContext context,
+                  Axis scrollDirection,
+                  bool reverse,
+                  PageMetrics metrics,
+                  int index,
+                  Widget child,
+                ) {
+                  if (metrics == null) {}
+                  return child;
+                },
+                builder: (BuildContext context, int index) {
+                  return GestureDetector(
+                    onTap: () {
+                      print('index: $index');
+                    },
+                    behavior: HitTestBehavior.opaque,
+                    child: Center(
+                      child: BookCoverImage(
+                        url: imageUrls[index],
+                        onTap: () {
+                          print('imageUrl: ${imageUrls[index]}');
+                        },
+                      ),
+                    ),
+                  );
+                },
+                childCount: imageUrls.length,
+              ),
             ),
           ),
         ],
