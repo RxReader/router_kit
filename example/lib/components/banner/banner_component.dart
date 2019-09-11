@@ -61,8 +61,20 @@ class _BannerComponentState extends State<BannerComponent> {
                   int index,
                   Widget child,
                 ) {
-                  if (metrics == null) {}
-                  return child;
+                  double scale;
+                  final int currentPage = metrics != null
+                      ? metrics.page.round()
+                      : _controller.initialPage;
+                  if (metrics != null && metrics.axis == Axis.horizontal) {
+                    double value = metrics.page - index;
+                    scale = (1 - (value.abs() * 0.4)).clamp(89.0 / 142.0, 1.0);
+                  } else {
+                    scale = index == currentPage ? 1.0 : 89.0 / 142.0;
+                  }
+                  return Transform.scale(
+                    scale: scale,//index == currentPage ? 1.0 : 0.5,
+                    child: child,
+                  );
                 },
                 builder: (BuildContext context, int index) {
                   return GestureDetector(
