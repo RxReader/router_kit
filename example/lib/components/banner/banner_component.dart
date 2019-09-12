@@ -55,16 +55,13 @@ class _BannerComponentState extends State<BannerComponent> {
                 controller: _controller,
                 transformer: (
                   BuildContext context,
-                  Axis scrollDirection,
-                  bool reverse,
-                  PageMetrics metrics,
+                  TransformInfo transformInfo,
                   int index,
                   Widget child,
                 ) {
                   double scale;
-                  final int currentPage = metrics != null
-                      ? metrics.page.round()
-                      : _controller.initialPage;
+                  final int currentPage = transformInfo.currentPage;
+                  PageMetrics metrics = transformInfo.metrics;
                   if (metrics != null && metrics.axis == Axis.horizontal) {
                     double value = metrics.page - index;
                     scale = (1 - (value.abs() * 0.4)).clamp(89.0 / 142.0, 1.0);
@@ -72,8 +69,11 @@ class _BannerComponentState extends State<BannerComponent> {
                     scale = index == currentPage ? 1.0 : 89.0 / 142.0;
                   }
                   return Transform.scale(
-                    scale: scale,//index == currentPage ? 1.0 : 0.5,
-                    child: child,
+                    scale: scale, //index == currentPage ? 1.0 : 0.5,
+                    child: IgnorePointer(
+                      ignoring: currentPage != index,
+                      child: child,
+                    ),
                   );
                 },
                 builder: (BuildContext context, int index) {

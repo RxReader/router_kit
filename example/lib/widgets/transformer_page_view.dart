@@ -2,14 +2,43 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 
-typedef Transformer = Widget Function(BuildContext context, Axis scrollDirection, bool reverse, PageMetrics metrics, int index, Widget child);
+typedef Transformer = Widget Function(
+    BuildContext context, TransformInfo transformInfo, int index, Widget child);
+
+class TransformInfo {
+  TransformInfo({
+    Axis scrollDirection,
+    bool reverse,
+    PageController controller,
+    PageMetrics metrics,
+  })  : _scrollDirection = scrollDirection,
+        _reverse = reverse,
+        _controller = controller,
+        _metrics = metrics;
+
+  final Axis _scrollDirection;
+  final bool _reverse;
+  final PageController _controller;
+  final PageMetrics _metrics;
+
+  Axis get scrollDirection => _scrollDirection;
+
+  bool get reverse => _reverse;
+
+  PageMetrics get metrics => _metrics;
+
+  int get currentPage =>
+      _metrics != null ? _metrics.page.round() : _controller.initialPage;
+}
+
+final PageController _defaultPageController = PageController();
 
 class TransformerPageView extends StatefulWidget {
-  const TransformerPageView({
+  TransformerPageView({
     Key key,
     this.scrollDirection = Axis.horizontal,
     this.reverse = false,
-    this.controller,
+    PageController controller,
     this.physics,
     this.pageSnapping = true,
     this.onPageChanged,
@@ -17,7 +46,8 @@ class TransformerPageView extends StatefulWidget {
     @required this.builder,
     @required this.childCount,
     this.dragStartBehavior = DragStartBehavior.start,
-  }) : super(key: key);
+  })  : controller = controller ?? _defaultPageController,
+        super(key: key);
 
   final Axis scrollDirection;
   final bool reverse;
@@ -69,11 +99,22 @@ class _TransformerPageViewState extends State<TransformerPageView> {
         pageSnapping: widget.pageSnapping,
         onPageChanged: widget.onPageChanged,
         childrenDelegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
+          (BuildContext context, int index) {
             return ValueListenableBuilder(
               valueListenable: _notifier,
               builder: (BuildContext context, PageMetrics value, Widget child) {
-                return widget.transformer != null ? widget.transformer(context, widget.scrollDirection, widget.reverse, value, index, child) : child;
+                return widget.transformer != null
+                    ? widget.transformer(
+                        context,
+                        TransformInfo(
+                          scrollDirection: widget.scrollDirection,
+                          reverse: widget.reverse,
+                          controller: widget.controller,
+                          metrics: value,
+                        ),
+                        index,
+                        child)
+                    : child;
               },
               child: widget.builder(context, index),
             );
