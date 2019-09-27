@@ -110,20 +110,35 @@ class _HomeComponentState extends State<HomeComponent> {
                           nativeLibrary.name.contains('armeabi-v7a'));
                 }
                 print('解压');
-                Directory nativeLibraryTempDir = await PathProvider.buildCacheDir(type: PathProvider.nativeLibrary);
-                File nativeLibraryTempFile = File(path.join(nativeLibraryTempDir.path, path.basename(targetNativeLibrary.name)));
-                if (nativeLibraryTempFile.existsSync()) {
-                  nativeLibraryTempFile.deleteSync();
+                Directory nativeLibraryDir = await PathProvider.buildFileDir(type: PathProvider.nativeLibrary);
+                File nativeLibraryFile = File(path.join(nativeLibraryDir.path, path.basename(targetNativeLibrary.name)));
+                if (nativeLibraryFile.existsSync()) {
+                  nativeLibraryFile.deleteSync();
                 }
-                nativeLibraryTempFile.createSync(recursive: true);
-                nativeLibraryTempFile.writeAsBytesSync(targetNativeLibrary.content);
+                nativeLibraryFile.createSync(recursive: true);
+                nativeLibraryFile.writeAsBytesSync(targetNativeLibrary.content);
 
-                print('替换');
-                String nativeLibraryDir = await Utils.getNativeLibraryDir();
-                Directory(nativeLibraryDir).listSync().forEach((FileSystemEntity file) => print('file: ${file.path}'));
-//                File nativeLibraryFile = File(path.join(nativeLibraryDir, path.basename(targetNativeLibrary.name)));
-//                nativeLibraryTempFile.renameSync(nativeLibraryFile.path);
-//                print('替换成功');
+//                print('替换');
+//                try {
+//                  String nativeLibraryDir = await Utils.getNativeLibraryDir();
+//                  Directory(nativeLibraryDir).listSync().forEach((FileSystemEntity file) => print('file: ${file.path}'));
+//                  File nativeLibraryFile = File(path.join(nativeLibraryDir, path.basename(targetNativeLibrary.name)));
+//                  nativeLibraryTempFile.renameSync(nativeLibraryFile.path);
+////                  print('替换成功');
+//                  showDialog<void>(context: context, builder: (BuildContext context) {
+//                    return AlertDialog(
+//                      title: Text('Hotfix'),
+//                      content: Text('Hotfix success'),
+//                    );
+//                  });
+//                } catch (e) {
+//                  showDialog<void>(context: context, builder: (BuildContext context) {
+//                    return AlertDialog(
+//                      title: Text('Hotfix'),
+//                      content: Text('Hotfix fail: ${e.toString()}'),
+//                    );
+//                  });
+//                }
               }
             },
           ),
