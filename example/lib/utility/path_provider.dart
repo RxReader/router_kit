@@ -6,8 +6,11 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class PathProvider {
+  PathProvider._();
+
   static const String api = 'api';
   static const String images = 'images';
+  static const String nativeLibrary = 'nativeLibrary';
 
   static FutureOr<Directory> buildCacheDir({
     @required String type,

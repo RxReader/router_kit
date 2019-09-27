@@ -9,7 +9,7 @@ packages:
     source: hosted
     version: "0.36.4"
   archive:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: archive
       url: "https://pub.flutter-io.cn"
@@ -155,6 +155,13 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "1.2.9"
+  device_info:
+    dependency: "direct main"
+    description:
+      name: device_info
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.4.0+2"
   fake_okhttp:
     dependency: "direct main"
     description:
@@ -313,7 +320,7 @@ packages:
     source: hosted
     version: "1.0.10"
   path:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: path
       url: "https://pub.flutter-io.cn"
@@ -529,4 +536,4 @@ packages:
     version: "2.1.16"
 sdks:
   dart: ">=2.4.0 <3.0.0"
-  flutter: ">=0.1.4 <2.0.0"
+  flutter: ">=1.5.0 <2.0.0"

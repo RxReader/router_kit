@@ -2,12 +2,18 @@
 
 A new Flutter application.
 
+## build apk
+
+```shell
+flutter build apk --target-platform android-arm,android-arm64
+```
+
 ## router_compiler
 
-````
+```shell
 flutter clean
 flutter packages pub run build_runner build --delete-conflicting-outputs
-````
+```
 
 ## Getting Started
 
