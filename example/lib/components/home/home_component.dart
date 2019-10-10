@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:archive/archive.dart';
 import 'package:device_info/device_info.dart';
 import 'package:example/components/banner/banner_component.dart';
+import 'package:example/components/html/html_component.dart';
 import 'package:example/components/nested_scroll/nested_scroll_component.dart';
 import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
@@ -71,75 +72,81 @@ class _HomeComponentState extends State<HomeComponent> {
                   .pushNamed(NestedScrollComponentProvider.routeName);
             },
           ),
-          ListTile(
-            title: const Text('Test'),
-            onTap: () async {
-              AndroidDeviceInfo deviceInfo =
-                  await DeviceInfoPlugin().androidInfo;
-              if (deviceInfo.supportedAbis != null &&
-                  deviceInfo.supportedAbis.isNotEmpty) {
-                print('读取 apk');
-                ByteData byteData =
-                    await rootBundle.load('apk/app-release.apk');
-                Uint8List bytes = byteData.buffer.asUint8List();
-                print('读取 apk 压缩信息');
-                ZipDecoder decoder = ZipDecoder();
-                Archive archive = decoder.decodeBytes(bytes);
-                print('查询 libapp.so');
-                List<ArchiveFile> nativeLibraries =
-                    archive.where((ArchiveFile file) {
-                  return file.name.startsWith('lib/') &&
-                      file.name.endsWith('/libapp.so');
-                }).toList();
-                print('匹配 abi');
-                ArchiveFile targetNativeLibrary;
-                for (String supportedAbi in deviceInfo.supportedAbis) {
-                  for (ArchiveFile nativeLibrary in nativeLibraries) {
-                    if (nativeLibrary.name.contains(supportedAbi)) {
-                      targetNativeLibrary = nativeLibrary;
-                      break;
-                    }
-                  }
-                  if (targetNativeLibrary != null) {
-                    break;
-                  }
-                }
-                if (targetNativeLibrary == null) {
-                  targetNativeLibrary = nativeLibraries.firstWhere(
-                      (ArchiveFile nativeLibrary) =>
-                          nativeLibrary.name.contains('armeabi-v7a'));
-                }
-                print('解压');
-                Directory nativeLibraryDir = await PathProvider.buildFileDir(type: PathProvider.nativeLibrary);
-                File nativeLibraryFile = File(path.join(nativeLibraryDir.path, path.basename(targetNativeLibrary.name)));
-                if (nativeLibraryFile.existsSync()) {
-                  nativeLibraryFile.deleteSync();
-                }
-                nativeLibraryFile.createSync(recursive: true);
-                nativeLibraryFile.writeAsBytesSync(targetNativeLibrary.content);
-
-//                print('替换');
-//                try {
-//                  String nativeLibraryDir = await Utils.getNativeLibraryDir();
-//                  Directory(nativeLibraryDir).listSync().forEach((FileSystemEntity file) => print('file: ${file.path}'));
-//                  File nativeLibraryFile = File(path.join(nativeLibraryDir, path.basename(targetNativeLibrary.name)));
-//                  nativeLibraryTempFile.renameSync(nativeLibraryFile.path);
-////                  print('替换成功');
-//                  showDialog<void>(context: context, builder: (BuildContext context) {
-//                    return AlertDialog(
-//                      title: Text('Hotfix'),
-//                      content: Text('Hotfix success'),
-//                    );
-//                  });
-//                } catch (e) {
-//                  showDialog<void>(context: context, builder: (BuildContext context) {
-//                    return AlertDialog(
-//                      title: Text('Hotfix'),
-//                      content: Text('Hotfix fail: ${e.toString()}'),
-//                    );
-//                  });
+//          ListTile(
+//            title: const Text('Test'),
+//            onTap: () async {
+//              AndroidDeviceInfo deviceInfo =
+//                  await DeviceInfoPlugin().androidInfo;
+//              if (deviceInfo.supportedAbis != null &&
+//                  deviceInfo.supportedAbis.isNotEmpty) {
+//                print('读取 apk');
+//                ByteData byteData =
+//                    await rootBundle.load('apk/app-release.apk');
+//                Uint8List bytes = byteData.buffer.asUint8List();
+//                print('读取 apk 压缩信息');
+//                ZipDecoder decoder = ZipDecoder();
+//                Archive archive = decoder.decodeBytes(bytes);
+//                print('查询 libapp.so');
+//                List<ArchiveFile> nativeLibraries =
+//                    archive.where((ArchiveFile file) {
+//                  return file.name.startsWith('lib/') &&
+//                      file.name.endsWith('/libapp.so');
+//                }).toList();
+//                print('匹配 abi');
+//                ArchiveFile targetNativeLibrary;
+//                for (String supportedAbi in deviceInfo.supportedAbis) {
+//                  for (ArchiveFile nativeLibrary in nativeLibraries) {
+//                    if (nativeLibrary.name.contains(supportedAbi)) {
+//                      targetNativeLibrary = nativeLibrary;
+//                      break;
+//                    }
+//                  }
+//                  if (targetNativeLibrary != null) {
+//                    break;
+//                  }
 //                }
-              }
+//                if (targetNativeLibrary == null) {
+//                  targetNativeLibrary = nativeLibraries.firstWhere(
+//                      (ArchiveFile nativeLibrary) =>
+//                          nativeLibrary.name.contains('armeabi-v7a'));
+//                }
+//                print('解压');
+//                Directory nativeLibraryDir = await PathProvider.buildFileDir(type: PathProvider.nativeLibrary);
+//                File nativeLibraryFile = File(path.join(nativeLibraryDir.path, path.basename(targetNativeLibrary.name)));
+//                if (nativeLibraryFile.existsSync()) {
+//                  nativeLibraryFile.deleteSync();
+//                }
+//                nativeLibraryFile.createSync(recursive: true);
+//                nativeLibraryFile.writeAsBytesSync(targetNativeLibrary.content);
+//
+////                print('替换');
+////                try {
+////                  String nativeLibraryDir = await Utils.getNativeLibraryDir();
+////                  Directory(nativeLibraryDir).listSync().forEach((FileSystemEntity file) => print('file: ${file.path}'));
+////                  File nativeLibraryFile = File(path.join(nativeLibraryDir, path.basename(targetNativeLibrary.name)));
+////                  nativeLibraryTempFile.renameSync(nativeLibraryFile.path);
+//////                  print('替换成功');
+////                  showDialog<void>(context: context, builder: (BuildContext context) {
+////                    return AlertDialog(
+////                      title: Text('Hotfix'),
+////                      content: Text('Hotfix success'),
+////                    );
+////                  });
+////                } catch (e) {
+////                  showDialog<void>(context: context, builder: (BuildContext context) {
+////                    return AlertDialog(
+////                      title: Text('Hotfix'),
+////                      content: Text('Hotfix fail: ${e.toString()}'),
+////                    );
+////                  });
+////                }
+//              }
+//            },
+//          ),
+          ListTile(
+            title: const Text('Html'),
+            onTap: () {
+              AppRouter.defaultRouter(context).pushNamed(HtmlComponentProvider.routeName);
             },
           ),
           ListTile(
@@ -160,15 +167,15 @@ class _HomeComponentState extends State<HomeComponent> {
               }
             },
           ),
-          Center(
-            child: Image.asset('images/launch_icon.png'),
-          ),
-          Center(
-            child: Image.asset('images/about_logo.png'),
-          ),
-          Center(
-            child: Image.asset('images/bookshelf_top.png'),
-          ),
+//          Center(
+//            child: Image.asset('images/launch_icon.png'),
+//          ),
+//          Center(
+//            child: Image.asset('images/about_logo.png'),
+//          ),
+//          Center(
+//            child: Image.asset('images/bookshelf_top.png'),
+//          ),
         ],
       ),
     );
