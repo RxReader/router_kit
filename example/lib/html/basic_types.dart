@@ -6,10 +6,6 @@ typedef CustomRender = InlineSpan Function(
   List<InlineSpan> children,
 );
 
-typedef TapLinkCallback = void Function(
-  String url,
-);
+typedef TapLinkCallback = void Function(String url);
 
-typedef TapImageCallback = void Function(
-  String source,
-);
+typedef TapImageCallback = void Function(String source);

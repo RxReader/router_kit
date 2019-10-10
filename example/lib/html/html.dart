@@ -1,4 +1,5 @@
 import 'package:example/html/basic_types.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/painting.dart';
 import 'package:html/dom.dart';
 import 'package:html/parser.dart' as parser;
@@ -41,10 +42,26 @@ class HtmlToSpannedConverter {
       }
     }
     if (node is Element) {
-
+      switch (node.localName) {
+        case 'a':
+          return _aRender(node, _parseNodes(node.nodes));
+      }
     }
     return TextSpan(text: '暂不支持');
   }
+
+  InlineSpan _aRender(Node node, List<InlineSpan> children) {
+    return TextSpan(
+      children: children,
+      recognizer: TapGestureRecognizer()
+        ..onTap = () {
+          String url = node.attributes['href'];
+          onTapLink?.call(url);
+        },
+    );
+  }
+
+
 
   List<InlineSpan> _parseNodes(List<Node> nodes) {
     return nodes.map((Node node) {
