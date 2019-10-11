@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
+import 'package:quiver/strings.dart';
 
 class Html {
   Html._();
@@ -30,7 +31,6 @@ class Html {
 }
 
 enum Leading {
-  none,
   number,
   dotted,
 }
@@ -40,10 +40,8 @@ String _convertLeading(Leading leading, int index) {
     case Leading.number:
       return '${index + 1}.';
     case Leading.dotted:
-      return '•';
-    case Leading.none:
     default:
-      return '';
+      return '•';
   }
 }
 
@@ -55,15 +53,20 @@ class HtmlParseContext {
   HtmlParseContext({
     this.fontSize,
   })  : indentLevel = 0,
-        leading = Leading.none;
+        leading = Leading.dotted;
 
   HtmlParseContext.nextContext(
     HtmlParseContext context, {
     int indentLevel,
-    this.leading = Leading.none,
+    this.leading = Leading.dotted,
     double fontSize,
   })  : indentLevel = indentLevel ?? context.indentLevel,
         fontSize = fontSize ?? context.fontSize;
+
+  HtmlParseContext.removeIndent(HtmlParseContext context)
+      : indentLevel = 0,
+        leading = context.leading,
+        fontSize = context.fontSize;
 }
 
 class HtmlToSpannedConverter {
@@ -207,8 +210,13 @@ class HtmlToSpannedConverter {
   InlineSpan _bigRender(dom.Node node, HtmlParseContext context) {
     double fontSize = context.fontSize * 1.25;
     return TextSpan(
-      children: _parseNodes(node.nodes,
-          HtmlParseContext.nextContext(context, fontSize: fontSize)),
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(
+          context,
+          fontSize: fontSize,
+        ),
+      ),
       style: TextStyle(
         fontSize: fontSize,
       ),
@@ -272,9 +280,6 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
-    String indent =
-        List<String>.generate(context.indentLevel, (int index) => '\r\r\r\r')
-            .join('');
     int index = node.parent.nodes
         .where((dom.Node node) => node is dom.Element && node.localName == 'li')
         .toList()
@@ -282,13 +287,11 @@ class HtmlToSpannedConverter {
     String leading = _convertLeading(context.leading, index);
     return TextSpan(
       children: <InlineSpan>[
-        if (index == 0) TextSpan(text: '\n'),
         WidgetSpan(
-          child: Text('$indent$leading\r\r'),
+          child: Text('$leading\r\r'),
           alignment: ui.PlaceholderAlignment.middle,
         ),
         ..._parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
-        TextSpan(text: '\n'),
       ],
     );
   }
@@ -350,9 +353,53 @@ class HtmlToSpannedConverter {
   }
 
   List<InlineSpan> _parseNodes(List<dom.Node> nodes, HtmlParseContext context) {
-    return nodes.map((dom.Node node) {
-      return _parseNode(node, context);
-    }).toList();
+    return nodes.isNotEmpty
+        ? nodes.map((dom.Node node) {
+            String indent = List<String>.generate(
+                context.indentLevel, (int index) => '\r\r\r\r').join('');
+            List<InlineSpan> children = <InlineSpan>[
+              if (isNotEmpty(indent))
+                WidgetSpan(
+                  child: Text('$indent'),
+                  alignment: ui.PlaceholderAlignment.middle,
+                ),
+              _parseNode(node, HtmlParseContext.removeIndent(context)),
+            ];
+            if (node is dom.Element && node.localName == 'li') {
+              children = <InlineSpan>[
+                TextSpan(text: '\n'),
+                ...children,
+                if (nodes.last == node) TextSpan(text: '\n'),
+              ];
+            } else if (node.parent.localName == 'ul' ||
+                node.parent.localName == 'ul') {
+              children = <InlineSpan>[
+                ...children,
+                if (nodes.last == node) TextSpan(text: '\n'),
+              ];
+              if (nodes.first == node) {
+                children = <InlineSpan>[
+                  TextSpan(text: '\n'),
+                  ...children,
+                ];
+              } else {
+                dom.Node previousNode = nodes[nodes.indexOf(node) - 1];
+                if (previousNode is dom.Element && previousNode.localName == 'li') {
+                  children = <InlineSpan>[
+                    TextSpan(text: '\n'),
+                    ...children,
+                  ];
+                }
+              }
+            }
+            return children;
+          }).reduce((List<InlineSpan> value, List<InlineSpan> element) {
+            return <InlineSpan>[
+              ...value,
+              ...element,
+            ];
+          })
+        : <InlineSpan>[];
   }
 }
 

@@ -40,7 +40,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'img_alt': '<img alt="Hello, World!" src="" />',
   'ins': '<ins>Hello, World!</ins>',
   'kbd': '<kbd>Hello, World!</kbd>',
-  'li_ul': '<ul><li>Hello</li><li>World!</li></ul>',
+  'li_ul': '<ul>xxx<li>Hello</li>xxx<li>World!</li></ul>',
   'li_ol': '<ol><li>Hello</li><li>World!</li></ol>',
   'main': '<main>Hello, World!</main>',
   'mark': '<mark>Hello, World!</mark>',
