@@ -1,9 +1,16 @@
+import 'package:example/html/html.dart';
 import 'package:flutter/painting.dart';
 import 'package:html/dom.dart' as dom;
 
 typedef CustomRender = InlineSpan Function(
   dom.Node node,
-  List<InlineSpan> children,
+  HtmlParseContext context,
+  ChildrenRender childrenRender,
+);
+
+typedef ChildrenRender = List<InlineSpan> Function(
+  List<dom.Node> nodes,
+  HtmlParseContext context,
 );
 
 typedef TapLinkCallback = void Function(
