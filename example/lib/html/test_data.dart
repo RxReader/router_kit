@@ -55,7 +55,7 @@ const Map<String, String> htmlTestData = <String, String>{
   's': '<s>Hello, World!</s>',
   'samp': '<samp>Hello, World!</samp>',
   'section': '<section>Hello, World!</section>',
-  'small': '<small>Hello, World!</small>',
+  'small': '<a>Hello, World!</a><small>Hello, World!</small>',
   'span': '<span>Hello, World!</span>',
   'strike': '<strike>Hello, World!</strike>',
   'strong': '<strong>Hello, World!</strong>',

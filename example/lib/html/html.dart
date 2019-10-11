@@ -154,6 +154,12 @@ class HtmlToSpannedConverter {
           case 'font':
             result = _fontRender(node, removeIndentContext);
             break;
+          case 'hr':
+            result = _hrRender(node, removeIndentContext);
+            break;
+          case 'img':
+            result = _imgRender(node, removeIndentContext);
+            break;
           case 'li':
             result = _liRender(node, removeIndentContext);
             break;
@@ -315,6 +321,41 @@ class HtmlToSpannedConverter {
         fontFamily: face,
       ),
     );
+  }
+
+  InlineSpan _hrRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: <InlineSpan>[
+        TextSpan(text: '\n'),
+        WidgetSpan(
+          child: Divider(
+            height: 1.0,
+            color: Colors.black38,
+          ),
+          alignment: ui.PlaceholderAlignment.middle,
+        ),
+        TextSpan(text: '\n'),
+      ],
+    );
+  }
+
+  InlineSpan _imgRender(dom.Node node, HtmlParseContext context) {
+    String src = node.attributes['src'];
+    Uri uri = isNotEmpty(src) ? Uri.tryParse(src) : null;
+    if (uri == null) {
+      return null;
+    } else {
+      return WidgetSpan(
+        child: Image(
+          image: uri.data != null && uri.data.isBase64
+              ? MemoryImage(uri.data.contentAsBytes())
+              : NetworkImage(uri.toString()),
+          height: 50,
+          width: 50,
+        ),
+        alignment: ui.PlaceholderAlignment.middle,
+      );
+    }
   }
 
   InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
