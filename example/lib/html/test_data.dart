@@ -1,5 +1,5 @@
 const Map<String, String> htmlTestData = <String, String>{
-  'a': '<a href="http://www.w3.org/">Hello, World!</a>',
+  'a': '<a href="http://www.w3.org/"><b>Hello, World!</b></a>',
   'abbr': '<abbr>HLO-WRLD</abbr>',
   'acronym': '<acronym>HW</acronym>',
   'address': '<address>123 United States, World</address>',
@@ -25,7 +25,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'dt': '<dt>Hello, World!</dt>',
   'em': '<em>Hello, World!</em>',
   'figcaption_figure': '<figure><figcaption>Hello, World!</figcaption></figure>',
-  'font': '<font size="17.0" color="red">Hello, World!</font>',
+  'font': '<font size="7" color="red">Hello, World!</font>',
   'footer': '<footer>Hello, World!</footer>',
   'h1': '<h1>Hello, World!</h1>',
   'h2': '<h2>Hello, World!</h2>',

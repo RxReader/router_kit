@@ -12,7 +12,6 @@ class Html {
   static InlineSpan fromHtml(
     String source, {
     CustomRender customRender,
-    Color linkColor,
     TapLinkCallback onTapLink,
     TapImageCallback onTapImage,
   }) {
@@ -22,17 +21,17 @@ class Html {
 }
 
 class HtmlToSpannedConverter {
-  final String source;
-  final CustomRender customRender;
-  final TapLinkCallback onTapLink;
-  final TapImageCallback onTapImage;
-
-  HtmlToSpannedConverter(
+  const HtmlToSpannedConverter(
     this.source, {
     this.customRender,
     this.onTapLink,
     this.onTapImage,
   });
+
+  final String source;
+  final CustomRender customRender;
+  final TapLinkCallback onTapLink;
+  final TapImageCallback onTapImage;
 
   InlineSpan convert() {
     dom.Document document = html_parser.parse(source);
@@ -40,8 +39,9 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _parseNode(dom.Node node) {
+    List<InlineSpan> children = _parseNodes(node.nodes);
     if (customRender != null) {
-      InlineSpan customSpan = customRender(node, _parseNodes(node.nodes));
+      InlineSpan customSpan = customRender(node, children);
       if (customSpan != null) {
         return customSpan;
       }
@@ -49,11 +49,35 @@ class HtmlToSpannedConverter {
     if (node is dom.Element) {
       switch (node.localName) {
         case 'a':
-          return _aRender(node, _parseNodes(node.nodes));
+          return _aRender(node, children);
+        case 'abbr':
+        case 'acronym':
+          return _abbrRender(node, children);
+        case 'address':
+        case 'cite':
+        case 'em':
+        case 'i':
+        case 'var':
+          return _italicRender(node, children);
+        case 'b':
+        case 'strong':
+          return _boldRender(node, children);
+        case 'big':
+          return _bigRender(node, children);
         case 'body':
-          return _bodyRender(node, _parseNodes(node.nodes));
+          return _bodyRender(node, children);
+        case 'code':
+        case 'kbd':
+        case 'samp':
+        case 'tt':
+          return _monospaceRender(node, children);
         case 'font':
-          return _fontRender(node, _parseNodes(node.nodes));
+          return _fontRender(node, children);
+        case 'ins':
+        case 'u':
+          return _underlineRender(node, children);
+        case 'small':
+          return _smallRender(node, children);
       }
     } else if (node is dom.Text) {
       return TextSpan(text: node.text);
@@ -80,23 +104,83 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _bodyRender(dom.Element node, List<InlineSpan> children) {
+  InlineSpan _abbrRender(dom.Node node, List<InlineSpan> children) {
+    return TextSpan(
+      children: children,
+      style: TextStyle(
+        decoration: TextDecoration.underline,
+        decorationStyle: TextDecorationStyle.dotted,
+      ),
+    );
+  }
+
+  InlineSpan _italicRender(dom.Node node, List<InlineSpan> children) {
+    return TextSpan(
+      children: children,
+      style: TextStyle(
+        fontStyle: FontStyle.italic,
+      ),
+    );
+  }
+
+  InlineSpan _boldRender(dom.Node node, List<InlineSpan> children) {
+    return TextSpan(
+      children: children,
+      style: TextStyle(
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  InlineSpan _bigRender(dom.Node node, List<InlineSpan> children) {
+    return RelativeSizeTextSpan(
+      proportion: 1.25,
+      children: children,
+    );
+  }
+
+  InlineSpan _bodyRender(dom.Node node, List<InlineSpan> children) {
     return TextSpan(
       children: children,
     );
   }
 
-  InlineSpan _fontRender(dom.Element node, List<InlineSpan> children) {
+  InlineSpan _monospaceRender(dom.Node node, List<InlineSpan> children) {
+    return TextSpan(
+      children: children,
+      style: TextStyle(
+        fontFamily: 'monospace',
+      ),
+    );
+  }
+
+  InlineSpan _fontRender(dom.Node node, List<InlineSpan> children) {
     String color = node.attributes['color'];
     String face = node.attributes['face'];
-    String size = node.attributes['size'];
-    return TextSpan(
+    String size = node.attributes['size']; // 1 - 7，默认：3
+    return RelativeSizeTextSpan(
+      children: children,
       style: TextStyle(
         color: _parseHtmlColor(color),
-        fontSize: double.tryParse(size),
         fontFamily: face,
       ),
+      proportion: (double.tryParse(size) ?? 3.0) / 3.0,
+    );
+  }
+
+  InlineSpan _underlineRender(dom.Node node, List<InlineSpan> children) {
+    return TextSpan(
       children: children,
+      style: TextStyle(
+        decoration: TextDecoration.underline,
+      ),
+    );
+  }
+
+  InlineSpan _smallRender(dom.Node node, List<InlineSpan> children) {
+    return RelativeSizeTextSpan(
+      children: children,
+      proportion: 0.8,
     );
   }
 

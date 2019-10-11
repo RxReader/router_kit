@@ -23,17 +23,6 @@ class _HtmlComponentState extends State<HtmlComponent> {
       appBar: AppBar(
         title: const Text('Html'),
       ),
-//      body: ListView(
-//        children: <Widget>[
-//          Column(
-//            mainAxisSize: MainAxisSize.min,
-//            children: <Widget>[
-//              Text('tag --> a'),
-//              SelectableText.rich(Html.fromHtml(htmlTestData['a'])),
-//            ],
-//          ),
-//        ],
-//      ),
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           String key = htmlTestData.keys.toList()[index];
