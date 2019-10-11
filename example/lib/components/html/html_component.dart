@@ -26,9 +26,9 @@ class _HtmlComponentState extends State<HtmlComponent> {
 //      body: Column(
 //        mainAxisSize: MainAxisSize.min,
 //        children: <Widget>[
-//          Text('tag --> bdi'),
+//          Text('tag --> q'),
 //          Text.rich(
-//            Html.fromHtml(htmlTestData['bdi'], fontSize: 14),
+//            Html.fromHtml(htmlTestData['q'], fontSize: 14),
 //            style: TextStyle(fontSize: 14),
 //          ),
 //        ],

@@ -91,73 +91,111 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _parseNode(dom.Node node, HtmlParseContext context) {
-    if (customRender != null) {
-      InlineSpan customSpan = customRender(node, context, _parseNodes);
-      if (customSpan != null) {
-        return customSpan;
+    HtmlParseContext removeIndentContext =
+        HtmlParseContext.removeIndent(context);
+    InlineSpan result =
+        customRender?.call(node, removeIndentContext, _parseNodes);
+    if (result == null) {
+      if (node is dom.Element) {
+        switch (node.localName) {
+          case 'a':
+            result = _aRender(node, removeIndentContext);
+            break;
+          case 'abbr':
+          case 'acronym':
+            result = _abbrRender(node, removeIndentContext);
+            break;
+          case 'address':
+          case 'cite':
+          case 'em':
+          case 'i':
+          case 'var':
+            result = _italicRender(node, removeIndentContext);
+            break;
+          case 'b':
+          case 'strong':
+            result = _boldRender(node, removeIndentContext);
+            break;
+          case 'bdi':
+          case 'data':
+          case 'rp':
+          case 'rt':
+          case 'ruby':
+          case 'span':
+          case 'time':
+            result = _containerRender(node, removeIndentContext);
+            break;
+          case 'big':
+            result = _bigRender(node, removeIndentContext);
+            break;
+          case 'blockquote':
+            result = _blockquoteRender(node, removeIndentContext);
+            break;
+          case 'body':
+            result = _containerRender(node, removeIndentContext);
+            break;
+          case 'br':
+            result = _brRender(node, removeIndentContext);
+            break;
+          case 'caption':
+            result = _containerRender(node, removeIndentContext);
+            break;
+          case 'code':
+          case 'kbd':
+          case 'samp':
+          case 'tt':
+            result = _monospaceRender(node, removeIndentContext);
+            break;
+          case 'del':
+          case 's':
+          case 'strike':
+            result = _strikeRender(node, removeIndentContext);
+            break;
+          case 'font':
+            result = _fontRender(node, removeIndentContext);
+            break;
+          case 'li':
+            result = _liRender(node, removeIndentContext);
+            break;
+          case 'ins':
+          case 'u':
+            result = _underlineRender(node, removeIndentContext);
+            break;
+          case 'mark':
+            result = _markRender(node, removeIndentContext);
+            break;
+          case 'ol':
+            result = _olRender(node, removeIndentContext);
+            break;
+          case 'q':
+            result = _qRender(node, removeIndentContext);
+            break;
+          case 'small':
+            result = _smallRender(node, removeIndentContext);
+            break;
+          case 'ul':
+            result = _ulRender(node, removeIndentContext);
+            break;
+        }
+      } else if (node is dom.Text) {
+        result = TextSpan(text: node.text);
       }
     }
-    if (node is dom.Element) {
-      switch (node.localName) {
-        case 'a':
-          return _aRender(node, context);
-        case 'abbr':
-        case 'acronym':
-          return _abbrRender(node, context);
-        case 'address':
-        case 'cite':
-        case 'em':
-        case 'i':
-        case 'var':
-          return _italicRender(node, context);
-        case 'b':
-        case 'strong':
-          return _boldRender(node, context);
-        case 'bdi':
-        case 'data':
-        case 'rp':
-        case 'rt':
-        case 'ruby':
-        case 'span':
-        case 'time':
-          return _containerRender(node, context);
-        case 'big':
-          return _bigRender(node, context);
-        case 'blockquote':
-          return _blockquoteRender(node, context);
-        case 'body':
-          return _containerRender(node, context);
-        case 'br':
-          return _brRender(node, context);
-        case 'code':
-        case 'kbd':
-        case 'samp':
-        case 'tt':
-          return _monospaceRender(node, context);
-        case 'del':
-        case 's':
-        case 'strike':
-          return _strikeRender(node, context);
-        case 'font':
-          return _fontRender(node, context);
-        case 'li':
-          return _liRender(node, context);
-        case 'ol':
-          return _olRender(node, context);
-        case 'ins':
-        case 'u':
-          return _underlineRender(node, context);
-        case 'mark':
-          return _markRender(node, context);
-        case 'small':
-          return _smallRender(node, context);
-        case 'ul':
-          return _ulRender(node, context);
-      }
-    } else if (node is dom.Text) {
-      return TextSpan(text: node.text);
+    if (result == null) {
+      result = TextSpan(text: '暂不支持');
     }
-    return TextSpan(text: '暂不支持');
+    String indent = List<String>.generate(
+      context.indentLevel,
+      (int index) => '\r\r\r\r',
+    ).join('');
+    return TextSpan(children: <InlineSpan>[
+      if (isNotEmpty(indent))
+        WidgetSpan(
+          child: Text('$indent'),
+          alignment: ui.PlaceholderAlignment.middle,
+        ),
+      result,
+    ]);
   }
 
   InlineSpan _aRender(dom.Node node, HtmlParseContext context) {
@@ -296,19 +334,6 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _olRender(dom.Node node, HtmlParseContext context) {
-    return TextSpan(
-      children: _parseNodes(
-        node.nodes,
-        HtmlParseContext.nextContext(
-          context,
-          indentLevel: context.indentLevel + 1,
-          leading: Leading.number,
-        ),
-      ),
-    );
-  }
-
   InlineSpan _underlineRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
@@ -325,6 +350,32 @@ class HtmlToSpannedConverter {
         color: _htmlColorNameMap['black'],
         backgroundColor: _htmlColorNameMap['yellow'],
       ),
+    );
+  }
+
+  InlineSpan _olRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(
+          context,
+          indentLevel: context.indentLevel + 1,
+          leading: Leading.number,
+        ),
+      ),
+    );
+  }
+
+  InlineSpan _qRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: <InlineSpan>[
+        TextSpan(text: '"'),
+        ..._parseNodes(
+          node.nodes,
+          HtmlParseContext.nextContext(context),
+        ),
+        TextSpan(text: '"'),
+      ],
     );
   }
 
@@ -356,17 +407,8 @@ class HtmlToSpannedConverter {
       List<dom.Node> nodes, HtmlParseContext nextContext) {
     return nodes.isNotEmpty
         ? nodes.map((dom.Node node) {
-            String indent = List<String>.generate(
-              nextContext.indentLevel,
-              (int index) => '\r\r\r\r',
-            ).join('');
             List<InlineSpan> children = <InlineSpan>[
-              if (isNotEmpty(indent))
-                WidgetSpan(
-                  child: Text('$indent'),
-                  alignment: ui.PlaceholderAlignment.middle,
-                ),
-              _parseNode(node, HtmlParseContext.removeIndent(nextContext)),
+              _parseNode(node, nextContext),
             ];
             if (node is dom.Element && node.localName == 'li') {
               children = <InlineSpan>[
