@@ -112,6 +112,10 @@ class HtmlToSpannedConverter {
           case 'var':
             result = _italicRender(node, removeIndentContext);
             break;
+          case 'article':
+            break;
+          case 'aside':
+            break;
           case 'b':
           case 'strong':
             result = _boldRender(node, removeIndentContext);
@@ -146,13 +150,33 @@ class HtmlToSpannedConverter {
           case 'tt':
             result = _monospaceRender(node, removeIndentContext);
             break;
+          case 'center':
+            break;
           case 'del':
           case 's':
           case 'strike':
             result = _strikeRender(node, removeIndentContext);
             break;
+          case 'div':
+            break;
           case 'font':
             result = _fontRender(node, removeIndentContext);
+            break;
+          case 'footer':
+            break;
+          case 'h1':
+            break;
+          case 'h2':
+            break;
+          case 'h3':
+            break;
+          case 'h4':
+            break;
+          case 'h5':
+            break;
+          case 'h6':
+            break;
+          case 'header':
             break;
           case 'hr':
             result = _hrRender(node, removeIndentContext);
@@ -173,14 +197,22 @@ class HtmlToSpannedConverter {
           case 'ol':
             result = _olRender(node, removeIndentContext);
             break;
+          case 'p':
+            break;
           case 'q':
             result = _qRender(node, removeIndentContext);
             break;
           case 'small':
             result = _smallRender(node, removeIndentContext);
             break;
+          case 'sub':
+            break;
+          case 'sup':
+            break;
           case 'ul':
             result = _ulRender(node, removeIndentContext);
+            break;
+          case 'video':
             break;
         }
       } else if (node is dom.Text) {
@@ -345,14 +377,18 @@ class HtmlToSpannedConverter {
     if (uri == null) {
       return null;
     } else {
+      Image image;
+      if (uri.data != null && uri.data.isBase64) {
+        image = Image(
+          image: MemoryImage(uri.data.contentAsBytes()),
+        );
+      } else {
+        image = Image(
+          image: null,
+        );
+      }
       return WidgetSpan(
-        child: Image(
-          image: uri.data != null && uri.data.isBase64
-              ? MemoryImage(uri.data.contentAsBytes())
-              : NetworkImage(uri.toString()),
-          height: 50,
-          width: 50,
-        ),
+        child: image,
         alignment: ui.PlaceholderAlignment.middle,
       );
     }
