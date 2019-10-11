@@ -36,7 +36,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'header': '<header>Hello, World!</header>',
   'hr': '<div>Hello</div><hr /><div>World!</div>',
   'i': '<i>Hello, World!</i>',
-  'img': '<img alt="Hello, World!" src="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_272x92dp.png" />',
+  'img': '<img alt="Hello, World!" src="https://www.baidu.com/img/bd_logo1.png?where=super" />',
   'img_alt': '<img alt="Hello, World!" src="" />',
   'ins': '<ins>Hello, World!</ins>',
   'kbd': '<kbd>Hello, World!</kbd>',
