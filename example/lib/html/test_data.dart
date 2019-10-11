@@ -8,7 +8,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'b': '<b>Hello, World!</b>',
   'bdi': '<bdi>Hello, World!</bdi>',
   'bdo': '<bdo>Hello, World!</bdo>',
-  'big': '<big>Hello, World!</big>',
+  'big': '<big>Hello, World!<big>Hello, World!</big></big>',
   'blockquote': '<blockquote>Hello, World!</blockquote>',
   'body': '<body>Hello, World!</body>',
   'br': '<span>Hello,<br />World!</span>',

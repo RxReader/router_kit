@@ -31,7 +31,10 @@ class _HtmlComponentState extends State<HtmlComponent> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text('tag --> $key'),
-              SelectableText.rich(Html.fromHtml(value)),
+              SelectableText.rich(
+                Html.fromHtml(value, fontSize: 14),
+                style: TextStyle(fontSize: 14),
+              ),
             ],
           );
         },
