@@ -37,12 +37,13 @@ enum Leading {
 
 String _convertLeading(Leading leading, int index) {
   switch (leading) {
-    case Leading.none:
-      return '';
     case Leading.number:
       return '${index + 1}.';
     case Leading.dotted:
       return '•';
+    case Leading.none:
+    default:
+      return '';
   }
 }
 
@@ -269,13 +270,14 @@ class HtmlToSpannedConverter {
   InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: <InlineSpan>[
+        if (context.index == 0) TextSpan(text: '\n'),
         WidgetSpan(
           child: Text(
               '${List<String>.generate(context.indentLevel, (int index) => '\r\r\r\r').join('')}${_convertLeading(context.leading, context.index)}\r\r'),
           alignment: ui.PlaceholderAlignment.middle,
         ),
         ..._parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
-        TextSpan(text: '\n'),
+        TextSpan(text: '\n')
       ],
     );
   }
