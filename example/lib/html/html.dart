@@ -352,18 +352,21 @@ class HtmlToSpannedConverter {
     );
   }
 
-  List<InlineSpan> _parseNodes(List<dom.Node> nodes, HtmlParseContext context) {
+  List<InlineSpan> _parseNodes(
+      List<dom.Node> nodes, HtmlParseContext nextContext) {
     return nodes.isNotEmpty
         ? nodes.map((dom.Node node) {
             String indent = List<String>.generate(
-                context.indentLevel, (int index) => '\r\r\r\r').join('');
+              nextContext.indentLevel,
+              (int index) => '\r\r\r\r',
+            ).join('');
             List<InlineSpan> children = <InlineSpan>[
               if (isNotEmpty(indent))
                 WidgetSpan(
                   child: Text('$indent'),
                   alignment: ui.PlaceholderAlignment.middle,
                 ),
-              _parseNode(node, HtmlParseContext.removeIndent(context)),
+              _parseNode(node, HtmlParseContext.removeIndent(nextContext)),
             ];
             if (node is dom.Element && node.localName == 'li') {
               children = <InlineSpan>[
@@ -384,7 +387,8 @@ class HtmlToSpannedConverter {
                 ];
               } else {
                 dom.Node previousNode = nodes[nodes.indexOf(node) - 1];
-                if (previousNode is dom.Element && previousNode.localName == 'li') {
+                if (previousNode is dom.Element &&
+                    previousNode.localName == 'li') {
                   children = <InlineSpan>[
                     TextSpan(text: '\n'),
                     ...children,
