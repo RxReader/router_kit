@@ -48,15 +48,13 @@ String _convertLeading(Leading leading, int index) {
 }
 
 class HtmlParseContext {
-  final int index;
   final int indentLevel;
   final Leading leading;
   final double fontSize;
 
   HtmlParseContext({
     this.fontSize,
-  })  : index = 0,
-        indentLevel = 0,
+  })  : indentLevel = 0,
         leading = Leading.none;
 
   HtmlParseContext.nextContext(
@@ -64,16 +62,8 @@ class HtmlParseContext {
     int indentLevel,
     this.leading = Leading.none,
     double fontSize,
-  })  : index = 0,
-        indentLevel = indentLevel ?? context.indentLevel,
+  })  : indentLevel = indentLevel ?? context.indentLevel,
         fontSize = fontSize ?? context.fontSize;
-
-  HtmlParseContext.indexContext(
-    HtmlParseContext context, {
-    this.index = 0,
-  })  : indentLevel = context.indentLevel,
-        leading = context.leading,
-        fontSize = context.fontSize;
 }
 
 class HtmlToSpannedConverter {
@@ -120,12 +110,22 @@ class HtmlToSpannedConverter {
         case 'b':
         case 'strong':
           return _boldRender(node, context);
+        case 'bdi':
+        case 'data':
+        case 'rp':
+        case 'rt':
+        case 'ruby':
+        case 'span':
+        case 'time':
+          return _containerRender(node, context);
         case 'big':
           return _bigRender(node, context);
         case 'blockquote':
           return _blockquoteRender(node, context);
         case 'body':
-          return _bodyRender(node, context);
+          return _containerRender(node, context);
+        case 'br':
+          return _brRender(node, context);
         case 'code':
         case 'kbd':
         case 'samp':
@@ -227,10 +227,14 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _bodyRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _containerRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
     );
+  }
+
+  InlineSpan _brRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(text: '\n');
   }
 
   InlineSpan _monospaceRender(dom.Node node, HtmlParseContext context) {
@@ -268,16 +272,23 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
+    String indent =
+        List<String>.generate(context.indentLevel, (int index) => '\r\r\r\r')
+            .join('');
+    int index = node.parent.nodes
+        .where((dom.Node node) => node is dom.Element && node.localName == 'li')
+        .toList()
+        .indexOf(node);
+    String leading = _convertLeading(context.leading, index);
     return TextSpan(
       children: <InlineSpan>[
-        if (context.index == 0) TextSpan(text: '\n'),
+        if (index == 0) TextSpan(text: '\n'),
         WidgetSpan(
-          child: Text(
-              '${List<String>.generate(context.indentLevel, (int index) => '\r\r\r\r').join('')}${_convertLeading(context.leading, context.index)}\r\r'),
+          child: Text('$indent$leading\r\r'),
           alignment: ui.PlaceholderAlignment.middle,
         ),
         ..._parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
-        TextSpan(text: '\n')
+        TextSpan(text: '\n'),
       ],
     );
   }
@@ -340,8 +351,7 @@ class HtmlToSpannedConverter {
 
   List<InlineSpan> _parseNodes(List<dom.Node> nodes, HtmlParseContext context) {
     return nodes.map((dom.Node node) {
-      return _parseNode(node,
-          HtmlParseContext.indexContext(context, index: nodes.indexOf(node)));
+      return _parseNode(node, context);
     }).toList();
   }
 }

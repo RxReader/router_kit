@@ -23,38 +23,33 @@ class _HtmlComponentState extends State<HtmlComponent> {
       appBar: AppBar(
         title: const Text('Html'),
       ),
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Text('tag --> li_ul'),
-          Text.rich(
-            Html.fromHtml(htmlTestData['li_ul'], fontSize: 14),
-            style: TextStyle(fontSize: 14),
-          ),
-          Text('tag --> li_ol'),
-          Text.rich(
-            Html.fromHtml(htmlTestData['li_ol'], fontSize: 14),
-            style: TextStyle(fontSize: 14),
-          ),
-        ],
-      ),
-//      body: ListView.builder(
-//        itemBuilder: (BuildContext context, int index) {
-//          String key = htmlTestData.keys.toList()[index];
-//          String value = htmlTestData[key];
-//          return Column(
-//            mainAxisSize: MainAxisSize.min,
-//            children: <Widget>[
-//              Text('tag --> $key'),
-//              Text.rich(
-//                Html.fromHtml(value, fontSize: 14),
-//                style: TextStyle(fontSize: 14),
-//              ),
-//            ],
-//          );
-//        },
-//        itemCount: htmlTestData.keys.toList().length,
+//      body: Column(
+//        mainAxisSize: MainAxisSize.min,
+//        children: <Widget>[
+//          Text('tag --> bdi'),
+//          Text.rich(
+//            Html.fromHtml(htmlTestData['bdi'], fontSize: 14),
+//            style: TextStyle(fontSize: 14),
+//          ),
+//        ],
 //      ),
+      body: ListView.builder(
+        itemBuilder: (BuildContext context, int index) {
+          String key = htmlTestData.keys.toList()[index];
+          String value = htmlTestData[key];
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Text('tag --> $key'),
+              Text.rich(
+                Html.fromHtml(value, fontSize: 14),
+                style: TextStyle(fontSize: 14),
+              ),
+            ],
+          );
+        },
+        itemCount: htmlTestData.keys.toList().length,
+      ),
     );
   }
 }
