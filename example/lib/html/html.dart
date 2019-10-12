@@ -8,6 +8,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
+import 'package:quiver/strings.dart';
 
 class Html {
   Html._();
@@ -207,15 +208,15 @@ class HtmlToSpannedConverter {
             result = _videoRender(removeIndentContext, node);
             break;
         }
+        if (result == null) {
+          result = TextSpan(
+            text:
+                '暂不支持(${node is dom.Element ? node.localName : '${node.runtimeType}'})',
+          );
+        }
       } else if (node is dom.Text) {
         result = _parseText(removeIndentContext, node);
       }
-    }
-    if (result == null) {
-      result = TextSpan(
-        text:
-            '暂不支持(${node is dom.Element ? node.localName : '${node.runtimeType}'})',
-      );
     }
     return result;
   }
@@ -242,9 +243,9 @@ class HtmlToSpannedConverter {
         }
       }
     }
-    return TextSpan(
+    return isNotEmpty(finalText) ? TextSpan(
       text: finalText,
-    );
+    ) : null;
   }
 
   String _condenseHtmlWhitespace(String stringToTrim) {
@@ -259,7 +260,7 @@ class HtmlToSpannedConverter {
       HtmlParseContext nextContext, List<dom.Node> nodes) {
     return nodes.map((dom.Node node) {
       return _parseNode(nextContext, node);
-    }).toList();
+    }).where((InlineSpan span) => span != null).toList();
   }
 
   InlineSpan _bodyRender(HtmlParseContext context, dom.Node node) {
