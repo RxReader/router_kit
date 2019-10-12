@@ -103,13 +103,14 @@ class HtmlToSpannedConverter {
             result = _bigRender(node, removeIndentContext);
             break;
           case 'blockquote':
+            // like block
 //            result = _blockquoteRender(node, removeIndentContext);
             break;
           case 'body':
             result = _containerRender(node, removeIndentContext);
             break;
           case 'br':
-//            result = _brRender(node, removeIndentContext);
+            result = _brRender(node, removeIndentContext);
             break;
           case 'center':
 //            result = _centerRender(node, removeIndentContext);
@@ -164,6 +165,7 @@ class HtmlToSpannedConverter {
             result = _markRender(node, removeIndentContext);
             break;
           case 'ol':
+            // like block
 //            result = _olRender(node, removeIndentContext);
             break;
           case 'p':
@@ -178,6 +180,7 @@ class HtmlToSpannedConverter {
             result = _supRender(node, removeIndentContext);
             break;
           case 'ul':
+            // like block
 //            result = _ulRender(node, removeIndentContext);
             break;
           case 'video':
@@ -186,14 +189,14 @@ class HtmlToSpannedConverter {
       } else if (node is dom.Text) {
         result = TextSpan(
           text: node.text,
-          style: context.textStyle,
+//          style: context.textStyle,
         );
       }
     }
     if (result == null) {
       result = TextSpan(
         text: '暂不支持',
-        style: context.textStyle,
+//        style: context.textStyle,
       );
     }
     return result;
@@ -212,6 +215,7 @@ class HtmlToSpannedConverter {
         node.nodes,
         HtmlParseContext.nextContext(context),
       ),
+      style: context.textStyle,
     );
   }
 
@@ -229,6 +233,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
       recognizer: TapGestureRecognizer()
         ..onTap = () {
           String target = node.attributes['target'];
@@ -253,6 +258,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -268,6 +274,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -283,6 +290,14 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
+    );
+  }
+
+  InlineSpan _brRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      text: '\n',
+      style: context.textStyle,
     );
   }
 
@@ -298,6 +313,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -313,6 +329,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -336,6 +353,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -385,7 +403,10 @@ class HtmlToSpannedConverter {
                     Icons.image,
                     color: _htmlColorNameMap['gray'],
                   ),
-                  Text(alt ?? ''),
+                  Text.rich(TextSpan(
+                    text: alt ?? '',
+                    style: context.textStyle,
+                  )),
                 ],
               ),
             ),
@@ -437,6 +458,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -452,6 +474,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -467,6 +490,7 @@ class HtmlToSpannedConverter {
           textStyle: textStyle,
         ),
       ),
+      style: textStyle,
     );
   }
 
@@ -485,6 +509,7 @@ class HtmlToSpannedConverter {
       children: children,
       child: Text.rich(TextSpan(
         children: children,
+        style: textStyle,
       )),
       alignment: ui.PlaceholderAlignment.bottom,
     );
@@ -505,6 +530,7 @@ class HtmlToSpannedConverter {
       children: children,
       child: Text.rich(TextSpan(
         children: children,
+        style: textStyle,
       )),
       alignment: ui.PlaceholderAlignment.top,
     );
