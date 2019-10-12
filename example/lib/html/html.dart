@@ -155,7 +155,7 @@ class HtmlToSpannedConverter {
           case 'h5':
           case 'h6':
             // block
-            result = _h1to6Render(node, removeIndentContext,
+            result = _h1toh6Render(node, removeIndentContext,
                 int.tryParse(node.localName.substring(1)) ?? 6);
             break;
           case 'hr':
@@ -419,21 +419,49 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _h1to6Render(dom.Node node, HtmlParseContext context, int level) {
+  InlineSpan _h1toh6Render(dom.Node node, HtmlParseContext context, int level) {
 //    String style = node.attributes['style'];
+    String align = node.attributes['align'];
+    TextAlign textAlign;
+    switch (align) {
+      case 'center':
+        textAlign = TextAlign.center;
+        break;
+      case 'right':
+        textAlign = TextAlign.right;
+        break;
+      case 'justify':
+        textAlign = TextAlign.justify;
+        break;
+      case 'left':
+      default:
+        textAlign = TextAlign.left;
+        break;
+    }
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: context.textStyle.fontSize * (1.0 + (6 - level) / 10),
     ));
-    return TextSpan(
-      children: _parseNodes(
-        node.nodes,
-        HtmlParseContext.nextContext(
-          context,
-          textStyle: textStyle,
+    List<InlineSpan> children = _parseNodes(
+      node.nodes,
+      HtmlParseContext.nextContext(
+        context,
+        textStyle: textStyle,
+      ),
+    );
+    return PlainTextWidgetSpan(
+      children: children,
+      child: SizedBox(
+        width: double.infinity,
+        child: Text.rich(
+          TextSpan(
+            children: children,
+            style: textStyle,
+          ),
+          textAlign: textAlign,
         ),
       ),
-      style: textStyle,
+      alignment: ui.PlaceholderAlignment.middle,
     );
   }
 

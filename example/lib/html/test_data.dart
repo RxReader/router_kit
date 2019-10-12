@@ -22,7 +22,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'footer': '<footer>Hello, World!</footer>',
   'h1': '<h1>Hello, World!</h1>',
   'h2': '<h2>Hello, World!</h2>',
-  'h3': '<h3>Hello, World!</h3>',
+  'h3': '<h3 align="center">Hello, World!</h3>',
   'h4': '<h4>Hello, World!</h4>',
   'h5': '<h5>Hello, World!</h5>',
   'h6': '<h6>Hello, World!</h6>',
