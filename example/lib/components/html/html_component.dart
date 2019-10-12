@@ -41,9 +41,12 @@ class _HtmlComponentState extends State<HtmlComponent> {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               Text('tag --> $key'),
-              Text.rich(
-                Html.fromHtml(value, fontSize: 14),
-                style: TextStyle(fontSize: 14),
+              SizedBox(
+                width: double.infinity,
+                child: Text.rich(
+                  Html.fromHtml(value, fontSize: 14),
+                  style: TextStyle(fontSize: 14),
+                ),
               ),
             ],
           );

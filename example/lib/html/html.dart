@@ -5,6 +5,7 @@ import 'package:example/html/basic_types.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
+import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 import 'package:quiver/strings.dart';
@@ -113,8 +114,10 @@ class HtmlToSpannedConverter {
             result = _italicRender(node, removeIndentContext);
             break;
           case 'article':
+            result = _containerRender(node, removeIndentContext);
             break;
           case 'aside':
+            result = _containerRender(node, removeIndentContext);
             break;
           case 'b':
           case 'strong':
@@ -151,6 +154,7 @@ class HtmlToSpannedConverter {
             result = _monospaceRender(node, removeIndentContext);
             break;
           case 'center':
+            result = _centerRender(node, removeIndentContext);
             break;
           case 'del':
           case 's':
@@ -330,6 +334,17 @@ class HtmlToSpannedConverter {
     );
   }
 
+  /// TODO
+  InlineSpan _centerRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: <InlineSpan>[
+        TextSpan(text: '\n'),
+        ..._parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
+        TextSpan(text: '\n'),
+      ],
+    );
+  }
+
   InlineSpan _strikeRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
@@ -373,25 +388,83 @@ class HtmlToSpannedConverter {
 
   InlineSpan _imgRender(dom.Node node, HtmlParseContext context) {
     String src = node.attributes['src'];
+    String alt = node.attributes['alt'];
+    String align = node.attributes['align']; // 不支持 left/right
+    String border = node.attributes['border'];
+    String height = node.attributes['height'];
+    String hspace = node.attributes['hspace'];
+    String vspace = node.attributes['vspace'];
+    String width = node.attributes['width'];
     Uri uri = isNotEmpty(src) ? Uri.tryParse(src) : null;
+    ui.PlaceholderAlignment alignment;
+    switch (align) {
+      case 'top':
+        alignment = ui.PlaceholderAlignment.top;
+        break;
+      case 'bottom':
+        alignment = ui.PlaceholderAlignment.bottom;
+        break;
+      case 'middle':
+        alignment = ui.PlaceholderAlignment.middle;
+        break;
+      case 'left':
+      case 'right':
+      default:
+        alignment = ui.PlaceholderAlignment.bottom;
+        break;
+    }
+    Widget result;
     if (uri == null) {
-      return null;
+      result = SizedBox(
+        width: _parseHtmlWH(width),
+        height: _parseHtmlWH(height) ?? _parseHtmlWH(width),
+        child: Stack(
+          children: <Widget>[
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Icon(Icons.image, color: _htmlColorNameMap['gray'],),
+                  Text(alt),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
     } else {
-      Image image;
+      ImageProvider image;
       if (uri.data != null && uri.data.isBase64) {
-        image = Image(
-          image: MemoryImage(uri.data.contentAsBytes()),
-        );
+        image = MemoryImage(uri.data.contentAsBytes());
       } else {
-        image = Image(
-          image: null,
-        );
+        image = NetworkImage(uri.toString());
       }
-      return WidgetSpan(
-        child: image,
-        alignment: ui.PlaceholderAlignment.middle,
+      result = Image(
+        image: image,
+        width: _parseHtmlWH(width),
+        height: _parseHtmlWH(height) ?? _parseHtmlWH(width),
       );
     }
+    return WidgetSpan(
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          vertical: _parseHtmlWH(vspace) ?? 0.0,
+          horizontal: _parseHtmlWH(hspace) ?? 0.0,
+        ),
+        decoration: isNotEmpty(border)
+            ? ShapeDecoration(
+                shape: RoundedRectangleBorder(
+                  side: BorderSide(width: _parseHtmlWH(border) ?? 0.0),
+                ),
+              )
+            : null,
+        child: result,
+      ),
+      alignment: alignment,
+    );
   }
 
   InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
@@ -552,4 +625,17 @@ Color _parseHtmlColor(String color) {
     htmlColor = Color(parsedColor.argbValue);
   }
   return htmlColor;
+}
+
+double _parseHtmlWH(String value) {
+  if (isNotEmpty(value)) {
+    if (value.endsWith('%')) {
+      value = value.replaceAll('%', '');
+      return double.tryParse(value);
+    } else {
+      value = value.toLowerCase().replaceAll('px', '');
+      return double.tryParse(value);
+    }
+  }
+  return null;
 }
