@@ -210,7 +210,7 @@ class HtmlToSpannedConverter {
     }
     if (result == null) {
       result = TextSpan(
-        text: '暂不支持',
+        text: '暂不支持(${node is dom.Element ? node.localName : '${node.runtimeType}'})',
       );
     }
     return result;
