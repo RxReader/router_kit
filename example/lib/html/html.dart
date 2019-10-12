@@ -384,12 +384,14 @@ class HtmlToSpannedConverter {
         alignment = ui.PlaceholderAlignment.bottom;
         break;
     }
+    double widthValue = _parseHtmlWH(width, window?.width);
+    double heightValue = _parseHtmlWH(height, window?.height) ??
+        _parseHtmlWH(width, window?.width);
     Widget result;
     if (uri == null) {
       result = SizedBox(
-        width: _parseHtmlWH(width, window?.width),
-        height: _parseHtmlWH(height, window?.height) ??
-            _parseHtmlWH(width, window?.width),
+        width: widthValue,
+        height: heightValue,
         child: Stack(
           children: <Widget>[
             Positioned(
@@ -422,9 +424,8 @@ class HtmlToSpannedConverter {
       }
       result = Image(
         image: image,
-        width: _parseHtmlWH(width, window?.width),
-        height: _parseHtmlWH(height, window?.height) ??
-            _parseHtmlWH(width, window?.width),
+        width: widthValue,
+        height: heightValue,
       );
     }
     return WidgetSpan(
@@ -433,7 +434,7 @@ class HtmlToSpannedConverter {
           vertical: _parseHtmlWH(vspace, null) ?? 0.0,
           horizontal: _parseHtmlWH(hspace, null) ?? 0.0,
         ),
-        decoration: isNotEmpty(border)
+        decoration: _parseHtmlWH(border, null) != null
             ? ShapeDecoration(
                 shape: RoundedRectangleBorder(
                   side: BorderSide(width: _parseHtmlWH(border, null) ?? 0.0),
