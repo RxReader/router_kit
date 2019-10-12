@@ -171,6 +171,7 @@ class HtmlToSpannedConverter {
             result = _fontRender(node, removeIndentContext);
             break;
           case 'footer':
+            result = _containerRender(node, removeIndentContext);
             break;
           case 'h1':
             break;
@@ -185,6 +186,7 @@ class HtmlToSpannedConverter {
           case 'h6':
             break;
           case 'header':
+            result = _containerRender(node, removeIndentContext);
             break;
           case 'hr':
             result = _hrRender(node, removeIndentContext);
@@ -214,8 +216,10 @@ class HtmlToSpannedConverter {
             result = _smallRender(node, removeIndentContext);
             break;
           case 'sub':
+            result = _subRender(node, removeIndentContext);
             break;
           case 'sup':
+            result = _supRender(node, removeIndentContext);
             break;
           case 'ul':
             result = _ulRender(node, removeIndentContext);
@@ -339,11 +343,17 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _centerRender(dom.Node node, HtmlParseContext context) {
+    List<InlineSpan> children =
+        _parseNodes(node.nodes, HtmlParseContext.nextContext(context));
     return TextSpan(
       children: <InlineSpan>[
         TextSpan(text: '\n'),
-        CenterSpan(
-          children: _parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
+        PlainTextWidgetSpan(
+          children: children,
+          child: Center(
+            child: Text.rich(TextSpan(children: children)),
+          ),
+          alignment: ui.PlaceholderAlignment.middle,
         ),
         TextSpan(text: '\n'),
       ],
@@ -547,6 +557,34 @@ class HtmlToSpannedConverter {
       style: TextStyle(
         fontSize: fontSize,
       ),
+    );
+  }
+
+  InlineSpan _subRender(dom.Node node, HtmlParseContext context) {
+    double fontSize = context.fontSize * 0.5;
+    List<InlineSpan> children = _parseNodes(
+        node.nodes, HtmlParseContext.nextContext(context, fontSize: fontSize));
+    return PlainTextWidgetSpan(
+      children: children,
+      child: Text.rich(TextSpan(
+        children: children,
+        style: TextStyle(fontSize: fontSize),
+      )),
+      alignment: ui.PlaceholderAlignment.bottom,
+    );
+  }
+
+  InlineSpan _supRender(dom.Node node, HtmlParseContext context) {
+    double fontSize = context.fontSize * 0.5;
+    List<InlineSpan> children = _parseNodes(
+        node.nodes, HtmlParseContext.nextContext(context, fontSize: fontSize));
+    return PlainTextWidgetSpan(
+      children: children,
+      child: Text.rich(TextSpan(
+        children: children,
+        style: TextStyle(fontSize: fontSize),
+      )),
+      alignment: ui.PlaceholderAlignment.top,
     );
   }
 

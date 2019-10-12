@@ -25,18 +25,15 @@ typedef TapLinkCallback = void Function(
 
 typedef TapImageCallback = void Function(String source);
 
-class CenterSpan extends WidgetSpan {
-  CenterSpan({
+class PlainTextWidgetSpan extends WidgetSpan {
+  PlainTextWidgetSpan({
     @required this.children,
+    @required Widget child,
     ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
     TextBaseline baseline,
     TextStyle style,
   }) : super(
-          child: Center(
-            child: Text.rich(TextSpan(
-              children: children,
-            )),
-          ),
+          child: child,
           alignment: alignment,
           baseline: baseline,
           style: style,
@@ -47,12 +44,13 @@ class CenterSpan extends WidgetSpan {
   @override
   void computeToPlainText(StringBuffer buffer,
       {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {
-    super.computeToPlainText(buffer,
-        includeSemanticsLabels: includeSemanticsLabels,
-        includePlaceholders: includePlaceholders);
+//    super.computeToPlainText(buffer,
+//        includeSemanticsLabels: includeSemanticsLabels,
+//        includePlaceholders: includePlaceholders);
     if (children != null) {
       for (InlineSpan child in children) {
-        child.computeToPlainText(buffer,
+        child.computeToPlainText(
+          buffer,
           includeSemanticsLabels: includeSemanticsLabels,
           includePlaceholders: includePlaceholders,
         );
