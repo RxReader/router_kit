@@ -122,7 +122,7 @@ InlineSpan imageRender(
   dom.Node node,
   ChildrenRender childrenRender,
   HtmlTapCallbacks callbacks, {
-  ImageProvider networkImage(String url),
+  ImageProvider networkImage(String url, double width, double height),
 }) {
   String src = node.attributes['src'];
   String alt = node.attributes['alt'];
@@ -185,12 +185,14 @@ InlineSpan imageRender(
     if (uri.data != null && uri.data.isBase64) {
       image = MemoryImage(uri.data.contentAsBytes());
     } else {
-      image = networkImage?.call(uri.toString()) ?? NetworkImage(uri.toString());
+      image = networkImage?.call(uri.toString(), widthValue, heightValue) ??
+          NetworkImage(uri.toString());
     }
     child = Image(
       image: image,
       width: widthValue,
       height: heightValue,
+      fit: BoxFit.fitWidth,
     );
   }
   return WidgetSpan(
@@ -215,4 +217,56 @@ InlineSpan imageRender(
     ),
     alignment: alignment,
   );
+}
+
+InlineSpan videoRender(
+  Size window,
+  HtmlParseContext context,
+  dom.Node node,
+  ChildrenRender childrenRender,
+  HtmlTapCallbacks callbacks, {
+  Widget customPoster(String poster, double width, double height),
+}) {
+  String height = node.attributes['height'];
+  String poster = node.attributes['poster'];
+  String src = node.attributes['src'];
+  String width = node.attributes['width'];
+  double widthValue = parseHtmlWH(width, null);
+  double heightValue = parseHtmlWH(height, null);
+  Widget child = customPoster?.call(poster, widthValue, heightValue) ??
+      defaultPost(poster, widthValue, heightValue);
+  return WidgetSpan(
+    child: GestureDetector(
+      onTap: () {
+        callbacks.onTapVideo?.call(poster, src, widthValue, heightValue);
+      },
+      child: child,
+    ),
+  );
+}
+
+Widget defaultPost(
+  String poster,
+  double width,
+  double height, {
+  ImageProvider networkImage(String url, double width, double height),
+}) {
+  Widget child;
+  Uri uri = isNotEmpty(poster) ? Uri.tryParse(poster) : null;
+  if (uri == null) {
+    child = Text.rich(TextSpan(text: 'video'));
+  } else {
+    ImageProvider image;
+    if (uri.data != null && uri.data.isBase64) {
+      image = MemoryImage(uri.data.contentAsBytes());
+    } else {
+      image = NetworkImage(uri.toString());
+    }
+    child = Image(
+      image: image,
+      width: width,
+      height: height,
+    );
+  }
+  return child;
 }

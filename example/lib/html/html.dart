@@ -8,7 +8,6 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/widgets.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
-import 'package:quiver/strings.dart';
 
 class Html {
   Html._();
@@ -696,39 +695,7 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _videoRender(dom.Node node, HtmlParseContext context) {
-    String height = node.attributes['height'];
-    String poster = node.attributes['poster'];
-    String src = node.attributes['src'];
-    String width = node.attributes['width'];
-    double widthValue = parseHtmlWH(width, null);
-    double heightValue = parseHtmlWH(height, null);
-    Widget child;
-    Uri uri = isNotEmpty(poster) ? Uri.tryParse(poster) : null;
-    if (uri == null) {
-      // TODO
-      child = Text.rich(TextSpan(text: 'video', style: context.textStyle));
-    } else {
-      ImageProvider image;
-      if (uri.data != null && uri.data.isBase64) {
-        image = MemoryImage(uri.data.contentAsBytes());
-      } else {
-        image = NetworkImage(uri.toString());
-      }
-      child = Image(
-        image: image,
-        width: widthValue,
-        height: heightValue,
-      );
-    }
-    // TODO
-    return WidgetSpan(
-      child: GestureDetector(
-        onTap: () {
-          callbacks.onTapVideo?.call(poster, src, widthValue, heightValue);
-        },
-        child: child,
-      ),
-    );
+    return videoRender(window, context, node, _parseNodes, callbacks);
   }
 }
 
