@@ -338,12 +338,13 @@ class HtmlToSpannedConverter {
     );
   }
 
-  /// TODO
   InlineSpan _centerRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: <InlineSpan>[
         TextSpan(text: '\n'),
-        ..._parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
+        CenterSpan(
+          children: _parseNodes(node.nodes, HtmlParseContext.nextContext(context)),
+        ),
         TextSpan(text: '\n'),
       ],
     );

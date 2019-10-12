@@ -13,7 +13,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'body': '<body>Hello, World!</body>',
   'br': '<span>Hello,<br />World!</span>',
   'caption': '<caption>Hello, World!</caption>',
-  'center': '<center>Hello, World!</center>',
+  'center': '<center>Hello, World!</center><a>xxxxx</a>',
   'cite': '<cite>Hello, World!</cite>',
   'code': '<code>Hello, World!</code>',
   'data': '<data value="value">Hello, World!</data>',
