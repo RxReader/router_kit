@@ -17,6 +17,7 @@ class Html {
     String source, {
     CustomRender customRender,
     double fontSize = 14.0,
+    Size window,
     TapLinkCallback onTapLink,
     TapImageCallback onTapImage,
   }) {
@@ -24,6 +25,7 @@ class Html {
       source,
       customRender: customRender,
       fontSize: fontSize,
+      window: window,
       onTapLink: onTapLink,
       onTapImage: onTapImage,
     );
@@ -75,6 +77,7 @@ class HtmlToSpannedConverter {
     this.source, {
     this.customRender,
     this.fontSize = 14.0,
+    this.window,
     this.onTapLink,
     this.onTapImage,
   });
@@ -82,6 +85,7 @@ class HtmlToSpannedConverter {
   final String source;
   final CustomRender customRender;
   final double fontSize;
+  final Size window;
   final TapLinkCallback onTapLink;
   final TapImageCallback onTapImage;
 
@@ -416,8 +420,9 @@ class HtmlToSpannedConverter {
     Widget result;
     if (uri == null) {
       result = SizedBox(
-        width: _parseHtmlWH(width),
-        height: _parseHtmlWH(height) ?? _parseHtmlWH(width),
+        width: _parseHtmlWH(width, window?.width),
+        height: _parseHtmlWH(height, window?.height) ??
+            _parseHtmlWH(width, window?.width),
         child: Stack(
           children: <Widget>[
             Positioned(
@@ -427,7 +432,10 @@ class HtmlToSpannedConverter {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
-                  Icon(Icons.image, color: _htmlColorNameMap['gray'],),
+                  Icon(
+                    Icons.image,
+                    color: _htmlColorNameMap['gray'],
+                  ),
                   Text(alt),
                 ],
               ),
@@ -444,20 +452,21 @@ class HtmlToSpannedConverter {
       }
       result = Image(
         image: image,
-        width: _parseHtmlWH(width),
-        height: _parseHtmlWH(height) ?? _parseHtmlWH(width),
+        width: _parseHtmlWH(width, window?.width),
+        height: _parseHtmlWH(height, window?.height) ??
+            _parseHtmlWH(width, window?.width),
       );
     }
     return WidgetSpan(
       child: Container(
         padding: EdgeInsets.symmetric(
-          vertical: _parseHtmlWH(vspace) ?? 0.0,
-          horizontal: _parseHtmlWH(hspace) ?? 0.0,
+          vertical: _parseHtmlWH(vspace, null) ?? 0.0,
+          horizontal: _parseHtmlWH(hspace, null) ?? 0.0,
         ),
         decoration: isNotEmpty(border)
             ? ShapeDecoration(
                 shape: RoundedRectangleBorder(
-                  side: BorderSide(width: _parseHtmlWH(border) ?? 0.0),
+                  side: BorderSide(width: _parseHtmlWH(border, null) ?? 0.0),
                 ),
               )
             : null,
@@ -627,11 +636,13 @@ Color _parseHtmlColor(String color) {
   return htmlColor;
 }
 
-double _parseHtmlWH(String value) {
+double _parseHtmlWH(String value, double refValue) {
   if (isNotEmpty(value)) {
     if (value.endsWith('%')) {
       value = value.replaceAll('%', '');
-      return double.tryParse(value);
+      return refValue != null && double.tryParse(value) != null
+          ? double.tryParse(value) * refValue
+          : null;
     } else {
       value = value.toLowerCase().replaceAll('px', '');
       return double.tryParse(value);
