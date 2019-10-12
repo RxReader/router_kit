@@ -42,5 +42,5 @@ const Map<String, String> htmlTestData = <String, String>{
   'sub': '<a>Hello, World!</a><sub>Hello, World!</sub>',
   'sup': '<a>Hello, World!</a><sup>Hello, World!</sup>',
   'video': '<video src="movie.ogg" controls="controls">您的浏览器不支持 video 标签。</video>',
-  'video_post': '<video src="movie.ogg" poster="https://www.baidu.com/img/bd_logo1.png?where=super" controls="controls">您的浏览器不支持 video 标签。</video>',
+  'video_post': '<video src="movie.ogg" poster="https://www.baidu.com/img/bd_logo1.png?where=super" height="100" controls="controls">您的浏览器不支持 video 标签。</video>',
 };
