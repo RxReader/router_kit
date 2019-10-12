@@ -155,7 +155,7 @@ class HtmlToSpannedConverter {
           case 'h5':
           case 'h6':
             // block
-            result = _headRender(node, removeIndentContext,
+            result = _h1to6Render(node, removeIndentContext,
                 int.tryParse(node.localName.substring(1)) ?? 6);
             break;
           case 'hr':
@@ -397,7 +397,8 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _headRender(dom.Node node, HtmlParseContext context, int level) {
+  InlineSpan _h1to6Render(dom.Node node, HtmlParseContext context, int level) {
+//    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontWeight: FontWeight.bold,
       fontSize: context.textStyle.fontSize * (1.0 + (6 - level) / 10),
@@ -588,8 +589,7 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _spanRender(dom.Node node, HtmlParseContext context) {
-    // TODO
-    String style = node.attributes['style'];
+//    String style = node.attributes['style'];
     return TextSpan(
       children: _parseNodes(
         node.nodes,
