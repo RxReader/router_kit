@@ -33,7 +33,9 @@ dependencies:
   device_info: ^0.4.0+2
 
   archive: ^2.0.10
+
   html: ^0.14.0+3
+  video_player: ^0.10.2+3
 
   fake_okhttp: ^0.2.0
   router_api:

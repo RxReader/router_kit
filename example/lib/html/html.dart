@@ -16,19 +16,23 @@ class Html {
 
   static InlineSpan fromHtml(
     String source, {
+    String sourceUrl,
     CustomRender customRender,
     Size window,
     double fontSize = 14.0,
     TapLinkCallback onTapLink,
     TapImageCallback onTapImage,
+    TapVideoCallback onTapVideo,
   }) {
     HtmlToSpannedConverter converter = HtmlToSpannedConverter(
       source,
+      sourceUrl: sourceUrl,
       customRender: customRender,
       window: window,
       fontSize: fontSize,
       onTapLink: onTapLink,
       onTapImage: onTapImage,
+      onTapVideo: onTapVideo,
     );
     return converter.convert();
   }
@@ -62,19 +66,23 @@ class HtmlParseContext {
 class HtmlToSpannedConverter {
   HtmlToSpannedConverter(
     this.source, {
+    this.sourceUrl,
     this.customRender,
     this.window,
     double fontSize = 14.0,
     this.onTapLink,
     this.onTapImage,
+    this.onTapVideo,
   }) : rootContext = HtmlParseContext.rootContext(fontSize: fontSize);
 
   final String source;
+  final String sourceUrl;
   final CustomRender customRender;
   final Size window;
   final HtmlParseContext rootContext;
   final TapLinkCallback onTapLink;
   final TapImageCallback onTapImage;
+  final TapVideoCallback onTapVideo;
 
   InlineSpan convert() {
     dom.Document document = html_parser.parse(source);
@@ -113,7 +121,20 @@ class HtmlToSpannedConverter {
             result = _brRender(node, removeIndentContext);
             break;
           case 'center':
+            // block
 //            result = _centerRender(node, removeIndentContext);
+            break;
+          case 'cite':
+          case 'dfn':
+          case 'em':
+          case 'i':
+            result = _italicRender(node, removeIndentContext);
+            break;
+          case 'code':
+          case 'kbd':
+          case 'samp':
+          case 'tt':
+            result = _monospaceRender(node, removeIndentContext);
             break;
           case 'del':
           case 's':
@@ -121,40 +142,39 @@ class HtmlToSpannedConverter {
             result = _strikeRender(node, removeIndentContext);
             break;
           case 'div':
+            // block
 //            result = _containerRender(node, removeIndentContext);
-            break;
-          case 'em':
-          case 'i':
-            result = _italicRender(node, removeIndentContext);
             break;
           case 'font':
             result = _fontRender(node, removeIndentContext);
             break;
-          case 'footer':
-//            result = _containerRender(node, removeIndentContext);
-            break;
           case 'h1':
+            // block
             break;
           case 'h2':
+            // block
             break;
           case 'h3':
+            // block
             break;
           case 'h4':
+            // block
             break;
           case 'h5':
+            // block
             break;
           case 'h6':
-            break;
-          case 'header':
-//            result = _containerRender(node, removeIndentContext);
+            // block
             break;
           case 'hr':
-//            result = _hrRender(node, removeIndentContext);
+            // block
+            result = _hrRender(node, removeIndentContext);
             break;
           case 'img':
             result = _imgRender(node, removeIndentContext);
             break;
           case 'li':
+            // block
 //            result = _liRender(node, removeIndentContext);
             break;
           case 'ins':
@@ -173,6 +193,9 @@ class HtmlToSpannedConverter {
           case 'small':
             result = _smallRender(node, removeIndentContext);
             break;
+          case 'span':
+            // TODO
+            break;
           case 'sub':
             result = _subRender(node, removeIndentContext);
             break;
@@ -184,19 +207,18 @@ class HtmlToSpannedConverter {
 //            result = _ulRender(node, removeIndentContext);
             break;
           case 'video':
+            result = _videoRender(node, removeIndentContext);
             break;
         }
       } else if (node is dom.Text) {
         result = TextSpan(
           text: node.text,
-//          style: context.textStyle,
         );
       }
     }
     if (result == null) {
       result = TextSpan(
         text: '暂不支持',
-//        style: context.textStyle,
       );
     }
     return result;
@@ -239,8 +261,8 @@ class HtmlToSpannedConverter {
           String target = node.attributes['target'];
           String media = node.attributes['media'];
           String mimeType = node.attributes['type'];
-          String url = node.attributes['href'];
-          onTapLink?.call(target, media, mimeType, url);
+          String href = node.attributes['href'];
+          onTapLink?.call(target, media, mimeType, href);
         },
     );
   }
@@ -301,9 +323,9 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _strikeRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _monospaceRender(dom.Node node, HtmlParseContext context) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
-      decoration: TextDecoration.lineThrough,
+      fontFamily: 'monospace',
     ));
     return TextSpan(
       children: _parseNodes(
@@ -320,6 +342,22 @@ class HtmlToSpannedConverter {
   InlineSpan _italicRender(dom.Node node, HtmlParseContext context) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontStyle: FontStyle.italic,
+    ));
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(
+          context,
+          textStyle: textStyle,
+        ),
+      ),
+      style: textStyle,
+    );
+  }
+
+  InlineSpan _strikeRender(dom.Node node, HtmlParseContext context) {
+    TextStyle textStyle = context.textStyle.merge(TextStyle(
+      decoration: TextDecoration.lineThrough,
     ));
     return TextSpan(
       children: _parseNodes(
@@ -357,6 +395,37 @@ class HtmlToSpannedConverter {
     );
   }
 
+  InlineSpan _hrRender(dom.Node node, HtmlParseContext context) {
+    String align = node.attributes['align'];
+    String width = node.attributes['width'];
+    ui.PlaceholderAlignment alignment;
+    switch (align) {
+      case 'top':
+        alignment = ui.PlaceholderAlignment.top;
+        break;
+      case 'bottom':
+        alignment = ui.PlaceholderAlignment.bottom;
+        break;
+      case 'center':
+        alignment = ui.PlaceholderAlignment.middle;
+        break;
+      default:
+        alignment = ui.PlaceholderAlignment.middle;
+        break;
+    }
+    double widthValue = _parseHtmlWH(width, window?.width);
+    return WidgetSpan(
+      child: SizedBox(
+        width: widthValue,
+        child: Divider(
+          height: 1.0,
+          color: Colors.black38,
+        ),
+      ),
+      alignment: alignment,
+    );
+  }
+
   InlineSpan _imgRender(dom.Node node, HtmlParseContext context) {
     String src = node.attributes['src'];
     String alt = node.attributes['alt'];
@@ -385,11 +454,10 @@ class HtmlToSpannedConverter {
         break;
     }
     double widthValue = _parseHtmlWH(width, window?.width);
-    double heightValue = _parseHtmlWH(height, window?.height) ??
-        _parseHtmlWH(width, window?.width);
-    Widget result;
+    double heightValue = _parseHtmlWH(height, window?.height) ?? widthValue;
+    Widget child;
     if (uri == null) {
-      result = SizedBox(
+      child = SizedBox(
         width: widthValue,
         height: heightValue,
         child: Stack(
@@ -422,7 +490,7 @@ class HtmlToSpannedConverter {
       } else {
         image = NetworkImage(uri.toString());
       }
-      result = Image(
+      child = Image(
         image: image,
         width: widthValue,
         height: heightValue,
@@ -441,7 +509,12 @@ class HtmlToSpannedConverter {
                 ),
               )
             : null,
-        child: result,
+        child: GestureDetector(
+          onTap: () {
+            onTapImage?.call(src, widthValue, heightValue);
+          },
+          child: child,
+        ),
       ),
       alignment: alignment,
     );
@@ -534,6 +607,37 @@ class HtmlToSpannedConverter {
         style: textStyle,
       )),
       alignment: ui.PlaceholderAlignment.top,
+    );
+  }
+
+  InlineSpan _videoRender(dom.Node node, HtmlParseContext context) {
+    String height = node.attributes['height'];
+    String poster = node.attributes['poster'];
+    String src = node.attributes['src'];
+    String width = node.attributes['width'];
+    double widthValue = _parseHtmlWH(width, null);
+    double heightValue = _parseHtmlWH(height, null);
+    Widget child;
+    Uri uri = isNotEmpty(poster) ? Uri.tryParse(poster) : null;
+    if (uri == null) {
+      child = Text.rich(TextSpan(text: 'video', style: context.textStyle));
+    } else {
+      ImageProvider image;
+      if (uri.data != null && uri.data.isBase64) {
+        image = MemoryImage(uri.data.contentAsBytes());
+      } else {
+        image = NetworkImage(uri.toString());
+      }
+      child = Image(
+        image: image,
+        width: widthValue,
+        height: heightValue,
+      );
+    }
+    return WidgetSpan(
+      child: GestureDetector(
+        child: child,
+      ),
     );
   }
 }

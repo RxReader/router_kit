@@ -21,10 +21,12 @@ typedef TapLinkCallback = void Function(
   String target,
   String media,
   String mimeType,
-  String url,
+  String href,
 );
 
-typedef TapImageCallback = void Function(String source);
+typedef TapImageCallback = void Function(String src, double width, double height);
+
+typedef TapVideoCallback = void Function(String poster, String src, double width, double height);
 
 class PlainTextWidgetSpan extends WidgetSpan {
   PlainTextWidgetSpan({
