@@ -40,26 +40,22 @@ class Html {
 
 class HtmlParseContext {
   final int indentLevel;
-  final Leading leading;
   final TextStyle textStyle;
 
   HtmlParseContext.rootContext({
     double fontSize,
   })  : indentLevel = 0,
-        leading = Leading.dotted,
         textStyle = TextStyle(fontSize: fontSize);
 
   HtmlParseContext.nextContext(
     HtmlParseContext context, {
     int indentLevel,
-    this.leading = Leading.dotted,
     TextStyle textStyle,
   })  : indentLevel = indentLevel ?? context.indentLevel,
         textStyle = textStyle ?? context.textStyle;
 
   HtmlParseContext.removeIndentContext(HtmlParseContext context)
       : indentLevel = 0,
-        leading = context.leading,
         textStyle = context.textStyle;
 }
 
@@ -143,7 +139,7 @@ class HtmlToSpannedConverter {
             break;
           case 'div':
             // block
-//            result = _containerRender(node, removeIndentContext);
+            result = _divRender(node, removeIndentContext);
             break;
           case 'font':
             result = _fontRender(node, removeIndentContext);
@@ -155,7 +151,7 @@ class HtmlToSpannedConverter {
           case 'h5':
           case 'h6':
             // block
-            result = _h1toh6Render(node, removeIndentContext,
+            result = _h1xh6Render(node, removeIndentContext,
                 int.tryParse(node.localName.substring(1)) ?? 6);
             break;
           case 'hr':
@@ -167,7 +163,7 @@ class HtmlToSpannedConverter {
             break;
           case 'li':
             // block
-//            result = _liRender(node, removeIndentContext);
+            result = _liRender(node, removeIndentContext);
             break;
           case 'ins':
           case 'u':
@@ -395,6 +391,21 @@ class HtmlToSpannedConverter {
     );
   }
 
+  InlineSpan _divRender(dom.Node node, HtmlParseContext context) {
+//    String style = node.attributes['style'];
+    TextStyle textStyle = context.textStyle.merge(TextStyle());
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(
+          context,
+          textStyle: textStyle,
+        ),
+      ),
+      style: textStyle,
+    );
+  }
+
   InlineSpan _fontRender(dom.Node node, HtmlParseContext context) {
     String color = node.attributes['color'];
     String face = node.attributes['face'];
@@ -419,7 +430,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _h1toh6Render(dom.Node node, HtmlParseContext context, int level) {
+  InlineSpan _h1xh6Render(dom.Node node, HtmlParseContext context, int level) {
 //    String style = node.attributes['style'];
     String align = node.attributes['align'];
     TextAlign textAlign;
@@ -587,6 +598,37 @@ class HtmlToSpannedConverter {
         ),
       ),
       alignment: alignment,
+    );
+  }
+
+  InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
+//    String style = node.attributes['style'];
+    TextStyle textStyle = context.textStyle.merge(TextStyle());
+    String leading;
+    if (node.parent.localName == 'ol') {
+      int index = node.parent.nodes
+          .where((dom.Node node) => node is dom.Element && node.localName == 'li')
+          .toList()
+          .indexOf(node);
+      leading = '${index + 1}.';
+    } else {
+      leading = '•';
+    }
+    return TextSpan(
+      children: <InlineSpan>[
+        TextSpan(
+          text: leading,
+        ),
+        ..._parseNodes(
+          node.nodes,
+          HtmlParseContext.nextContext(
+            context,
+            indentLevel: context.indentLevel + 1,
+            textStyle: textStyle,
+          ),
+        ),
+      ],
+      style: textStyle,
     );
   }
 
@@ -773,21 +815,6 @@ double _parseHtmlWH(String value, double refValue) {
     }
   }
   return null;
-}
-
-enum Leading {
-  number,
-  dotted,
-}
-
-String _convertLeading(Leading leading, int index) {
-  switch (leading) {
-    case Leading.number:
-      return '${index + 1}.';
-    case Leading.dotted:
-    default:
-      return '•';
-  }
 }
 
 class PlainTextWidgetSpan extends WidgetSpan {
