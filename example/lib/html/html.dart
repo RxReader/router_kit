@@ -174,7 +174,7 @@ class HtmlToSpannedConverter {
             break;
           case 'ol':
             // like block
-//            result = _olRender(node, removeIndentContext);
+            result = _olRender(node, removeIndentContext);
             break;
           case 'p':
             break;
@@ -192,7 +192,7 @@ class HtmlToSpannedConverter {
             break;
           case 'ul':
             // like block
-//            result = _ulRender(node, removeIndentContext);
+            result = _ulRender(node, removeIndentContext);
             break;
           case 'video':
             result = _videoRender(node, removeIndentContext);
@@ -664,6 +664,16 @@ class HtmlToSpannedConverter {
     );
   }
 
+  InlineSpan _olRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(context),
+      ),
+      style: context.textStyle,
+    );
+  }
+
   InlineSpan _smallRender(dom.Node node, HtmlParseContext context) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.8,
@@ -734,6 +744,16 @@ class HtmlToSpannedConverter {
         style: textStyle,
       )),
       alignment: ui.PlaceholderAlignment.top,
+    );
+  }
+
+  InlineSpan _ulRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(context),
+      ),
+      style: context.textStyle,
     );
   }
 
