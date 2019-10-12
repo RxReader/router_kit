@@ -122,7 +122,7 @@ class HtmlToSpannedConverter {
             break;
           case 'center':
             // block
-//            result = _centerRender(node, removeIndentContext);
+            result = _centerRender(node, removeIndentContext);
             break;
           case 'cite':
           case 'dfn':
@@ -338,6 +338,28 @@ class HtmlToSpannedConverter {
         ),
       ),
       style: textStyle,
+    );
+  }
+
+  InlineSpan _centerRender(dom.Node node, HtmlParseContext context) {
+//    String style = node.attributes['style'];
+    TextStyle textStyle = context.textStyle.merge(TextStyle());
+    List<InlineSpan> children = _parseNodes(
+      node.nodes,
+      HtmlParseContext.nextContext(
+        context,
+        textStyle: textStyle,
+      ),
+    );
+    return PlainTextWidgetSpan(
+      children: children,
+      child: Center(
+        child: Text.rich(TextSpan(
+          children: children,
+          style: textStyle,
+        )),
+      ),
+      alignment: ui.PlaceholderAlignment.middle,
     );
   }
 
@@ -590,12 +612,16 @@ class HtmlToSpannedConverter {
 
   InlineSpan _spanRender(dom.Node node, HtmlParseContext context) {
 //    String style = node.attributes['style'];
+    TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
       children: _parseNodes(
         node.nodes,
-        HtmlParseContext.nextContext(context),
+        HtmlParseContext.nextContext(
+          context,
+          textStyle: textStyle,
+        ),
       ),
-      style: context.textStyle,
+      style: textStyle,
     );
   }
 
