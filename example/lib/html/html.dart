@@ -16,16 +16,16 @@ class Html {
   static InlineSpan fromHtml(
     String source, {
     CustomRender customRender,
-    double fontSize = 14.0,
     Size window,
+    double fontSize = 14.0,
     TapLinkCallback onTapLink,
     TapImageCallback onTapImage,
   }) {
     HtmlToSpannedConverter converter = HtmlToSpannedConverter(
       source,
       customRender: customRender,
-      fontSize: fontSize,
       window: window,
+      fontSize: fontSize,
       onTapLink: onTapLink,
       onTapImage: onTapImage,
     );
@@ -76,16 +76,16 @@ class HtmlToSpannedConverter {
   const HtmlToSpannedConverter(
     this.source, {
     this.customRender,
-    this.fontSize = 14.0,
     this.window,
+    this.fontSize = 14.0,
     this.onTapLink,
     this.onTapImage,
   });
 
   final String source;
   final CustomRender customRender;
-  final double fontSize;
   final Size window;
+  final double fontSize;
   final TapLinkCallback onTapLink;
   final TapImageCallback onTapImage;
 
@@ -99,7 +99,7 @@ class HtmlToSpannedConverter {
     HtmlParseContext removeIndentContext =
         HtmlParseContext.removeIndent(context);
     InlineSpan result =
-        customRender?.call(node, removeIndentContext, _parseNodes);
+        customRender?.call(node, window, removeIndentContext, _parseNodes);
     if (result == null) {
       if (node is dom.Element) {
         switch (node.localName) {
@@ -166,6 +166,7 @@ class HtmlToSpannedConverter {
             result = _strikeRender(node, removeIndentContext);
             break;
           case 'div':
+            result = _containerRender(node, removeIndentContext);
             break;
           case 'font':
             result = _fontRender(node, removeIndentContext);

@@ -7,6 +7,7 @@ import 'package:html/dom.dart' as dom;
 
 typedef CustomRender = InlineSpan Function(
   dom.Node node,
+  Size window,
   HtmlParseContext context,
   ChildrenRender childrenRender,
 );
