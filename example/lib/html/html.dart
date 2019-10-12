@@ -691,7 +691,10 @@ class HtmlToSpannedConverter {
     return TextSpan(
       children: _parseNodes(
         node.nodes,
-        HtmlParseContext.nextContext(context),
+        HtmlParseContext.nextContext(
+          context,
+          indentLevel: context.indentLevel + 1,
+        ),
       ),
       style: context.textStyle,
     );
@@ -789,7 +792,10 @@ class HtmlToSpannedConverter {
     return TextSpan(
       children: _parseNodes(
         node.nodes,
-        HtmlParseContext.nextContext(context),
+        HtmlParseContext.nextContext(
+          context,
+          indentLevel: context.indentLevel + 1,
+        ),
       ),
       style: context.textStyle,
     );
