@@ -1,7 +1,6 @@
 import 'dart:math' as math;
 import 'dart:ui' as ui;
 
-import 'package:csslib/parser.dart' as css_parser;
 import 'package:example/html/basic_types.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -38,27 +37,6 @@ class Html {
   }
 }
 
-class HtmlParseContext {
-  final int indentLevel;
-  final TextStyle textStyle;
-
-  HtmlParseContext.rootContext({
-    double fontSize,
-  })  : indentLevel = 0,
-        textStyle = TextStyle(fontSize: fontSize);
-
-  HtmlParseContext.nextContext(
-    HtmlParseContext context, {
-    int indentLevel,
-    TextStyle textStyle,
-  })  : indentLevel = indentLevel ?? context.indentLevel,
-        textStyle = textStyle ?? context.textStyle;
-
-  HtmlParseContext.removeIndentContext(HtmlParseContext context)
-      : indentLevel = 0,
-        textStyle = context.textStyle;
-}
-
 class HtmlToSpannedConverter {
   HtmlToSpannedConverter(
     this.source, {
@@ -66,19 +44,24 @@ class HtmlToSpannedConverter {
     this.customRender,
     this.window,
     double fontSize = 14.0,
-    this.onTapLink,
-    this.onTapImage,
-    this.onTapVideo,
-  }) : rootContext = HtmlParseContext.rootContext(fontSize: fontSize);
+    TapLinkCallback onTapLink,
+    TapImageCallback onTapImage,
+    TapVideoCallback onTapVideo,
+  })  : rootContext = HtmlParseContext.rootContext(
+          fontSize: fontSize,
+        ),
+        callbacks = HtmlTapCallbacks.all(
+          onTapLink: onTapLink,
+          onTapImage: onTapImage,
+          onTapVideo: onTapVideo,
+        );
 
   final String source;
   final String sourceUrl;
   final CustomRender customRender;
   final Size window;
   final HtmlParseContext rootContext;
-  final TapLinkCallback onTapLink;
-  final TapImageCallback onTapImage;
-  final TapVideoCallback onTapVideo;
+  final HtmlTapCallbacks callbacks;
 
   static const List<String> _supportedBlockElements = <String>[
     'center',
@@ -102,14 +85,14 @@ class HtmlToSpannedConverter {
 
   InlineSpan convert() {
     dom.Document document = html_parser.parse(source);
-    return _parseNode(document.body, rootContext);
+    return _parseNode(rootContext, document.body);
   }
 
-  InlineSpan _parseNode(dom.Node node, HtmlParseContext context) {
+  InlineSpan _parseNode(HtmlParseContext context, dom.Node node) {
     HtmlParseContext removeIndentContext =
         HtmlParseContext.removeIndentContext(context);
     InlineSpan result =
-        customRender?.call(node, window, removeIndentContext, _parseNodes);
+        customRender?.call(window, removeIndentContext, node, _parseNodes, callbacks);
     if (result == null) {
       if (node is dom.Element) {
         switch (node.localName) {
@@ -235,35 +218,36 @@ class HtmlToSpannedConverter {
   }
 
   List<InlineSpan> _parseNodes(
-      List<dom.Node> nodes, HtmlParseContext nextContext) {
+      HtmlParseContext nextContext, List<dom.Node> nodes) {
     return nodes.map((dom.Node node) {
-      return _parseNode(node, nextContext);
+      return _parseNode(nextContext, node);
     }).toList();
   }
 
   InlineSpan _bodyRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(context),
+        node.nodes,
       ),
       style: context.textStyle,
     );
   }
 
   InlineSpan _aRender(dom.Node node, HtmlParseContext context) {
+    Color linkColor = parseHtmlColor('green');
     TextStyle textStyle = context.textStyle.merge(TextStyle(
-      color: _htmlColorNameMap['green'],
+      color: linkColor,
       decoration: TextDecoration.underline,
-      decorationColor: _htmlColorNameMap['green'],
+      decorationColor: linkColor,
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
       recognizer: TapGestureRecognizer()
@@ -272,7 +256,7 @@ class HtmlToSpannedConverter {
           String media = node.attributes['media'];
           String mimeType = node.attributes['type'];
           String href = node.attributes['href'];
-          onTapLink?.call(target, media, mimeType, href);
+          callbacks.onTapLink?.call(target, media, mimeType, href);
         },
     );
   }
@@ -284,11 +268,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -300,11 +284,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -316,11 +300,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -329,8 +313,8 @@ class HtmlToSpannedConverter {
   InlineSpan _blockquoteRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(context),
+        node.nodes,
       ),
       style: context.textStyle,
     );
@@ -349,11 +333,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -363,11 +347,11 @@ class HtmlToSpannedConverter {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     List<InlineSpan> children = _parseNodes(
-      node.nodes,
       HtmlParseContext.nextContext(
         context,
         textStyle: textStyle,
       ),
+      node.nodes,
     );
     return PlainTextWidgetSpan(
       children: children,
@@ -387,11 +371,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -403,11 +387,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -418,11 +402,11 @@ class HtmlToSpannedConverter {
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -433,7 +417,7 @@ class HtmlToSpannedConverter {
     String face = node.attributes['face'];
     String size = node.attributes['size']; // 1 - 7，默认：3
     TextStyle textStyle = context.textStyle.merge(TextStyle(
-      color: _parseHtmlColor(color),
+      color: parseHtmlColor(color),
       fontSize: int.tryParse(size) != null
           ? rootContext.textStyle.fontSize *
               math.pow(5 / 4, int.tryParse(size) - 3)
@@ -442,11 +426,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -476,11 +460,11 @@ class HtmlToSpannedConverter {
       fontSize: context.textStyle.fontSize * (1.0 + (6 - level) / 10),
     ));
     List<InlineSpan> children = _parseNodes(
-      node.nodes,
       HtmlParseContext.nextContext(
         context,
         textStyle: textStyle,
       ),
+      node.nodes,
     );
     return PlainTextWidgetSpan(
       children: children,
@@ -516,7 +500,7 @@ class HtmlToSpannedConverter {
         alignment = ui.PlaceholderAlignment.middle;
         break;
     }
-    double widthValue = _parseHtmlWH(width, window?.width);
+    double widthValue = parseHtmlWH(width, window?.width);
     return WidgetSpan(
       child: SizedBox(
         width: widthValue,
@@ -530,97 +514,7 @@ class HtmlToSpannedConverter {
   }
 
   InlineSpan _imgRender(dom.Node node, HtmlParseContext context) {
-    String src = node.attributes['src'];
-    String alt = node.attributes['alt'];
-    String align = node.attributes['align']; // 不支持 left/right
-    String border = node.attributes['border'];
-    String height = node.attributes['height'];
-    String hspace = node.attributes['hspace'];
-    String vspace = node.attributes['vspace'];
-    String width = node.attributes['width'];
-    Uri uri = isNotEmpty(src) ? Uri.tryParse(src) : null;
-    ui.PlaceholderAlignment alignment;
-    switch (align) {
-      case 'top':
-        alignment = ui.PlaceholderAlignment.top;
-        break;
-      case 'bottom':
-        alignment = ui.PlaceholderAlignment.bottom;
-        break;
-      case 'middle':
-        alignment = ui.PlaceholderAlignment.middle;
-        break;
-      case 'left':
-      case 'right':
-      default:
-        alignment = ui.PlaceholderAlignment.bottom;
-        break;
-    }
-    double widthValue = _parseHtmlWH(width, window?.width);
-    double heightValue = _parseHtmlWH(height, window?.height) ?? widthValue;
-    Widget child;
-    if (uri == null) {
-      child = SizedBox(
-        width: widthValue,
-        height: heightValue,
-        child: Stack(
-          children: <Widget>[
-            Positioned(
-              top: 0,
-              left: 0,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: <Widget>[
-                  Icon(
-                    Icons.image,
-                    color: _htmlColorNameMap['gray'],
-                  ),
-                  Text.rich(TextSpan(
-                    text: alt ?? '',
-                    style: context.textStyle,
-                  )),
-                ],
-              ),
-            ),
-          ],
-        ),
-      );
-    } else {
-      ImageProvider image;
-      if (uri.data != null && uri.data.isBase64) {
-        image = MemoryImage(uri.data.contentAsBytes());
-      } else {
-        image = NetworkImage(uri.toString());
-      }
-      child = Image(
-        image: image,
-        width: widthValue,
-        height: heightValue,
-      );
-    }
-    return WidgetSpan(
-      child: Container(
-        padding: EdgeInsets.symmetric(
-          vertical: _parseHtmlWH(vspace, null) ?? 0.0,
-          horizontal: _parseHtmlWH(hspace, null) ?? 0.0,
-        ),
-        decoration: _parseHtmlWH(border, null) != null
-            ? ShapeDecoration(
-                shape: RoundedRectangleBorder(
-                  side: BorderSide(width: _parseHtmlWH(border, null) ?? 0.0),
-                ),
-              )
-            : null,
-        child: GestureDetector(
-          onTap: () {
-            onTapImage?.call(src, widthValue, heightValue);
-          },
-          child: child,
-        ),
-      ),
-      alignment: alignment,
-    );
+    return imageRender(window, context, node, _parseNodes, callbacks);
   }
 
   InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
@@ -643,12 +537,12 @@ class HtmlToSpannedConverter {
           text: leading,
         ),
         ..._parseNodes(
-          node.nodes,
           HtmlParseContext.nextContext(
             context,
             indentLevel: context.indentLevel + 1,
             textStyle: textStyle,
           ),
+          node.nodes,
         ),
       ],
       style: textStyle,
@@ -661,11 +555,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -673,15 +567,15 @@ class HtmlToSpannedConverter {
 
   InlineSpan _markRender(dom.Node node, HtmlParseContext context) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
-      backgroundColor: _htmlColorNameMap['yellow'],
+      backgroundColor: parseHtmlColor('yellow'),
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -690,11 +584,11 @@ class HtmlToSpannedConverter {
   InlineSpan _olRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           indentLevel: context.indentLevel + 1,
         ),
+        node.nodes,
       ),
       style: context.textStyle,
     );
@@ -705,11 +599,11 @@ class HtmlToSpannedConverter {
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -721,11 +615,11 @@ class HtmlToSpannedConverter {
     ));
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -736,11 +630,11 @@ class HtmlToSpannedConverter {
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           textStyle: textStyle,
         ),
+        node.nodes,
       ),
       style: textStyle,
     );
@@ -751,11 +645,11 @@ class HtmlToSpannedConverter {
       fontSize: context.textStyle.fontSize * 0.5,
     ));
     List<InlineSpan> children = _parseNodes(
-      node.nodes,
       HtmlParseContext.nextContext(
         context,
         textStyle: textStyle,
       ),
+      node.nodes,
     );
     return PlainTextWidgetSpan(
       children: children,
@@ -772,11 +666,11 @@ class HtmlToSpannedConverter {
       fontSize: context.textStyle.fontSize * 0.5,
     ));
     List<InlineSpan> children = _parseNodes(
-      node.nodes,
       HtmlParseContext.nextContext(
         context,
         textStyle: textStyle,
       ),
+      node.nodes,
     );
     return PlainTextWidgetSpan(
       children: children,
@@ -791,11 +685,11 @@ class HtmlToSpannedConverter {
   InlineSpan _ulRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(
-        node.nodes,
         HtmlParseContext.nextContext(
           context,
           indentLevel: context.indentLevel + 1,
         ),
+        node.nodes,
       ),
       style: context.textStyle,
     );
@@ -806,8 +700,8 @@ class HtmlToSpannedConverter {
     String poster = node.attributes['poster'];
     String src = node.attributes['src'];
     String width = node.attributes['width'];
-    double widthValue = _parseHtmlWH(width, null);
-    double heightValue = _parseHtmlWH(height, null);
+    double widthValue = parseHtmlWH(width, null);
+    double heightValue = parseHtmlWH(height, null);
     Widget child;
     Uri uri = isNotEmpty(poster) ? Uri.tryParse(poster) : null;
     if (uri == null) {
@@ -830,55 +724,12 @@ class HtmlToSpannedConverter {
     return WidgetSpan(
       child: GestureDetector(
         onTap: () {
-          onTapVideo?.call(poster, src, widthValue, heightValue);
+          callbacks.onTapVideo?.call(poster, src, widthValue, heightValue);
         },
         child: child,
       ),
     );
   }
-}
-
-const Map<String, Color> _htmlColorNameMap = <String, Color>{
-  'aqua': Color(0xFF00FFFF),
-  'black': Colors.black,
-  'blue': Color(0xFF0000FF),
-  'fuchsia': Color(0xFFFF00FF),
-  'gray': Color(0xFF888888),
-  'green': Color(0xFF00FF00),
-  'lime': Color(0xFF00FF00),
-  'maroon': Color(0xFF800000),
-  'navy': Color(0xFF000080),
-  'olive': Color(0xFF808000),
-  'purple': Color(0xFF800080),
-  'red': Color(0xFFFF0000),
-  'silver': Color(0xFFC0C0C0),
-  'teal': Color(0xFF008080),
-  'white': Colors.white,
-  'yellow': Color(0xFFFFFF00),
-};
-
-Color _parseHtmlColor(String color) {
-  Color htmlColor = _htmlColorNameMap[color];
-  if (htmlColor == null) {
-    css_parser.Color parsedColor = css_parser.Color.css(color);
-    htmlColor = Color(parsedColor.argbValue);
-  }
-  return htmlColor;
-}
-
-double _parseHtmlWH(String value, double refValue) {
-  if (isNotEmpty(value)) {
-    if (value.endsWith('%')) {
-      value = value.replaceAll('%', '');
-      return refValue != null && double.tryParse(value) != null
-          ? double.tryParse(value) * refValue
-          : null;
-    } else {
-      value = value.toLowerCase().replaceAll('px', '');
-      return double.tryParse(value);
-    }
-  }
-  return null;
 }
 
 class PlainTextWidgetSpan extends WidgetSpan {
