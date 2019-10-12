@@ -83,68 +83,68 @@ class HtmlToSpannedConverter {
   ];
 
   InlineSpan convert() {
-    dom.Document document = html_parser.parse(source);
+    dom.Document document = html_parser.parse(source, sourceUrl: sourceUrl);
     return _parseNode(rootContext, document.body);
   }
 
   InlineSpan _parseNode(HtmlParseContext context, dom.Node node) {
     HtmlParseContext removeIndentContext =
         HtmlParseContext.removeIndentContext(context);
-    InlineSpan result =
-        customRender?.call(window, removeIndentContext, node, _parseNodes, callbacks);
+    InlineSpan result = customRender?.call(
+        window, removeIndentContext, node, _parseNodes, callbacks);
     if (result == null) {
       if (node is dom.Element) {
         switch (node.localName) {
           case 'a':
-            result = _aRender(node, removeIndentContext);
+            result = _aRender(removeIndentContext, node);
             break;
           case 'abbr':
-            result = _abbrRender(node, removeIndentContext);
+            result = _abbrRender(removeIndentContext, node);
             break;
           case 'b':
           case 'strong':
-            result = _boldRender(node, removeIndentContext);
+            result = _boldRender(removeIndentContext, node);
             break;
           case 'big':
-            result = _bigRender(node, removeIndentContext);
+            result = _bigRender(removeIndentContext, node);
             break;
           case 'blockquote':
             // like block
-            result = _blockquoteRender(node, removeIndentContext);
+            result = _blockquoteRender(removeIndentContext, node);
             break;
           case 'body':
-            result = _bodyRender(node, removeIndentContext);
+            result = _bodyRender(removeIndentContext, node);
             break;
           case 'br':
-            result = _brRender(node, removeIndentContext);
+            result = _brRender(removeIndentContext, node);
             break;
           case 'center':
             // block
-            result = _centerRender(node, removeIndentContext);
+            result = _centerRender(removeIndentContext, node);
             break;
           case 'cite':
           case 'dfn':
           case 'em':
           case 'i':
-            result = _italicRender(node, removeIndentContext);
+            result = _italicRender(removeIndentContext, node);
             break;
           case 'code':
           case 'kbd':
           case 'samp':
           case 'tt':
-            result = _monospaceRender(node, removeIndentContext);
+            result = _monospaceRender(removeIndentContext, node);
             break;
           case 'del':
           case 's':
           case 'strike':
-            result = _strikeRender(node, removeIndentContext);
+            result = _strikeRender(removeIndentContext, node);
             break;
           case 'div':
             // block
-            result = _divRender(node, removeIndentContext);
+            result = _divRender(removeIndentContext, node);
             break;
           case 'font':
-            result = _fontRender(node, removeIndentContext);
+            result = _fontRender(removeIndentContext, node);
             break;
           case 'h1':
           case 'h2':
@@ -153,53 +153,53 @@ class HtmlToSpannedConverter {
           case 'h5':
           case 'h6':
             // block
-            result = _h1xh6Render(node, removeIndentContext,
+            result = _h1xh6Render(removeIndentContext, node,
                 int.tryParse(node.localName.substring(1)) ?? 6);
             break;
           case 'hr':
             // block
-            result = _hrRender(node, removeIndentContext);
+            result = _hrRender(removeIndentContext, node);
             break;
           case 'img':
-            result = _imgRender(node, removeIndentContext);
+            result = _imgRender(removeIndentContext, node);
             break;
           case 'li':
             // block
-            result = _liRender(node, removeIndentContext);
+            result = _liRender(removeIndentContext, node);
             break;
           case 'ins':
           case 'u':
-            result = _underlineRender(node, removeIndentContext);
+            result = _underlineRender(removeIndentContext, node);
             break;
           case 'mark':
-            result = _markRender(node, removeIndentContext);
+            result = _markRender(removeIndentContext, node);
             break;
           case 'ol':
             // like block
-            result = _olRender(node, removeIndentContext);
+            result = _olRender(removeIndentContext, node);
             break;
           case 'p':
             // block
-            result = _pRender(node, removeIndentContext);
+            result = _pRender(removeIndentContext, node);
             break;
           case 'small':
-            result = _smallRender(node, removeIndentContext);
+            result = _smallRender(removeIndentContext, node);
             break;
           case 'span':
-            result = _spanRender(node, removeIndentContext);
+            result = _spanRender(removeIndentContext, node);
             break;
           case 'sub':
-            result = _subRender(node, removeIndentContext);
+            result = _subRender(removeIndentContext, node);
             break;
           case 'sup':
-            result = _supRender(node, removeIndentContext);
+            result = _supRender(removeIndentContext, node);
             break;
           case 'ul':
             // like block
-            result = _ulRender(node, removeIndentContext);
+            result = _ulRender(removeIndentContext, node);
             break;
           case 'video':
-            result = _videoRender(node, removeIndentContext);
+            result = _videoRender(removeIndentContext, node);
             break;
         }
       } else if (node is dom.Text) {
@@ -210,7 +210,8 @@ class HtmlToSpannedConverter {
     }
     if (result == null) {
       result = TextSpan(
-        text: '暂不支持(${node is dom.Element ? node.localName : '${node.runtimeType}'})',
+        text:
+            '暂不支持(${node is dom.Element ? node.localName : '${node.runtimeType}'})',
       );
     }
     return result;
@@ -223,7 +224,7 @@ class HtmlToSpannedConverter {
     }).toList();
   }
 
-  InlineSpan _bodyRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _bodyRender(HtmlParseContext context, dom.Node node) {
     return TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(context),
@@ -233,7 +234,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _aRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _aRender(HtmlParseContext context, dom.Node node) {
     Color linkColor = parseHtmlColor('green');
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       color: linkColor,
@@ -260,7 +261,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _abbrRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _abbrRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       decoration: TextDecoration.underline,
       decorationStyle: TextDecorationStyle.dotted,
@@ -277,7 +278,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _boldRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _boldRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontWeight: FontWeight.bold,
     ));
@@ -293,7 +294,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _bigRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _bigRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 1.25,
     ));
@@ -309,7 +310,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _blockquoteRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _blockquoteRender(HtmlParseContext context, dom.Node node) {
     return TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(context),
@@ -319,14 +320,14 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _brRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _brRender(HtmlParseContext context, dom.Node node) {
     return TextSpan(
       text: '\n',
       style: context.textStyle,
     );
   }
 
-  InlineSpan _monospaceRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _monospaceRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontFamily: 'monospace',
     ));
@@ -342,7 +343,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _centerRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _centerRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     List<InlineSpan> children = _parseNodes(
@@ -364,7 +365,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _italicRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _italicRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontStyle: FontStyle.italic,
     ));
@@ -380,7 +381,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _strikeRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _strikeRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       decoration: TextDecoration.lineThrough,
     ));
@@ -396,7 +397,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _divRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _divRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
@@ -411,7 +412,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _fontRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _fontRender(HtmlParseContext context, dom.Node node) {
     String color = node.attributes['color'];
     String face = node.attributes['face'];
     String size = node.attributes['size']; // 1 - 7，默认：3
@@ -435,7 +436,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _h1xh6Render(dom.Node node, HtmlParseContext context, int level) {
+  InlineSpan _h1xh6Render(HtmlParseContext context, dom.Node node, int level) {
 //    String style = node.attributes['style'];
     String align = node.attributes['align'];
     TextAlign textAlign;
@@ -481,7 +482,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _hrRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _hrRender(HtmlParseContext context, dom.Node node) {
     String align = node.attributes['align'];
     String width = node.attributes['width'];
     ui.PlaceholderAlignment alignment;
@@ -512,11 +513,11 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _imgRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _imgRender(HtmlParseContext context, dom.Node node) {
     return imageRender(window, context, node, _parseNodes, callbacks);
   }
 
-  InlineSpan _liRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _liRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     String leading;
@@ -548,7 +549,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _underlineRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _underlineRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       decoration: TextDecoration.underline,
     ));
@@ -564,7 +565,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _markRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _markRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       backgroundColor: parseHtmlColor('yellow'),
     ));
@@ -580,7 +581,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _olRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _olRender(HtmlParseContext context, dom.Node node) {
     return TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
@@ -593,7 +594,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _pRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _pRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
@@ -608,7 +609,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _smallRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _smallRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.8,
     ));
@@ -624,7 +625,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _spanRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _spanRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     return TextSpan(
@@ -639,7 +640,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _subRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _subRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.5,
     ));
@@ -660,7 +661,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _supRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _supRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.5,
     ));
@@ -681,7 +682,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _ulRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _ulRender(HtmlParseContext context, dom.Node node) {
     return TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
@@ -694,7 +695,7 @@ class HtmlToSpannedConverter {
     );
   }
 
-  InlineSpan _videoRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _videoRender(HtmlParseContext context, dom.Node node) {
     return videoRender(window, context, node, _parseNodes, callbacks);
   }
 }
