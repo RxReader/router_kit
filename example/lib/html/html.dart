@@ -80,6 +80,24 @@ class HtmlToSpannedConverter {
   final TapImageCallback onTapImage;
   final TapVideoCallback onTapVideo;
 
+  static const List<String> _supportedBlockElements = <String>[
+    'center',
+    'div',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'hr',
+    'li',
+  ];
+  static const List<String> _supportedLikeBlockElements = <String>[
+    'blockquote',
+    'ol',
+    'ul',
+  ];
+
   InlineSpan convert() {
     dom.Document document = html_parser.parse(source);
     return _parseNode(document.body, rootContext);
@@ -607,7 +625,8 @@ class HtmlToSpannedConverter {
     String leading;
     if (node.parent.localName == 'ol') {
       int index = node.parent.nodes
-          .where((dom.Node node) => node is dom.Element && node.localName == 'li')
+          .where(
+              (dom.Node node) => node is dom.Element && node.localName == 'li')
           .toList()
           .indexOf(node);
       leading = '${index + 1}.';
