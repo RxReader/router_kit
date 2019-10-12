@@ -74,6 +74,7 @@ class HtmlToSpannedConverter {
     'hr',
     'li',
     'p',
+    'pre',
   ];
 
   static const List<String> _supportedLikeBlockElements = <String>[
@@ -182,6 +183,10 @@ class HtmlToSpannedConverter {
             // block
             result = _pRender(removeIndentContext, node);
             break;
+          case 'pre':
+            // block
+            result = _preRender(removeIndentContext, node);
+            break;
           case 'small':
             result = _smallRender(removeIndentContext, node);
             break;
@@ -203,9 +208,7 @@ class HtmlToSpannedConverter {
             break;
         }
       } else if (node is dom.Text) {
-        result = TextSpan(
-          text: node.text,
-        );
+        result = _parseText(removeIndentContext, node);
       }
     }
     if (result == null) {
@@ -215,6 +218,41 @@ class HtmlToSpannedConverter {
       );
     }
     return result;
+  }
+
+  InlineSpan _parseText(HtmlParseContext context, dom.Text node) {
+    String finalText = node.text;
+    if (node.text.trim() == "" && node.text.indexOf(" ") == -1) {
+      finalText = "";
+    } else {
+      if (context.condenseWhitespace) {
+        finalText = _condenseHtmlWhitespace(node.text);
+      }
+      if (context.parent == null) {
+        finalText = finalText.trim();
+      } else if (context.parent is TextSpan) {
+        TextSpan parent = context.parent;
+        String lastString = parent.text ?? '';
+        if (parent.children.isNotEmpty) {
+          InlineSpan nearly = parent.children.last;
+          lastString = nearly is TextSpan ? (nearly.text ?? '') : '';
+        }
+        if (lastString.endsWith(' ') || lastString.endsWith('\n')) {
+          finalText = finalText.trimLeft();
+        }
+      }
+    }
+    return TextSpan(
+      text: finalText,
+    );
+  }
+
+  String _condenseHtmlWhitespace(String stringToTrim) {
+    stringToTrim = stringToTrim.replaceAll("\n", " ");
+    while (stringToTrim.indexOf("  ") != -1) {
+      stringToTrim = stringToTrim.replaceAll("  ", " ");
+    }
+    return stringToTrim;
   }
 
   List<InlineSpan> _parseNodes(
@@ -227,7 +265,10 @@ class HtmlToSpannedConverter {
   InlineSpan _bodyRender(HtmlParseContext context, dom.Node node) {
     return TextSpan(
       children: _parseNodes(
-        HtmlParseContext.nextContext(context),
+        HtmlParseContext.nextContext(
+          context,
+          findParent: () => null,
+        ),
         node.nodes,
       ),
       style: context.textStyle,
@@ -241,10 +282,12 @@ class HtmlToSpannedConverter {
       decoration: TextDecoration.underline,
       decorationColor: linkColor,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
@@ -259,6 +302,7 @@ class HtmlToSpannedConverter {
           callbacks.onTapLink?.call(target, media, mimeType, href);
         },
     );
+    return result;
   }
 
   InlineSpan _abbrRender(HtmlParseContext context, dom.Node node) {
@@ -266,58 +310,72 @@ class HtmlToSpannedConverter {
       decoration: TextDecoration.underline,
       decorationStyle: TextDecorationStyle.dotted,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _boldRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontWeight: FontWeight.bold,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _bigRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 1.25,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _blockquoteRender(HtmlParseContext context, dom.Node node) {
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
-        HtmlParseContext.nextContext(context),
+        HtmlParseContext.nextContext(
+          context,
+          findParent: () => result,
+        ),
         node.nodes,
       ),
       style: context.textStyle,
     );
+    return result;
   }
 
   InlineSpan _brRender(HtmlParseContext context, dom.Node node) {
@@ -331,29 +389,34 @@ class HtmlToSpannedConverter {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontFamily: 'monospace',
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _centerRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
+    InlineSpan result;
     List<InlineSpan> children = _parseNodes(
       HtmlParseContext.nextContext(
         context,
+        findParent: () => result,
         textStyle: textStyle,
       ),
       node.nodes,
     );
-    return PlainTextWidgetSpan(
+    result = PlainTextWidgetSpan(
       children: children,
       child: Center(
         child: Text.rich(TextSpan(
@@ -363,53 +426,63 @@ class HtmlToSpannedConverter {
       ),
       alignment: ui.PlaceholderAlignment.middle,
     );
+    return result;
   }
 
   InlineSpan _italicRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontStyle: FontStyle.italic,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _strikeRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       decoration: TextDecoration.lineThrough,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _divRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _fontRender(HtmlParseContext context, dom.Node node) {
@@ -424,16 +497,19 @@ class HtmlToSpannedConverter {
           : null,
       fontFamily: face,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _h1xh6Render(HtmlParseContext context, dom.Node node, int level) {
@@ -459,14 +535,16 @@ class HtmlToSpannedConverter {
       fontWeight: FontWeight.bold,
       fontSize: context.textStyle.fontSize * (1.0 + (6 - level) / 10),
     ));
+    InlineSpan result;
     List<InlineSpan> children = _parseNodes(
       HtmlParseContext.nextContext(
         context,
+        findParent: () => result,
         textStyle: textStyle,
       ),
       node.nodes,
     );
-    return PlainTextWidgetSpan(
+    result = PlainTextWidgetSpan(
       children: children,
       child: SizedBox(
         width: double.infinity,
@@ -480,6 +558,7 @@ class HtmlToSpannedConverter {
       ),
       alignment: ui.PlaceholderAlignment.middle,
     );
+    return result;
   }
 
   InlineSpan _hrRender(HtmlParseContext context, dom.Node node) {
@@ -531,7 +610,8 @@ class HtmlToSpannedConverter {
     } else {
       leading = '•';
     }
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: <InlineSpan>[
         TextSpan(
           text: leading,
@@ -539,119 +619,160 @@ class HtmlToSpannedConverter {
         ..._parseNodes(
           HtmlParseContext.nextContext(
             context,
-            indentLevel: context.indentLevel + 1,
+            findParent: () => result,
             textStyle: textStyle,
+            indentLevel: context.indentLevel + 1,
           ),
           node.nodes,
         ),
       ],
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _underlineRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       decoration: TextDecoration.underline,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _markRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       backgroundColor: parseHtmlColor('yellow'),
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _olRender(HtmlParseContext context, dom.Node node) {
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           indentLevel: context.indentLevel + 1,
         ),
         node.nodes,
       ),
       style: context.textStyle,
     );
+    return result;
   }
 
   InlineSpan _pRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
+  }
+
+  InlineSpan _preRender(HtmlParseContext context, dom.Node node) {
+//    String style = node.attributes['style'];
+    TextStyle textStyle = context.textStyle.merge(TextStyle());
+    InlineSpan result;
+    result = TextSpan(
+      children: _parseNodes(
+        HtmlParseContext.nextContext(
+          context,
+          findParent: () => result,
+          textStyle: textStyle,
+          condenseWhitespace: false,
+        ),
+        node.nodes,
+      ),
+      style: textStyle,
+    );
+    return result;
   }
 
   InlineSpan _smallRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.8,
     ));
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _spanRender(HtmlParseContext context, dom.Node node) {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           textStyle: textStyle,
         ),
         node.nodes,
       ),
       style: textStyle,
     );
+    return result;
   }
 
   InlineSpan _subRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.5,
     ));
+    InlineSpan result;
     List<InlineSpan> children = _parseNodes(
       HtmlParseContext.nextContext(
         context,
+        findParent: () => result,
         textStyle: textStyle,
       ),
       node.nodes,
     );
-    return PlainTextWidgetSpan(
+    result = PlainTextWidgetSpan(
       children: children,
       child: Text.rich(TextSpan(
         children: children,
@@ -659,20 +780,23 @@ class HtmlToSpannedConverter {
       )),
       alignment: ui.PlaceholderAlignment.bottom,
     );
+    return result;
   }
 
   InlineSpan _supRender(HtmlParseContext context, dom.Node node) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.5,
     ));
+    InlineSpan result;
     List<InlineSpan> children = _parseNodes(
       HtmlParseContext.nextContext(
         context,
+        findParent: () => result,
         textStyle: textStyle,
       ),
       node.nodes,
     );
-    return PlainTextWidgetSpan(
+    result = PlainTextWidgetSpan(
       children: children,
       child: Text.rich(TextSpan(
         children: children,
@@ -680,19 +804,23 @@ class HtmlToSpannedConverter {
       )),
       alignment: ui.PlaceholderAlignment.top,
     );
+    return result;
   }
 
   InlineSpan _ulRender(HtmlParseContext context, dom.Node node) {
-    return TextSpan(
+    InlineSpan result;
+    result = TextSpan(
       children: _parseNodes(
         HtmlParseContext.nextContext(
           context,
+          findParent: () => result,
           indentLevel: context.indentLevel + 1,
         ),
         node.nodes,
       ),
       style: context.textStyle,
     );
+    return result;
   }
 
   InlineSpan _videoRender(HtmlParseContext context, dom.Node node) {

@@ -37,6 +37,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'li_ul': '<ul>xxx<li>Hello</li>xxx<li>World!</li></ul>',
   'li_ol': '<ol><li>Hello</li><li>World!</li></ol>',
   'p': '<p>Hello, World!</p>xxx<p>Hello, World!</p>',
+  'pre': '<pre>Hello, World!</pre>',
   'small': '<a>Hello, World!</a><small>Hello, World!</small>',
   'span': '<span>Hello, World!</span>',
   'sub': '<a>Hello, World!</a><sub>Hello, World!</sub>',

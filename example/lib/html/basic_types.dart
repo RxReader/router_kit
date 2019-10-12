@@ -27,25 +27,39 @@ typedef TapVideoCallback = void Function(
   double height,
 );
 
+typedef AncestorSpan = InlineSpan Function();
+
 class HtmlParseContext {
-  final int indentLevel;
+  final ValueGetter findParent;
   final TextStyle textStyle;
+  final int indentLevel;
+  final bool condenseWhitespace;
 
   HtmlParseContext.rootContext({
     double fontSize,
-  })  : indentLevel = 0,
-        textStyle = TextStyle(fontSize: fontSize);
+  })  : findParent = null,
+        textStyle = TextStyle(fontSize: fontSize),
+        indentLevel = 0,
+        condenseWhitespace = true;
 
   HtmlParseContext.nextContext(
     HtmlParseContext context, {
+    @required this.findParent,
     int indentLevel,
     TextStyle textStyle,
-  })  : indentLevel = indentLevel ?? context.indentLevel,
-        textStyle = textStyle ?? context.textStyle;
+    bool condenseWhitespace,
+  })  : assert(findParent != null),
+        textStyle = textStyle ?? context.textStyle,
+        indentLevel = indentLevel ?? context.indentLevel,
+        condenseWhitespace = condenseWhitespace ?? context.condenseWhitespace;
 
   HtmlParseContext.removeIndentContext(HtmlParseContext context)
-      : indentLevel = 0,
-        textStyle = context.textStyle;
+      : findParent = context.findParent,
+        textStyle = context.textStyle,
+        indentLevel = 0,
+        condenseWhitespace = context.condenseWhitespace;
+
+  InlineSpan get parent => findParent?.call();
 }
 
 class HtmlTapCallbacks {
