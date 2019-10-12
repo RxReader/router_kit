@@ -91,7 +91,9 @@ class HtmlToSpannedConverter {
     'h6',
     'hr',
     'li',
+    'p',
   ];
+
   static const List<String> _supportedLikeBlockElements = <String>[
     'blockquote',
     'ol',
@@ -195,6 +197,8 @@ class HtmlToSpannedConverter {
             result = _olRender(node, removeIndentContext);
             break;
           case 'p':
+            // block
+            result = _pRender(node, removeIndentContext);
             break;
           case 'small':
             result = _smallRender(node, removeIndentContext);
@@ -690,6 +694,21 @@ class HtmlToSpannedConverter {
         HtmlParseContext.nextContext(context),
       ),
       style: context.textStyle,
+    );
+  }
+
+  InlineSpan _pRender(dom.Node node, HtmlParseContext context) {
+//    String style = node.attributes['style'];
+    TextStyle textStyle = context.textStyle.merge(TextStyle());
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(
+          context,
+          textStyle: textStyle,
+        ),
+      ),
+      style: textStyle,
     );
   }
 
