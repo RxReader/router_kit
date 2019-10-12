@@ -27,37 +27,3 @@ typedef TapLinkCallback = void Function(
 typedef TapImageCallback = void Function(String src, double width, double height);
 
 typedef TapVideoCallback = void Function(String poster, String src, double width, double height);
-
-class PlainTextWidgetSpan extends WidgetSpan {
-  PlainTextWidgetSpan({
-    @required this.children,
-    @required Widget child,
-    ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
-    TextBaseline baseline,
-    TextStyle style,
-  }) : super(
-          child: child,
-          alignment: alignment,
-          baseline: baseline,
-          style: style,
-        );
-
-  final List<InlineSpan> children;
-
-  @override
-  void computeToPlainText(StringBuffer buffer,
-      {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {
-//    super.computeToPlainText(buffer,
-//        includeSemanticsLabels: includeSemanticsLabels,
-//        includePlaceholders: includePlaceholders);
-    if (children != null) {
-      for (InlineSpan child in children) {
-        child.computeToPlainText(
-          buffer,
-          includeSemanticsLabels: includeSemanticsLabels,
-          includePlaceholders: includePlaceholders,
-        );
-      }
-    }
-  }
-}

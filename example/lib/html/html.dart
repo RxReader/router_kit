@@ -112,10 +112,10 @@ class HtmlToSpannedConverter {
             break;
           case 'blockquote':
             // like block
-//            result = _blockquoteRender(node, removeIndentContext);
+            result = _blockquoteRender(node, removeIndentContext);
             break;
           case 'body':
-            result = _containerRender(node, removeIndentContext);
+            result = _bodyRender(node, removeIndentContext);
             break;
           case 'br':
             result = _brRender(node, removeIndentContext);
@@ -149,22 +149,14 @@ class HtmlToSpannedConverter {
             result = _fontRender(node, removeIndentContext);
             break;
           case 'h1':
-            // block
-            break;
           case 'h2':
-            // block
-            break;
           case 'h3':
-            // block
-            break;
           case 'h4':
-            // block
-            break;
           case 'h5':
-            // block
-            break;
           case 'h6':
             // block
+            result = _headRender(node, removeIndentContext,
+                int.tryParse(node.localName.substring(1)) ?? 6);
             break;
           case 'hr':
             // block
@@ -194,7 +186,7 @@ class HtmlToSpannedConverter {
             result = _smallRender(node, removeIndentContext);
             break;
           case 'span':
-            // TODO
+            result = _spanRender(node, removeIndentContext);
             break;
           case 'sub':
             result = _subRender(node, removeIndentContext);
@@ -231,7 +223,7 @@ class HtmlToSpannedConverter {
     }).toList();
   }
 
-  InlineSpan _containerRender(dom.Node node, HtmlParseContext context) {
+  InlineSpan _bodyRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       children: _parseNodes(
         node.nodes,
@@ -316,6 +308,16 @@ class HtmlToSpannedConverter {
     );
   }
 
+  InlineSpan _blockquoteRender(dom.Node node, HtmlParseContext context) {
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(context),
+      ),
+      style: context.textStyle,
+    );
+  }
+
   InlineSpan _brRender(dom.Node node, HtmlParseContext context) {
     return TextSpan(
       text: '\n',
@@ -382,6 +384,23 @@ class HtmlToSpannedConverter {
               math.pow(5 / 4, int.tryParse(size) - 3)
           : null,
       fontFamily: face,
+    ));
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(
+          context,
+          textStyle: textStyle,
+        ),
+      ),
+      style: textStyle,
+    );
+  }
+
+  InlineSpan _headRender(dom.Node node, HtmlParseContext context, int level) {
+    TextStyle textStyle = context.textStyle.merge(TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: context.textStyle.fontSize * (1.0 + (6 - level) / 10),
     ));
     return TextSpan(
       children: _parseNodes(
@@ -568,6 +587,18 @@ class HtmlToSpannedConverter {
     );
   }
 
+  InlineSpan _spanRender(dom.Node node, HtmlParseContext context) {
+    // TODO
+    String style = node.attributes['style'];
+    return TextSpan(
+      children: _parseNodes(
+        node.nodes,
+        HtmlParseContext.nextContext(context),
+      ),
+      style: context.textStyle,
+    );
+  }
+
   InlineSpan _subRender(dom.Node node, HtmlParseContext context) {
     TextStyle textStyle = context.textStyle.merge(TextStyle(
       fontSize: context.textStyle.fontSize * 0.5,
@@ -620,6 +651,7 @@ class HtmlToSpannedConverter {
     Widget child;
     Uri uri = isNotEmpty(poster) ? Uri.tryParse(poster) : null;
     if (uri == null) {
+      // TODO
       child = Text.rich(TextSpan(text: 'video', style: context.textStyle));
     } else {
       ImageProvider image;
@@ -634,8 +666,12 @@ class HtmlToSpannedConverter {
         height: heightValue,
       );
     }
+    // TODO
     return WidgetSpan(
       child: GestureDetector(
+        onTap: () {
+          onTapVideo?.call(poster, src, widthValue, heightValue);
+        },
         child: child,
       ),
     );
@@ -697,5 +733,39 @@ String _convertLeading(Leading leading, int index) {
     case Leading.dotted:
     default:
       return '•';
+  }
+}
+
+class PlainTextWidgetSpan extends WidgetSpan {
+  PlainTextWidgetSpan({
+    @required this.children,
+    @required Widget child,
+    ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
+    TextBaseline baseline,
+    TextStyle style,
+  }) : super(
+          child: child,
+          alignment: alignment,
+          baseline: baseline,
+          style: style,
+        );
+
+  final List<InlineSpan> children;
+
+  @override
+  void computeToPlainText(StringBuffer buffer,
+      {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {
+//    super.computeToPlainText(buffer,
+//        includeSemanticsLabels: includeSemanticsLabels,
+//        includePlaceholders: includePlaceholders);
+    if (children != null) {
+      for (InlineSpan child in children) {
+        child.computeToPlainText(
+          buffer,
+          includeSemanticsLabels: includeSemanticsLabels,
+          includePlaceholders: includePlaceholders,
+        );
+      }
+    }
   }
 }
