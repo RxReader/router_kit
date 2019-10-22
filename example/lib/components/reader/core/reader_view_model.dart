@@ -12,11 +12,7 @@ class RenderViewModel extends Model {
 
   List<TextPage> get textPages => _textPages;
 
-  Future<void> typeset(
-    ReaderSettings settings,
-    Size canvas, [
-    bool debug = true,
-  ]) async {
+  Future<void> typeset(ReaderSettings settings, Size canvas) async {
     print('开始');
     List<TextPage> textPages = <TextPage>[];
     Article article = await loadArticle();
@@ -70,20 +66,6 @@ class RenderViewModel extends Model {
               (textInPage.length -
                   textInPageClear.length); // (paragraphCursor + 1) * 2;
           endWordCursor = startWordCursor + offset;
-          if (debug ?? false) {
-            print('--- page: ${textPages.length} ---');
-            content
-                .substring(startWordCursor, endWordCursor)
-                .split('\n')
-                .forEach((String pair) {
-              if (pair.length < 10) {
-                print('pair: $pair');
-              } else {
-                print(
-                    'pair: ${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}');
-              }
-            });
-          }
           wordCursor = endWordCursor;
           if (textInPage.length == position.offset) {
             // 不用拆段落
@@ -99,13 +81,6 @@ class RenderViewModel extends Model {
           paragraphCursor++;
           if (paragraphCursor >= paragraphs.length) {
             endWordCursor = wordCursor;
-            if (debug ?? false) {
-              print('--- page: ${textPages.length} ---');
-              content
-                  .substring(startWordCursor, endWordCursor)
-                  .split('\n')
-                  .forEach((String pair) => print('pair: $pair'));
-            }
             break; // 也可以由 while 统一判断
           }
         }
