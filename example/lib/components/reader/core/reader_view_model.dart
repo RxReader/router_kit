@@ -42,19 +42,20 @@ class RenderViewModel extends Model {
           // 拆段落或段落刚好结束，要多扣一个 \n
           paragraphWordCursor--;
         }
+        bool shouldAppendNewLine =
+            children.length > 0 && paragraphWordCursor == 0;
         TextSpan paragraphTextSpan = TextSpan(
 //          text:
-//              '${children.length > 0 && paragraphWordCursor == 0 ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
+//              '${shouldAppendNewLine ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
           children: <InlineSpan>[
-            if (children.length > 0 && paragraphWordCursor == 0)
+            if (shouldAppendNewLine)
               TextSpan(
                 text: '\n',
               ),
             if (paragraphWordCursor == 0)
               TextSpan(
-                text: '$textIndentPlaceholder$textIndentPlaceholder',
-                style: TextStyle(fontSize: settings.style.fontSize * 2.8)
-              ),
+                  text: '$textIndentPlaceholder$textIndentPlaceholder',
+                  style: TextStyle(fontSize: settings.style.fontSize * 2.8)),
             TextSpan(
                 text:
                     paragraphs[paragraphCursor].substring(paragraphWordCursor)),
@@ -87,12 +88,13 @@ class RenderViewModel extends Model {
           if (textInPage.length == position.offset) {
             // 不用拆段落
             wordCursor++;
+            children.add(paragraphTextSpan);
             paragraphCursor++;
+          } else {
+//            children.add(paragraphTextSpan);
           }
         } else {
-          wordCursor += (children.length > 0 && paragraphWordCursor == 0
-                  ? 1
-                  : 0) +
+          wordCursor += (shouldAppendNewLine ? 1 : 0) +
               paragraphs[paragraphCursor].substring(paragraphWordCursor).length;
           children.add(paragraphTextSpan);
           paragraphCursor++;
