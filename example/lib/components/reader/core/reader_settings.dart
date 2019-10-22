@@ -14,6 +14,7 @@ class ReaderSettings {
   TextStyle get style => TextStyle(
         color: Colors.black,
         fontSize: 14,
+        height: 1.0,
       );
 
   StrutStyle get strutStyle => StrutStyle.fromTextStyle(style);

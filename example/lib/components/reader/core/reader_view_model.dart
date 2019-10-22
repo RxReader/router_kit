@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:example/components/reader/core/reader_settings.dart';
 import 'package:example/components/reader/core/view/text_page.dart';
 import 'package:example/components/reader/model/article.dart';
@@ -24,6 +26,8 @@ class ReaderViewModel extends Model {
     int paragraphCursor = 0;
     int wordCursor = 0;
     TextPainter textPainter = settings.textPainter;
+    final double contentWidth = canvas.width - settings.style.fontSize * settings.style.height;
+    final double contentHeight = canvas.height;
     while (paragraphCursor < paragraphs.length) {
       int startWordCursor = wordCursor;
       int endWordCursor;
@@ -72,11 +76,11 @@ class ReaderViewModel extends Model {
           ],
           style: settings.style,
         );
-        textPainter.layout(maxWidth: canvas.width);
-        if (textPainter.height >= canvas.height) {
+        textPainter.layout(maxWidth: contentWidth);
+        if (textPainter.height >= contentHeight) {
           // 满一页
           TextPosition position = textPainter
-              .getPositionForOffset(Offset(canvas.width, canvas.height));
+              .getPositionForOffset(Offset(contentWidth, contentHeight));// 屏幕可见
           String textInPage = textPainter.text.toPlainText(
             includeSemanticsLabels: false,
             includePlaceholders: true,
