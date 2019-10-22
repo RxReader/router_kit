@@ -5,13 +5,10 @@ import 'package:flutter/rendering.dart';
 class ReaderSettings {
   const ReaderSettings();
 
-  @protected
   TextAlign get textAlign => TextAlign.start;
 
-  @protected
   TextDirection get textDirection => TextDirection.ltr;
 
-  @protected
   double get textScaleFactor => 1.0;
 
   TextStyle get style => TextStyle(
@@ -21,7 +18,6 @@ class ReaderSettings {
 
   StrutStyle get strutStyle => StrutStyle.fromTextStyle(style);
 
-  @protected
   Locale get locale => Locale.fromSubtags(
         languageCode: 'zh',
         scriptCode: 'Hans',

@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class RenderViewModel extends Model {
+class ReaderViewModel extends Model {
   static const String textIndentPlaceholder = '\uFFFC';
 
   List<TextPage> _textPages;
@@ -15,11 +15,11 @@ class RenderViewModel extends Model {
   List<TextPage> get textPages => _textPages;
 
   Future<void> typeset(ReaderSettings settings, Size canvas) async {
-    print('开始');
+    print('开始 - ${canvas.toString()}');
     List<TextPage> textPages = <TextPage>[];
     Article article = await loadArticle();
-    String content = article.content;
-    List<String> paragraphs = content.split('\n');
+    final String content = article.content;
+    final List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
     TextPainter textPainter = settings.textPainter;
@@ -31,7 +31,7 @@ class RenderViewModel extends Model {
         int paragraphWordCursor = wordCursor -
             (paragraphCursor == 0
                 ? 0
-                : paragraphs.take(paragraphCursor).map<int>((String paragraph) {
+                : paragraphs.take(paragraphCursor).map((String paragraph) {
                     return paragraph.length +
                         (paragraph == paragraphs.first ? 0 : 1);
                   }).reduce((int value, int element) => value + element));
@@ -42,23 +42,26 @@ class RenderViewModel extends Model {
           // 拆段落或段落刚好结束，要多扣一个 \n
           paragraphWordCursor--;
         }
-        bool shouldAppendNewLine =
+        final bool shouldAppendNewLine =
             children.length > 0 && paragraphWordCursor == 0;
+        final bool shouldAppendTextIndent = paragraphWordCursor == 0;
+        final String paragraph = paragraphs[paragraphCursor];
         TextSpan paragraphTextSpan = TextSpan(
 //          text:
-//              '${shouldAppendNewLine ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
+//              '${shouldAppendNewLine ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraph.substring(paragraphWordCursor)}',
           children: <InlineSpan>[
             if (shouldAppendNewLine)
               TextSpan(
                 text: '\n',
               ),
-            if (paragraphWordCursor == 0)
-              TextSpan(
-                  text: '$textIndentPlaceholder$textIndentPlaceholder',
-                  style: TextStyle(fontSize: settings.style.fontSize * 2.8)),
+//            if (shouldAppendTextIndent)
+//              TextSpan(
+//                text: '$textIndentPlaceholder$textIndentPlaceholder',
+////                style: TextStyle(fontSize: settings.style.fontSize * 2.8),
+//              ),
             TextSpan(
-                text:
-                    paragraphs[paragraphCursor].substring(paragraphWordCursor)),
+              text: paragraph.substring(paragraphWordCursor),
+            ),
           ],
         );
         textPainter.text = TextSpan(
@@ -68,7 +71,7 @@ class RenderViewModel extends Model {
           ],
           style: settings.style,
         );
-        textPainter.layout(maxWidth: canvas.height);
+        textPainter.layout(maxWidth: canvas.width);
         if (textPainter.height >= canvas.height) {
           // 满一页
           TextPosition position = textPainter
@@ -91,11 +94,44 @@ class RenderViewModel extends Model {
             children.add(paragraphTextSpan);
             paragraphCursor++;
           } else {
-//            children.add(paragraphTextSpan);
+            List<InlineSpan> children = paragraphTextSpan.children;
+            children.removeLast();
+            paragraphTextSpan = TextSpan(children: <InlineSpan>[
+              ...children,
+//              TextSpan(
+//                text: paragraph.substring(
+//                    paragraphWordCursor,
+//                    paragraph.length -
+//                        (wordCursor -
+//                            paragraphs
+//                                .take(paragraphCursor)
+//                                .map((String paragraph) => paragraph.length + 1)
+//                                .reduce((int value, int element) =>
+//                                    value + element))),
+//              ),
+            ]);
+//            print('xxx: ${paragraphCursor == 0 ? 0 : endWordCursor -
+//                paragraphs
+//                    .take(paragraphCursor)
+//                    .map((String paragraph) => paragraph.length + 1)
+//                    .reduce((int value, int element) =>
+//                value + element)}');
+//            String pair = paragraph.substring(
+//                paragraphWordCursor,
+//                paragraph.length -
+//                    (paragraphCursor == 0 ? 0 : endWordCursor -
+//                        paragraphs
+//                            .take(paragraphCursor)
+//                            .map((String paragraph) => paragraph.length + 1)
+//                            .reduce((int value, int element) =>
+//                        value + element)));
+//            print(
+//                'xxx: ${pair.length > 30 ? '${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}' : pair}');
+            children.add(paragraphTextSpan);
           }
         } else {
           wordCursor += (shouldAppendNewLine ? 1 : 0) +
-              paragraphs[paragraphCursor].substring(paragraphWordCursor).length;
+              paragraph.substring(paragraphWordCursor).length;
           children.add(paragraphTextSpan);
           paragraphCursor++;
           if (paragraphCursor >= paragraphs.length) {
@@ -107,6 +143,7 @@ class RenderViewModel extends Model {
       textPages.add(TextPage(
         startWordCursor: startWordCursor,
         endWordCursor: endWordCursor,
+        content: content,
       ));
     }
     textPages

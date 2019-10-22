@@ -10,6 +10,7 @@ import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
 import 'package:example/components/reader/core/reader_settings.dart';
 import 'package:example/components/reader/core/reader_view_model.dart';
+import 'package:example/components/reader/reader_component.dart';
 import 'package:example/logs/collect-console-logs.dart';
 import 'package:example/router/app_router.dart';
 import 'package:example/utility/path_provider.dart';
@@ -77,7 +78,7 @@ class _HomeComponentState extends State<HomeComponent> {
           ListTile(
             title: const Text('Typeset'),
             onTap: () {
-              RenderViewModel().typeset(ReaderSettings(), MediaQuery.of(context).size);
+              AppRouter.defaultRouter(context).pushNamed(ReaderComponentProvider.routeName);
             },
           ),
 //          ListTile(
