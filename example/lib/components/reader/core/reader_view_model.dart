@@ -27,7 +27,9 @@ class ReaderViewModel extends Model {
     int wordCursor = 0;
     TextPainter textPainter = settings.textPainter;
     final double contentWidth = canvas.width;
-    final double contentHeight = canvas.height - settings.style.fontSize * settings.style.height;// yu
+    final double contentHeight = canvas.height -
+        settings.style.fontSize *
+            settings.style.height; // 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
     while (paragraphCursor < paragraphs.length) {
       int startWordCursor = wordCursor;
       int endWordCursor;
@@ -49,7 +51,8 @@ class ReaderViewModel extends Model {
         }
         final bool shouldAppendNewLine =
             children.length > 0 && paragraphWordCursor == 0;
-        final bool shouldAppendTextIndent = textIndentEnable && paragraphWordCursor == 0;
+        final bool shouldAppendTextIndent =
+            textIndentEnable && paragraphWordCursor == 0;
         final String paragraph = paragraphs[paragraphCursor];
         TextSpan paragraphTextSpan = TextSpan(
 //          text:
@@ -79,8 +82,10 @@ class ReaderViewModel extends Model {
         textPainter.layout(maxWidth: contentWidth);
         if (textPainter.height >= contentHeight) {
           // 满一页
-          TextPosition position = textPainter
-              .getPositionForOffset(Offset(contentWidth, contentHeight));// 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
+          TextPosition position = textPainter.getPositionForOffset(Offset(
+            contentWidth,
+            contentHeight,
+          )); // 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
           String textInPage = textPainter.text.toPlainText(
             includeSemanticsLabels: false,
             includePlaceholders: true,
