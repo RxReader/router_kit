@@ -14,6 +14,7 @@ import 'package:example/components/nested_scroll/nested_scroll_component.dart';
 import 'package:example/components/not_found/not_found_component.dart';
 import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
+import 'package:example/components/reader/reader_component.dart';
 import 'package:example/components/splash/splash_component.dart';
 
 class AppRouterProvider {
@@ -30,6 +31,7 @@ class AppRouterProvider {
     NotFoundComponentProvider.routeName: NotFoundComponentProvider.routeBuilder,
     ParamsComponentProvider.routeName: ParamsComponentProvider.routeBuilder,
     PaymentComponentProvider.routeName: PaymentComponentProvider.routeBuilder,
+    ReaderComponentProvider.routeName: ReaderComponentProvider.routeBuilder,
     SplashComponentProvider.routeName: SplashComponentProvider.routeBuilder,
   };
 }

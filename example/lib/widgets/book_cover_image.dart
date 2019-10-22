@@ -20,7 +20,7 @@ class BookCoverImage extends StatelessWidget {
         boxShadow: <BoxShadow>[
           BoxShadow(
             color: const Color(0x22000000),
-            blurRadius: 5,
+            blurRadius: radius,
           ),
         ],
         borderRadius: BorderRadius.circular(radius),
@@ -32,7 +32,7 @@ class BookCoverImage extends StatelessWidget {
           child: Stack(
             children: <Widget>[
               FadeInImage(
-                placeholder: AssetImage('images/placeholder_cover.png'),
+                placeholder: AssetImage('assets/images/placeholder_cover.png'),
                 image: OkHttpImage(url),
                 fit: BoxFit.cover,
                 width: double.infinity,

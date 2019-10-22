@@ -8,6 +8,8 @@ import 'package:example/components/html/html_component.dart';
 import 'package:example/components/nested_scroll/nested_scroll_component.dart';
 import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
+import 'package:example/components/reader/core/reader_settings.dart';
+import 'package:example/components/reader/core/reader_view_model.dart';
 import 'package:example/logs/collect-console-logs.dart';
 import 'package:example/router/app_router.dart';
 import 'package:example/utility/path_provider.dart';
@@ -70,6 +72,12 @@ class _HomeComponentState extends State<HomeComponent> {
             onTap: () {
               AppRouter.defaultRouter(context)
                   .pushNamed(NestedScrollComponentProvider.routeName);
+            },
+          ),
+          ListTile(
+            title: const Text('Typeset'),
+            onTap: () {
+              RenderViewModel().typeset(ReaderSettings(), MediaQuery.of(context).size);
             },
           ),
 //          ListTile(
@@ -168,13 +176,13 @@ class _HomeComponentState extends State<HomeComponent> {
             },
           ),
 //          Center(
-//            child: Image.asset('images/launch_icon.png'),
+//            child: Image.asset('assets/images/launch_icon.png'),
 //          ),
 //          Center(
-//            child: Image.asset('images/about_logo.png'),
+//            child: Image.asset('assets/images/about_logo.png'),
 //          ),
 //          Center(
-//            child: Image.asset('images/bookshelf_top.png'),
+//            child: Image.asset('assets/images/bookshelf_top.png'),
 //          ),
         ],
       ),
