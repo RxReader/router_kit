@@ -48,32 +48,47 @@ class _ReaderComponentState extends State<ReaderComponent> {
                     _model.typeset(
                       _settings,
                       Size(
-                        MediaQuery.of(context).size.width,
-                        MediaQuery.of(context).size.height -
-                            kToolbarHeight -
-                            MediaQuery.of(context).padding.top - 60,
+                        MediaQuery.of(context).size.width / 2,
+                        240,
                       ),
                     );
                   },
                 ),
               );
             }
-            return PageView.builder(
-              itemBuilder: (BuildContext context, int index) {
-                TextPage textPage = model.textPages[index];
-                return Text.rich(
-                  TextSpan(
-                    text: textPage.content.substring(textPage.startWordCursor, textPage.endWordCursor),
-                    style: _settings.style,
+            return Row(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    color: Colors.red,
+                    height: 240,
+                    child: PageView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        TextPage textPage = model.textPages[index];
+                        return Text.rich(
+                          TextSpan(
+                            text: textPage.content.substring(
+                                textPage.startWordCursor, textPage.endWordCursor),
+                            style: _settings.style,
+                          ),
+                          strutStyle: _settings.strutStyle,
+                          textAlign: _settings.textAlign,
+                          textDirection: _settings.textDirection,
+                          textScaleFactor: _settings.textScaleFactor,
+                          locale: _settings.locale,
+                        );
+                      },
+                      itemCount: model.textPages.length,
+                    ),
                   ),
-                  strutStyle: _settings.strutStyle,
-                  textAlign: _settings.textAlign,
-                  textDirection: _settings.textDirection,
-                  textScaleFactor: _settings.textScaleFactor,
-                  locale: _settings.locale,
-                );
-              },
-              itemCount: model.textPages.length,
+                ),
+                Expanded(
+                  child: Container(
+                    color: Colors.green,
+                    height: 240,
+                  ),
+                ),
+              ],
             );
           },
         ),

@@ -54,11 +54,11 @@ class ReaderViewModel extends Model {
               TextSpan(
                 text: '\n',
               ),
-//            if (shouldAppendTextIndent)
-//              TextSpan(
-//                text: '$textIndentPlaceholder$textIndentPlaceholder',
-////                style: TextStyle(fontSize: settings.style.fontSize * 2.8),
-//              ),
+            if (shouldAppendTextIndent)
+              TextSpan(
+                text: '$textIndentPlaceholder$textIndentPlaceholder',
+//                style: TextStyle(fontSize: settings.style.fontSize * 2.8),
+              ),
             TextSpan(
               text: paragraph.substring(paragraphWordCursor),
             ),
