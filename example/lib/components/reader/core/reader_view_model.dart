@@ -43,8 +43,22 @@ class RenderViewModel extends Model {
           paragraphWordCursor--;
         }
         TextSpan paragraphTextSpan = TextSpan(
-          text:
-              '${children.length > 0 && paragraphWordCursor == 0 ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
+//          text:
+//              '${children.length > 0 && paragraphWordCursor == 0 ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
+          children: <InlineSpan>[
+            if (children.length > 0 && paragraphWordCursor == 0)
+              TextSpan(
+                text: '\n',
+              ),
+            if (paragraphWordCursor == 0)
+              TextSpan(
+                text: '$textIndentPlaceholder$textIndentPlaceholder',
+                style: TextStyle(fontSize: settings.style.fontSize * 2.8)
+              ),
+            TextSpan(
+                text:
+                    paragraphs[paragraphCursor].substring(paragraphWordCursor)),
+          ],
         );
         textPainter.text = TextSpan(
           children: <InlineSpan>[
@@ -93,6 +107,11 @@ class RenderViewModel extends Model {
         endWordCursor: endWordCursor,
       ));
     }
+    textPages
+        .map((TextPage textPage) =>
+            content.substring(textPage.startWordCursor, textPage.endWordCursor))
+        .forEach((String pair) => print(
+            'pair: ${pair.length > 30 ? '${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}' : pair}'));
     print('结束');
     _textPages = textPages;
     notifyListeners();
