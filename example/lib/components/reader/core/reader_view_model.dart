@@ -8,6 +8,9 @@ import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class RenderViewModel extends Model {
+  static const String textIndentPlaceholder = '\uFFFC';
+  static const String paragraphSpacingPlaceholder = '\uFFFC\n';
+
   List<TextPage> _textPages;
 
   List<TextPage> get textPages => _textPages;
@@ -42,7 +45,7 @@ class RenderViewModel extends Model {
         }
         TextSpan paragraphTextSpan = TextSpan(
           text:
-              '${children.length > 0 && paragraphWordCursor == 0 ? '\n' : ''}${paragraphWordCursor == 0 ? '\uFFFC\uFFFC' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
+              '${children.length > 0 && paragraphWordCursor == 0 ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraphs[paragraphCursor].substring(paragraphWordCursor)}',
         );
         textPainter.text = TextSpan(
           children: <InlineSpan>[
@@ -61,7 +64,8 @@ class RenderViewModel extends Model {
             includePlaceholders: true,
           );
 
-          String textInPageClear = textInPage.replaceAll('\uFFFC', '');
+          String textInPageClear =
+              textInPage.replaceAll(textIndentPlaceholder, '');
           int offset = position.offset -
               (textInPage.length -
                   textInPageClear.length); // (paragraphCursor + 1) * 2;
