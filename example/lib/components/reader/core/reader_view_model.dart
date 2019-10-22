@@ -26,8 +26,8 @@ class ReaderViewModel extends Model {
     int paragraphCursor = 0;
     int wordCursor = 0;
     TextPainter textPainter = settings.textPainter;
-    final double contentWidth = canvas.width - settings.style.fontSize * settings.style.height;
-    final double contentHeight = canvas.height;
+    final double contentWidth = canvas.width;
+    final double contentHeight = canvas.height - settings.style.fontSize * settings.style.height;
     while (paragraphCursor < paragraphs.length) {
       int startWordCursor = wordCursor;
       int endWordCursor;
