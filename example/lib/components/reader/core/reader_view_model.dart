@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ReaderViewModel extends Model {
+  static const bool textIndentEnable = false;
   static const String textIndentPlaceholder = '\uFFFC';
 
   List<TextPage> _textPages;
@@ -36,7 +37,7 @@ class ReaderViewModel extends Model {
                         (paragraph == paragraphs.first ? 0 : 1);
                   }).reduce((int value, int element) => value + element));
         if (paragraphWordCursor < 0) {
-          print('error paragraphCursor');
+          print('error paragraphCursor $paragraphWordCursor');
         }
         if (paragraphCursor > 0 && paragraphWordCursor > 0) {
           // 拆段落或段落刚好结束，要多扣一个 \n
@@ -44,7 +45,7 @@ class ReaderViewModel extends Model {
         }
         final bool shouldAppendNewLine =
             children.length > 0 && paragraphWordCursor == 0;
-        final bool shouldAppendTextIndent = paragraphWordCursor == 0;
+        final bool shouldAppendTextIndent = textIndentEnable && paragraphWordCursor == 0;
         final String paragraph = paragraphs[paragraphCursor];
         TextSpan paragraphTextSpan = TextSpan(
 //          text:
