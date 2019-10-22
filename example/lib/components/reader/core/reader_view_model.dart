@@ -24,24 +24,25 @@ class RenderViewModel extends Model {
     List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
-    bool skipNewLineAtFirst = false;
     TextPainter textPainter = settings.textPainter;
     while (paragraphCursor < paragraphs.length) {
-      int startWordCursor = skipNewLineAtFirst ? wordCursor + 1 : wordCursor;
-      skipNewLineAtFirst = false;
+      int startWordCursor = wordCursor;
       int endWordCursor;
       List<InlineSpan> children = <InlineSpan>[];
       while (paragraphCursor < paragraphs.length && endWordCursor == null) {
         int paragraphWordCursor = wordCursor -
             (paragraphCursor == 0
                 ? 0
-                : paragraphs
-                .take(paragraphCursor)
-                .map((String paragraph) => paragraph.length + (paragraph == paragraphs.first ? 0 : 1))
-                .reduce((int value, int element) => value + element));
-        if (paragraphWordCursor > 0) {
-          // 拆段落，要多扣一个 \n
-          paragraphWordCursor --;
+                : paragraphs.take(paragraphCursor).map<int>((String paragraph) {
+                    return paragraph.length +
+                        (paragraph == paragraphs.first ? 0 : 1);
+                  }).reduce((int value, int element) => value + element));
+        if (paragraphWordCursor < 0) {
+          print('error paragraphCursor');
+        }
+        if (paragraphCursor > 0 && paragraphWordCursor > 0) {
+          // 拆段落或段落刚好结束，要多扣一个 \n
+          paragraphWordCursor--;
         }
         TextSpan paragraphTextSpan = TextSpan(
           text:
@@ -74,20 +75,27 @@ class RenderViewModel extends Model {
             content
                 .substring(startWordCursor, endWordCursor)
                 .split('\n')
-                .forEach((String pair) => print('pair: $pair'));
+                .forEach((String pair) {
+              if (pair.length < 10) {
+                print('pair: $pair');
+              } else {
+                print(
+                    'pair: ${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}');
+              }
+            });
           }
           wordCursor = endWordCursor;
           if (textInPage.length == position.offset) {
             // 不用拆段落
-            skipNewLineAtFirst = true;// 跳过 \n
+            wordCursor++;
             paragraphCursor++;
           }
         } else {
-          children.add(paragraphTextSpan);
-          wordCursor += (paragraphCursor > 0 && paragraphWordCursor == 0
+          wordCursor += (children.length > 0 && paragraphWordCursor == 0
                   ? 1
                   : 0) +
               paragraphs[paragraphCursor].substring(paragraphWordCursor).length;
+          children.add(paragraphTextSpan);
           paragraphCursor++;
           if (paragraphCursor >= paragraphs.length) {
             endWordCursor = wordCursor;
@@ -98,7 +106,7 @@ class RenderViewModel extends Model {
                   .split('\n')
                   .forEach((String pair) => print('pair: $pair'));
             }
-            break;// 也可以由 while 统一判断
+            break; // 也可以由 while 统一判断
           }
         }
       }
@@ -107,9 +115,6 @@ class RenderViewModel extends Model {
         endWordCursor: endWordCursor,
       ));
     }
-//    if (debug ?? false) {
-//      print('page size: ${textPages.length}');
-//    }
     print('结束');
     _textPages = textPages;
     notifyListeners();
