@@ -9,7 +9,6 @@ import 'package:scoped_model/scoped_model.dart';
 
 class RenderViewModel extends Model {
   static const String textIndentPlaceholder = '\uFFFC';
-  static const String paragraphSpacingPlaceholder = '\uFFFC\n';
 
   List<TextPage> _textPages;
 
