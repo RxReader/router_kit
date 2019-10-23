@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:example/components/reader/core/reader_settings.dart';
+import 'package:example/components/reader/core/util/text_symbol.dart';
 import 'package:example/components/reader/core/view/text_page.dart';
 import 'package:example/components/reader/model/article.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,8 +11,8 @@ import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ReaderViewModel extends Model {
-  static const bool textIndentEnable = false;
-  static const String textIndentPlaceholder = '\uFFFC';
+//  static const bool textIndentEnable = false;
+//  static const String textIndentPlaceholder = TextSymbol.sbcSpace;//'\uFFFC';
 
   List<TextPage> _textPages;
 
@@ -30,10 +31,15 @@ class ReaderViewModel extends Model {
     final double contentHeight = canvas.height -
         settings.style.fontSize *
             settings.style.height; // 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
+    String textIndentPlaceholder = settings.locale.languageCode == 'zh'
+        ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
+        : '';
+//    textIndentPlaceholder = '';
     while (paragraphCursor < paragraphs.length) {
       int startWordCursor = wordCursor;
       int endWordCursor;
       List<InlineSpan> children = <InlineSpan>[];
+      int textIndentTotalSize = 0;
       while (paragraphCursor < paragraphs.length && endWordCursor == null) {
         int paragraphWordCursor = wordCursor -
             (paragraphCursor == 0
@@ -52,11 +58,10 @@ class ReaderViewModel extends Model {
         final bool shouldAppendNewLine =
             children.length > 0 && paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
-            textIndentEnable && paragraphWordCursor == 0;
+            textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
+        textIndentTotalSize += shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
         final String paragraph = paragraphs[paragraphCursor];
         TextSpan paragraphTextSpan = TextSpan(
-//          text:
-//              '${shouldAppendNewLine ? '\n' : ''}${paragraphWordCursor == 0 ? '$textIndentPlaceholder$textIndentPlaceholder' : ''}${paragraph.substring(paragraphWordCursor)}',
           children: <InlineSpan>[
             if (shouldAppendNewLine)
               TextSpan(
@@ -64,8 +69,7 @@ class ReaderViewModel extends Model {
               ),
             if (shouldAppendTextIndent)
               TextSpan(
-                text: '$textIndentPlaceholder$textIndentPlaceholder',
-//                style: TextStyle(fontSize: settings.style.fontSize * 2.8),
+                text: textIndentPlaceholder,
               ),
             TextSpan(
               text: paragraph.substring(paragraphWordCursor),
@@ -91,11 +95,7 @@ class ReaderViewModel extends Model {
             includePlaceholders: true,
           );
 
-          String textInPageClear =
-              textInPage.replaceAll(textIndentPlaceholder, '');
-          int offset = position.offset -
-              (textInPage.length -
-                  textInPageClear.length); // (paragraphCursor + 1) * 2;
+          int offset = position.offset - textIndentTotalSize;
           endWordCursor = startWordCursor + offset;
           wordCursor = endWordCursor;
           if (textInPage.length == position.offset) {
