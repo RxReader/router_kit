@@ -43,7 +43,13 @@ class _ReaderComponentState extends State<ReaderComponent> {
             if (model.textPages == null || model.textPages.isEmpty) {
               return Center(
                 child: GestureDetector(
-                  child: Text('waiting'),
+                  child: Container(
+                    width: 100,
+                    height: 100,
+                    color: Colors.blue,
+                    alignment: Alignment.center,
+                    child: Text('waiting'),
+                  ),
                   onTap: () {
                     _model.typeset(
                       _settings,

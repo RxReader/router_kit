@@ -31,7 +31,7 @@ class ReaderViewModel extends Model {
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-//    textIndentPlaceholder = '';// TEST
+//    final String paragraphSpacingPlaceholder = '\r\n';
     final List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
@@ -59,7 +59,8 @@ class ReaderViewModel extends Model {
             children.length > 0 && paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
-        textIndentTotalSize += shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
+        textIndentTotalSize +=
+            shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
         final String paragraph = paragraphs[paragraphCursor];
         final TextSpan paragraphTextSpan = TextSpan(
           children: <InlineSpan>[
@@ -99,13 +100,16 @@ class ReaderViewModel extends Model {
           wordCursor = endWordCursor;
           if (textInPreview.length == position.offset) {
             // 不用拆段落
-            wordCursor++;// 跳过 \n
+            wordCursor++; // 跳过 \n
             children.add(paragraphTextSpan);
             paragraphCursor++;
           } else {
-            List<InlineSpan> paragraphTextSpanchildren = paragraphTextSpan.children;
+            List<InlineSpan> paragraphTextSpanchildren =
+                paragraphTextSpan.children;
             paragraphTextSpanchildren.removeLast();
-            final String paragraphTextDisplay = paragraph.substring(paragraphWordCursor, paragraph.length - (textInPreview.length - position.offset));
+            final String paragraphTextDisplay = paragraph.substring(
+                paragraphWordCursor,
+                paragraph.length - (textInPreview.length - position.offset));
 //            print(
 //                'paragraphTextDisplay: ${paragraphTextDisplay.length > 30 ? '${paragraphTextDisplay.substring(0, 5)} - ${paragraphTextDisplay.substring(paragraphTextDisplay.length - 5, paragraphTextDisplay.length)}' : paragraphTextDisplay}');
             TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
