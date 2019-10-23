@@ -11,9 +11,6 @@ import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ReaderViewModel extends Model {
-//  static const bool textIndentEnable = false;
-//  static const String textIndentPlaceholder = TextSymbol.sbcSpace;//'\uFFFC';
-
   List<TextPage> _textPages;
 
   List<TextPage> get textPages => _textPages;
@@ -31,7 +28,6 @@ class ReaderViewModel extends Model {
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-    final String paragraphSpacingPlaceholder = '';//'\r\n';
     final List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
@@ -58,12 +54,6 @@ class ReaderViewModel extends Model {
             children.length > 0 && paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
-        final bool shouldAppendParagraphSpacing =
-            paragraphSpacingPlaceholder.isNotEmpty &&
-                paragraphCursor < paragraphs.length - 1; // 最后一段不用加上段间距
-        final int paragraphSpacingAppendSize = shouldAppendParagraphSpacing
-            ? paragraphSpacingPlaceholder.length
-            : 0;
         final String paragraph = paragraphs[paragraphCursor];
         final TextSpan paragraphTextSpan = TextSpan(
           children: <InlineSpan>[
@@ -78,10 +68,6 @@ class ReaderViewModel extends Model {
             TextSpan(
               text: paragraph.substring(paragraphWordCursor),
             ),
-            if (shouldAppendParagraphSpacing)
-              TextSpan(
-                text: paragraphSpacingPlaceholder,
-              ),
           ],
         );
         textPainter.text = TextSpan(
@@ -102,14 +88,10 @@ class ReaderViewModel extends Model {
             includeSemanticsLabels: false,
             includePlaceholders: true,
           );
-          if (position.offset <
-              textInPreview.length - paragraphSpacingAppendSize) {
+          if (position.offset < textInPreview.length) {
             // 拆段落
             List<InlineSpan> paragraphTextSpanChildrenDisplay =
                 paragraphTextSpan.children;
-            if (shouldAppendParagraphSpacing) {
-              paragraphTextSpanChildrenDisplay.removeLast();
-            }
             paragraphTextSpanChildrenDisplay.removeLast();
             final int paragraphWordBlockCursor =
                 paragraph.length - (textInPreview.length - position.offset);
@@ -123,20 +105,21 @@ class ReaderViewModel extends Model {
             ]);
             children.add(paragraphTextSpanDisplay);
 
-            wordCursor += (shouldAppendNewLine ? 1 : 0) + paragraphWordBlockCursor - paragraphWordCursor;
+            wordCursor += (shouldAppendNewLine ? 1 : 0) +
+                paragraphWordBlockCursor -
+                paragraphWordCursor;
             endWordCursor = wordCursor;
           } else {
             List<InlineSpan> paragraphTextSpanChildren =
                 paragraphTextSpan.children;
-            if (shouldAppendParagraphSpacing) {
-              paragraphTextSpanChildren.removeLast();
-            }
             TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
               ...paragraphTextSpanChildren,
             ]);
             children.add(paragraphTextSpanDisplay);
 
-            wordCursor += (shouldAppendNewLine ? 1 : 0) + paragraph.length - paragraphWordCursor;
+            wordCursor += (shouldAppendNewLine ? 1 : 0) +
+                paragraph.length -
+                paragraphWordCursor;
             endWordCursor = wordCursor;
             wordCursor++; // 跳过 \n
             paragraphCursor++;
@@ -144,7 +127,8 @@ class ReaderViewModel extends Model {
         } else {
           children.add(paragraphTextSpan);
           wordCursor += (shouldAppendNewLine ? 1 : 0) +
-              paragraph.length - paragraphWordCursor;
+              paragraph.length -
+              paragraphWordCursor;
           paragraphCursor++;
           if (paragraphCursor >= paragraphs.length) {
             endWordCursor = wordCursor;
