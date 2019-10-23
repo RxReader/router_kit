@@ -31,7 +31,7 @@ class ReaderViewModel extends Model {
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-    final String paragraphSpacingPlaceholder = '\r\n';
+    final String paragraphSpacingPlaceholder = '';//'\r\n';
     final List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
@@ -125,7 +125,7 @@ class ReaderViewModel extends Model {
             ]);
             children.add(paragraphTextSpanDisplay);
 
-            wordCursor += paragraphWordBlockCursor - paragraphWordCursor;
+            wordCursor += (shouldAppendNewLine ? 1 : 0) + paragraphWordBlockCursor - paragraphWordCursor;
             endWordCursor = wordCursor;
           } else {
             List<InlineSpan> paragraphTextSpanChildren =
