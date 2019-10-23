@@ -23,18 +23,18 @@ class ReaderViewModel extends Model {
     List<TextPage> textPages = <TextPage>[];
     Article article = await loadArticle();
     final String content = article.content;
-    final List<String> paragraphs = content.split('\n');
-    int paragraphCursor = 0;
-    int wordCursor = 0;
     TextPainter textPainter = settings.textPainter;
     final double contentWidth = canvas.width;
     final double contentHeight = canvas.height -
         settings.style.fontSize *
             settings.style.height; // 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
-    String textIndentPlaceholder = settings.locale.languageCode == 'zh'
+    final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-//    textIndentPlaceholder = '';
+//    textIndentPlaceholder = '';// TEST
+    final List<String> paragraphs = content.split('\n');
+    int paragraphCursor = 0;
+    int wordCursor = 0;
     while (paragraphCursor < paragraphs.length) {
       int startWordCursor = wordCursor;
       int endWordCursor;
@@ -61,7 +61,7 @@ class ReaderViewModel extends Model {
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
         textIndentTotalSize += shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
         final String paragraph = paragraphs[paragraphCursor];
-        TextSpan paragraphTextSpan = TextSpan(
+        final TextSpan paragraphTextSpan = TextSpan(
           children: <InlineSpan>[
             if (shouldAppendNewLine)
               TextSpan(
@@ -86,16 +86,16 @@ class ReaderViewModel extends Model {
         textPainter.layout(maxWidth: contentWidth);
         if (textPainter.height >= contentHeight) {
           // 满一页
-          TextPosition position = textPainter.getPositionForOffset(Offset(
+          final TextPosition position = textPainter.getPositionForOffset(Offset(
             contentWidth,
             contentHeight,
           )); // 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
-          String textInPage = textPainter.text.toPlainText(
+          final String textInPage = textPainter.text.toPlainText(
             includeSemanticsLabels: false,
             includePlaceholders: true,
           );
 
-          int offset = position.offset - textIndentTotalSize;
+          final int offset = position.offset - textIndentTotalSize;
           endWordCursor = startWordCursor + offset;
           wordCursor = endWordCursor;
           if (textInPage.length == position.offset) {
@@ -106,8 +106,8 @@ class ReaderViewModel extends Model {
           } else {
             List<InlineSpan> children = paragraphTextSpan.children;
             children.removeLast();
-            paragraphTextSpan = TextSpan(children: <InlineSpan>[
-              ...children,
+//            paragraphTextSpan = TextSpan(children: <InlineSpan>[
+//              ...children,
 //              TextSpan(
 //                text: paragraph.substring(
 //                    paragraphWordCursor,
@@ -119,7 +119,7 @@ class ReaderViewModel extends Model {
 //                                .reduce((int value, int element) =>
 //                                    value + element))),
 //              ),
-            ]);
+//            ]);
 //            print('xxx: ${paragraphCursor == 0 ? 0 : endWordCursor -
 //                paragraphs
 //                    .take(paragraphCursor)
