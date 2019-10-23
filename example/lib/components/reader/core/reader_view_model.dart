@@ -58,8 +58,6 @@ class ReaderViewModel extends Model {
             children.length > 0 && paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
-//        textIndentTotalSize +=
-//            shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
         final bool shouldAppendParagraphSpacing =
             paragraphSpacingPlaceholder.isNotEmpty &&
                 paragraphCursor < paragraphs.length - 1; // 最后一段不用加上段间距
@@ -107,18 +105,18 @@ class ReaderViewModel extends Model {
           if (position.offset <
               textInPreview.length - paragraphSpacingAppendSize) {
             // 拆段落
-            List<InlineSpan> paragraphTextSpanChildren =
+            List<InlineSpan> paragraphTextSpanChildrenDisplay =
                 paragraphTextSpan.children;
             if (shouldAppendParagraphSpacing) {
-              paragraphTextSpanChildren.removeLast();
+              paragraphTextSpanChildrenDisplay.removeLast();
             }
-            paragraphTextSpanChildren.removeLast();
+            paragraphTextSpanChildrenDisplay.removeLast();
             final int paragraphWordBlockCursor =
                 paragraph.length - (textInPreview.length - position.offset);
             final String paragraphTextDisplay = paragraph.substring(
                 paragraphWordCursor, paragraphWordBlockCursor);
             TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
-              ...paragraphTextSpanChildren,
+              ...paragraphTextSpanChildrenDisplay,
               TextSpan(
                 text: paragraphTextDisplay,
               ),
