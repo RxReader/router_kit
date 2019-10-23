@@ -86,6 +86,23 @@ class _ReaderComponentState extends State<ReaderComponent> {
                   child: Container(
                     color: Colors.green,
                     height: 240,
+                    child: PageView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        TextPage textPage = model.textPages[index];
+                        return Text.rich(
+                          TextSpan(
+                            children: textPage.children,
+                            style: _settings.style,
+                          ),
+                          strutStyle: _settings.strutStyle,
+                          textAlign: _settings.textAlign,
+                          textDirection: _settings.textDirection,
+                          textScaleFactor: _settings.textScaleFactor,
+                          locale: _settings.locale,
+                        );
+                      },
+                      itemCount: model.textPages.length,
+                    ),
                   ),
                 ),
               ],

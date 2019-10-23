@@ -103,16 +103,16 @@ class ReaderViewModel extends Model {
             children.add(paragraphTextSpan);
             paragraphCursor++;
           } else {
-            List<InlineSpan> children = paragraphTextSpan.children;
-            children.removeLast();
+            List<InlineSpan> paragraphTextSpanchildren = paragraphTextSpan.children;
+            paragraphTextSpanchildren.removeLast();
             final String paragraphTextDisplay = paragraph.substring(paragraphWordCursor, paragraph.length - (textInPreview.length - position.offset));
-            print(
-                'paragraphTextDisplay: ${paragraphTextDisplay.length > 30 ? '${paragraphTextDisplay.substring(0, 5)} - ${paragraphTextDisplay.substring(paragraphTextDisplay.length - 5, paragraphTextDisplay.length)}' : paragraphTextDisplay}');
+//            print(
+//                'paragraphTextDisplay: ${paragraphTextDisplay.length > 30 ? '${paragraphTextDisplay.substring(0, 5)} - ${paragraphTextDisplay.substring(paragraphTextDisplay.length - 5, paragraphTextDisplay.length)}' : paragraphTextDisplay}');
             TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
-              ...children,
-//              TextSpan(
-//                text: paragraphTextFixed,
-//              ),
+              ...paragraphTextSpanchildren,
+              TextSpan(
+                text: paragraphTextDisplay,
+              ),
             ]);
             children.add(paragraphTextSpanDisplay);
           }
@@ -131,13 +131,14 @@ class ReaderViewModel extends Model {
         startWordCursor: startWordCursor,
         endWordCursor: endWordCursor,
         content: content,
+        children: children,
       ));
     }
-    textPages
-        .map((TextPage textPage) =>
-            content.substring(textPage.startWordCursor, textPage.endWordCursor))
-        .forEach((String pair) => print(
-            'pair: ${pair.length > 30 ? '${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}' : pair}'));
+//    textPages
+//        .map((TextPage textPage) =>
+//            content.substring(textPage.startWordCursor, textPage.endWordCursor))
+//        .forEach((String pair) => print(
+//            'pair: ${pair.length > 30 ? '${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}' : pair}'));
     print('结束');
     _textPages = textPages;
     notifyListeners();
