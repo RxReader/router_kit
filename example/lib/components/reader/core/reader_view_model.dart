@@ -52,7 +52,7 @@ class ReaderViewModel extends Model {
           print('error paragraphCursor $paragraphWordCursor');
         }
         if (paragraphCursor > 0 && paragraphWordCursor > 0) {
-          // 拆段落或段落刚好结束，要多扣一个 \n
+          // 拆段落结束一页或不用拆段落结束一页，要多扣一个 \n
           paragraphWordCursor--;
         }
         final bool shouldAppendNewLine =
