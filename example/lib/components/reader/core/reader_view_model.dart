@@ -89,55 +89,32 @@ class ReaderViewModel extends Model {
           final TextPosition position = textPainter.getPositionForOffset(Offset(
             contentWidth,
             contentHeight,
-          )); // 屏幕可见区域，可能会半行字，故而 contentHeight 要预留一行空间
-          final String textInPage = textPainter.text.toPlainText(
+          )); // 屏幕可见区域，可能会是半行字，故而上文中 contentHeight 要预留一行空间
+          final String textInPreview = textPainter.text.toPlainText(
             includeSemanticsLabels: false,
             includePlaceholders: true,
           );
-
           final int offset = position.offset - textIndentTotalSize;
           endWordCursor = startWordCursor + offset;
           wordCursor = endWordCursor;
-          if (textInPage.length == position.offset) {
+          if (textInPreview.length == position.offset) {
             // 不用拆段落
-            wordCursor++;
+            wordCursor++;// 跳过 \n
             children.add(paragraphTextSpan);
             paragraphCursor++;
           } else {
             List<InlineSpan> children = paragraphTextSpan.children;
             children.removeLast();
-//            paragraphTextSpan = TextSpan(children: <InlineSpan>[
-//              ...children,
+            final String paragraphTextDisplay = paragraph.substring(paragraphWordCursor, paragraph.length - (textInPreview.length - position.offset));
+            print(
+                'paragraphTextDisplay: ${paragraphTextDisplay.length > 30 ? '${paragraphTextDisplay.substring(0, 5)} - ${paragraphTextDisplay.substring(paragraphTextDisplay.length - 5, paragraphTextDisplay.length)}' : paragraphTextDisplay}');
+            TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
+              ...children,
 //              TextSpan(
-//                text: paragraph.substring(
-//                    paragraphWordCursor,
-//                    paragraph.length -
-//                        (wordCursor -
-//                            paragraphs
-//                                .take(paragraphCursor)
-//                                .map((String paragraph) => paragraph.length + 1)
-//                                .reduce((int value, int element) =>
-//                                    value + element))),
+//                text: paragraphTextFixed,
 //              ),
-//            ]);
-//            print('xxx: ${paragraphCursor == 0 ? 0 : endWordCursor -
-//                paragraphs
-//                    .take(paragraphCursor)
-//                    .map((String paragraph) => paragraph.length + 1)
-//                    .reduce((int value, int element) =>
-//                value + element)}');
-//            String pair = paragraph.substring(
-//                paragraphWordCursor,
-//                paragraph.length -
-//                    (paragraphCursor == 0 ? 0 : endWordCursor -
-//                        paragraphs
-//                            .take(paragraphCursor)
-//                            .map((String paragraph) => paragraph.length + 1)
-//                            .reduce((int value, int element) =>
-//                        value + element)));
-//            print(
-//                'xxx: ${pair.length > 30 ? '${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}' : pair}');
-            children.add(paragraphTextSpan);
+            ]);
+            children.add(paragraphTextSpanDisplay);
           }
         } else {
           wordCursor += (shouldAppendNewLine ? 1 : 0) +
