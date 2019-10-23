@@ -31,7 +31,7 @@ class ReaderViewModel extends Model {
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-//    final String paragraphSpacingPlaceholder = '\r\n';
+    final String paragraphSpacingPlaceholder = '\r\n';
     final List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
@@ -39,7 +39,8 @@ class ReaderViewModel extends Model {
       int startWordCursor = wordCursor;
       int endWordCursor;
       List<InlineSpan> children = <InlineSpan>[];
-      int textIndentTotalSize = 0;
+//      int textIndentTotalSize = 0;
+//      int paragraphSpacingTotalSize = 0;
       while (paragraphCursor < paragraphs.length && endWordCursor == null) {
         int paragraphWordCursor = wordCursor -
             (paragraphCursor == 0
@@ -59,8 +60,15 @@ class ReaderViewModel extends Model {
             children.length > 0 && paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
-        textIndentTotalSize +=
-            shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
+//        textIndentTotalSize +=
+//            shouldAppendTextIndent ? textIndentPlaceholder.length : 0;
+        final bool shouldAppendParagraphSpacing =
+            paragraphSpacingPlaceholder.isNotEmpty &&
+                paragraphCursor < paragraphs.length - 1; // 最后一段不用加上段间距
+        final int paragraphSpacingAppendSize = shouldAppendParagraphSpacing
+            ? paragraphSpacingPlaceholder.length
+            : 0;
+//        paragraphSpacingTotalSize += paragraphSpacingSizeAppend;
         final String paragraph = paragraphs[paragraphCursor];
         final TextSpan paragraphTextSpan = TextSpan(
           children: <InlineSpan>[
@@ -75,6 +83,10 @@ class ReaderViewModel extends Model {
             TextSpan(
               text: paragraph.substring(paragraphWordCursor),
             ),
+            if (shouldAppendParagraphSpacing)
+              TextSpan(
+                text: paragraphSpacingPlaceholder,
+              ),
           ],
         );
         textPainter.text = TextSpan(
@@ -95,35 +107,49 @@ class ReaderViewModel extends Model {
             includeSemanticsLabels: false,
             includePlaceholders: true,
           );
-          final int offset = position.offset - textIndentTotalSize;
-          endWordCursor = startWordCursor + offset;
-          wordCursor = endWordCursor;
-          if (textInPreview.length == position.offset) {
-            // 不用拆段落
-            wordCursor++; // 跳过 \n
-            children.add(paragraphTextSpan);
-            paragraphCursor++;
-          } else {
-            List<InlineSpan> paragraphTextSpanchildren =
+          if (position.offset <
+              textInPreview.length - paragraphSpacingAppendSize) {
+            // 拆段落
+            List<InlineSpan> paragraphTextSpanChildren =
                 paragraphTextSpan.children;
-            paragraphTextSpanchildren.removeLast();
+            if (shouldAppendParagraphSpacing) {
+              paragraphTextSpanChildren.removeLast();
+            }
+            paragraphTextSpanChildren.removeLast();
+            final int paragraphWordBlockCursor =
+                paragraph.length - (textInPreview.length - position.offset);
             final String paragraphTextDisplay = paragraph.substring(
-                paragraphWordCursor,
-                paragraph.length - (textInPreview.length - position.offset));
-//            print(
-//                'paragraphTextDisplay: ${paragraphTextDisplay.length > 30 ? '${paragraphTextDisplay.substring(0, 5)} - ${paragraphTextDisplay.substring(paragraphTextDisplay.length - 5, paragraphTextDisplay.length)}' : paragraphTextDisplay}');
+                paragraphWordCursor, paragraphWordBlockCursor);
             TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
-              ...paragraphTextSpanchildren,
+              ...paragraphTextSpanChildren,
               TextSpan(
                 text: paragraphTextDisplay,
               ),
             ]);
             children.add(paragraphTextSpanDisplay);
+
+            wordCursor += paragraphWordBlockCursor - paragraphWordCursor;
+            endWordCursor = wordCursor;
+          } else {
+            List<InlineSpan> paragraphTextSpanChildren =
+                paragraphTextSpan.children;
+            if (shouldAppendParagraphSpacing) {
+              paragraphTextSpanChildren.removeLast();
+            }
+            TextSpan paragraphTextSpanDisplay = TextSpan(children: <InlineSpan>[
+              ...paragraphTextSpanChildren,
+            ]);
+            children.add(paragraphTextSpanDisplay);
+
+            wordCursor += (shouldAppendNewLine ? 1 : 0) + paragraph.length - paragraphWordCursor;
+            endWordCursor = wordCursor;
+            wordCursor++; // 跳过 \n
+            paragraphCursor++;
           }
         } else {
-          wordCursor += (shouldAppendNewLine ? 1 : 0) +
-              paragraph.substring(paragraphWordCursor).length;
           children.add(paragraphTextSpan);
+          wordCursor += (shouldAppendNewLine ? 1 : 0) +
+              paragraph.length - paragraphWordCursor;
           paragraphCursor++;
           if (paragraphCursor >= paragraphs.length) {
             endWordCursor = wordCursor;
