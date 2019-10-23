@@ -39,8 +39,6 @@ class ReaderViewModel extends Model {
       int startWordCursor = wordCursor;
       int endWordCursor;
       List<InlineSpan> children = <InlineSpan>[];
-//      int textIndentTotalSize = 0;
-//      int paragraphSpacingTotalSize = 0;
       while (paragraphCursor < paragraphs.length && endWordCursor == null) {
         int paragraphWordCursor = wordCursor -
             (paragraphCursor == 0
@@ -68,7 +66,6 @@ class ReaderViewModel extends Model {
         final int paragraphSpacingAppendSize = shouldAppendParagraphSpacing
             ? paragraphSpacingPlaceholder.length
             : 0;
-//        paragraphSpacingTotalSize += paragraphSpacingSizeAppend;
         final String paragraph = paragraphs[paragraphCursor];
         final TextSpan paragraphTextSpan = TextSpan(
           children: <InlineSpan>[
