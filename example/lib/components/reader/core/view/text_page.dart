@@ -4,12 +4,12 @@ class TextPage {
   final int startWordCursor;
   final int endWordCursor;
   final String content;
-  final List<InlineSpan> children;
+  final TextSpan textSpan;
 
   TextPage({
     @required this.startWordCursor,
     @required this.endWordCursor,
     @required this.content,
-    @required this.children,
+    @required this.textSpan,
   });
 }
