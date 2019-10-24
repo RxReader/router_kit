@@ -111,7 +111,10 @@ class _ReaderComponentState extends State<ReaderComponent> {
                         return Stack(
                           children: <Widget>[
                             Text.rich(
-                              textPage.textSpan,
+                              TextSpan(
+                                children: textPage.spansInPage,
+                                style: _settings.style,
+                              ),
                               style: _settings.style,
                               strutStyle: _settings.strutStyle,
                               textAlign: _settings.textAlign,

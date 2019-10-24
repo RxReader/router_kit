@@ -93,9 +93,11 @@ class ReaderViewModel extends Model {
             final double fullHeightForCaret = textPainter.getFullHeightForCaret(
               position,
               Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height),
-            );// 偏大
-            final double fontHeight = settings.style.fontSize * settings.style.height;// 偏小
-            final double averageHeight = (fullHeightForCaret + fontHeight) / 2.0;// 取平均值
+            ); // 偏大
+            final double fontHeight =
+                settings.style.fontSize * settings.style.height; // 偏小
+            final double averageHeight =
+                (fullHeightForCaret + fontHeight) / 2.0; // 取平均值
             if (canvas.height - offsetForCaret.dy < averageHeight) {
               // 半行文字
               position = textPainter.getPositionForOffset(
@@ -154,10 +156,7 @@ class ReaderViewModel extends Model {
       textPages.add(TextPage(
         startWordCursor: startWordCursor,
         endWordCursor: endWordCursor,
-        textSpan: TextSpan(
-          children: spansInPage,
-          style: settings.style,
-        ),
+        spansInPage: spansInPage,
       ));
     }
 //    textPages

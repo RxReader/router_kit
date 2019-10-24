@@ -19,6 +19,10 @@ class TextSymbol {
   /// 空格 - 全角
   static const String sbcSpace = '\u3000';
 
+  /// 段间距占位符
+  static const String paragraphSpacingPlaceholder = '\uFFFC\n';
+  static const String paragraphSpacingPlaceholderFixed = '\r\n';
+
   static String toDBC(String text) {
     return text;
   }
