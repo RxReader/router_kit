@@ -1,5 +1,3 @@
-import 'dart:ui' as ui;
-
 import 'package:example/components/reader/core/reader_settings.dart';
 import 'package:example/components/reader/core/util/text_symbol.dart';
 import 'package:example/components/reader/core/view/text_page.dart';
@@ -21,7 +19,6 @@ class ReaderViewModel extends Model {
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-    final String paragraphSpacingPlaceholder = '\uFFFC\n';
     final List<String> paragraphs = content.split(TextSymbol.newLine);
     int paragraphCursor = 0;
     int wordCursor = 0;
@@ -43,7 +40,7 @@ class ReaderViewModel extends Model {
         final bool shouldAppendNewLine =
             spansInPage.length > 0 && paragraphWordCursor == 0;
         final bool shouldAppendParagraphSpacing =
-            paragraphSpacingPlaceholder.isNotEmpty &&
+            TextSymbol.paragraphSpacingPlaceholder.isNotEmpty &&
                 spansInPage.length > 0 &&
                 paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
@@ -56,7 +53,7 @@ class ReaderViewModel extends Model {
             ),
           if (shouldAppendParagraphSpacing)
             TextSpan(
-              text: paragraphSpacingPlaceholder,
+              text: TextSymbol.paragraphSpacingPlaceholder,
               style: TextStyle(fontSize: 7.0),
             ),
           if (shouldAppendTextIndent)
@@ -84,7 +81,7 @@ class ReaderViewModel extends Model {
               textPainter.text.getSpanForPosition(position);
           String textForPosition = spanForPosition.toPlainText(
               includeSemanticsLabels: false, includePlaceholders: true);
-          if (textForPosition == paragraphSpacingPlaceholder) {
+          if (textForPosition == TextSymbol.paragraphSpacingPlaceholder) {
             // 最后一段还没开始就结束了
             endWordCursor = wordCursor;
           } else {
@@ -106,7 +103,7 @@ class ReaderViewModel extends Model {
             spanForPosition = textPainter.text.getSpanForPosition(position);
             textForPosition = spanForPosition.toPlainText(
                 includeSemanticsLabels: false, includePlaceholders: true);
-            if (textForPosition == paragraphSpacingPlaceholder) {
+            if (textForPosition == TextSymbol.paragraphSpacingPlaceholder) {
               // 只显示一半文字的最后一行是段落的第一行
               endWordCursor = wordCursor;
             } else {
