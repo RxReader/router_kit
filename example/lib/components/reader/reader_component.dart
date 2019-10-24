@@ -1,6 +1,7 @@
 import 'package:example/components/reader/core/reader_settings.dart';
 import 'package:example/components/reader/core/reader_view.dart';
 import 'package:example/components/reader/core/reader_view_model.dart';
+import 'package:example/components/reader/core/util/text_symbol.dart';
 import 'package:example/components/reader/core/view/text_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -112,7 +113,18 @@ class _ReaderComponentState extends State<ReaderComponent> {
                           children: <Widget>[
                             Text.rich(
                               TextSpan(
-                                children: textPage.spansInPage,
+                                children: textPage.spansInPage.map((InlineSpan span) {
+                                  if (span is TextSpan && span.text == TextSymbol.paragraphSpacingPlaceholder) {
+                                    return TextSpan(
+                                      text: TextSymbol.paragraphSpacingPlaceholderFixed,
+                                      children: span.children,
+                                      style: span.style,
+                                      recognizer: span.recognizer,
+                                      semanticsLabel: span.semanticsLabel,
+                                    );
+                                  }
+                                  return span;
+                                }).toList(),
                                 style: _settings.style,
                               ),
                               style: _settings.style,
