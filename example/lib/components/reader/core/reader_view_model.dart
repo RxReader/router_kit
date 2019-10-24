@@ -1,12 +1,10 @@
-import 'dart:math' as math;
+import 'dart:ui' as ui;
 
 import 'package:example/components/reader/core/reader_settings.dart';
 import 'package:example/components/reader/core/util/text_symbol.dart';
 import 'package:example/components/reader/core/view/text_page.dart';
 import 'package:example/components/reader/model/article.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -20,12 +18,11 @@ class ReaderViewModel extends Model {
     print('开始');
     final Article article = await loadArticle();
     final String content = article.content;
-    final int maxLines =
-        canvas.height ~/ (settings.style.fontSize * settings.style.height);
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-    final List<String> paragraphs = content.split('\n');
+    final String paragraphSpacingPlaceholder = '\uFFFC\n';
+    final List<String> paragraphs = content.split(TextSymbol.newLine);
     int paragraphCursor = 0;
     int wordCursor = 0;
     while (paragraphCursor < paragraphs.length) {
@@ -45,21 +42,29 @@ class ReaderViewModel extends Model {
         }
         final bool shouldAppendNewLine =
             spansInPage.length > 0 && paragraphWordCursor == 0;
+        final bool shouldAppendParagraphSpacing =
+            paragraphSpacingPlaceholder.isNotEmpty &&
+                spansInPage.length > 0 &&
+                paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
         final String paragraph = paragraphs[paragraphCursor];
-        final String paragraphInPreview = paragraph.substring(paragraphWordCursor);
         final List<InlineSpan> paragraphSpans = <InlineSpan>[
           if (shouldAppendNewLine)
             TextSpan(
-              text: '\n',
+              text: TextSymbol.newLine,
+            ),
+          if (shouldAppendParagraphSpacing)
+            TextSpan(
+              text: paragraphSpacingPlaceholder,
+              style: TextStyle(fontSize: 7.0),
             ),
           if (shouldAppendTextIndent)
             TextSpan(
               text: textIndentPlaceholder,
             ),
           TextSpan(
-            text: paragraphInPreview,
+            text: paragraph.substring(paragraphWordCursor),
           ),
         ];
         final TextPainter textPainter = settings.textPainter;
@@ -73,38 +78,66 @@ class ReaderViewModel extends Model {
         textPainter.layout(maxWidth: canvas.width);
         if (textPainter.height >= canvas.height) {
           // 排满一页
-          textPainter.maxLines = maxLines;
-          textPainter.layout(maxWidth: canvas.width);
-          final String textInPreview = textPainter.text.toPlainText(
-            includeSemanticsLabels: false,
-            includePlaceholders: true,
-          );
-          final TextPosition position = textPainter
-              .getPositionForOffset(Offset(canvas.width, canvas.height));
-          final int paragraphWordBlockCursor =
-              paragraph.length - (textInPreview.length - position.offset);
-          if (paragraphWordBlockCursor < paragraphWordCursor) {
+          TextPosition position = textPainter.getPositionForOffset(
+              Offset(canvas.width, canvas.height)); // 可见区域范围内的文字，可能文字只会显示半行
+          InlineSpan spanForPosition =
+              textPainter.text.getSpanForPosition(position);
+          String textForPosition = spanForPosition.toPlainText(
+              includeSemanticsLabels: false, includePlaceholders: true);
+          if (textForPosition == paragraphSpacingPlaceholder) {
             // 最后一段还没开始就结束了
             endWordCursor = wordCursor;
-          } else if (position.offset == textInPreview.length) {
-            // 最后一段刚好结束
-            spansInPage.addAll(paragraphSpans);
-            wordCursor += paragraph.length /*paragraphWordBlockCursor*/ -
-                paragraphWordCursor;
-            endWordCursor = wordCursor;
-            wordCursor++; // 跳过'\n'
-            paragraphCursor++;
           } else {
-            // 最后一段需要拆段
-            paragraphSpans.removeLast();
-            final String paragraphTextDisplay = paragraph.substring(
-                paragraphWordCursor, paragraphWordBlockCursor);
-            paragraphSpans.add(TextSpan(
-              text: paragraphTextDisplay,
-            ));
-            spansInPage.addAll(paragraphSpans);
-            wordCursor += paragraphWordBlockCursor - paragraphWordCursor;
-            endWordCursor = wordCursor;
+            Offset offsetForCaret = textPainter.getOffsetForCaret(
+                position, Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height));
+            final double fullHeightForCaret = textPainter.getFullHeightForCaret(
+              position,
+              Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height),
+            );// 偏大
+            final double fontHeight = settings.style.fontSize * settings.style.height;// 偏小
+            final double averageHeight = (fullHeightForCaret + fontHeight) / 2.0;// 取平均值
+            if (canvas.height - offsetForCaret.dy < averageHeight) {
+              // 半行文字
+              position = textPainter.getPositionForOffset(
+                  Offset(canvas.width, canvas.height - averageHeight));
+            }
+            spanForPosition = textPainter.text.getSpanForPosition(position);
+            textForPosition = spanForPosition.toPlainText(
+                includeSemanticsLabels: false, includePlaceholders: true);
+            if (textForPosition == paragraphSpacingPlaceholder) {
+              // 只显示一半文字的最后一行是段落的第一行
+              endWordCursor = wordCursor;
+            } else {
+              final String textInPreview = textPainter.text.toPlainText(
+                includeSemanticsLabels: false,
+                includePlaceholders: true,
+              );
+              final int paragraphWordBlockCursor =
+                  paragraph.length - (textInPreview.length - position.offset);
+              if (paragraphWordBlockCursor < paragraphWordCursor) {
+                // 最后一段还没开始就结束了，offset 定位换行符
+                endWordCursor = wordCursor;
+              } else if (position.offset == textInPreview.length) {
+                // 最后一段刚好结束
+                spansInPage.addAll(paragraphSpans);
+                wordCursor += paragraph.length /*paragraphWordBlockCursor*/ -
+                    paragraphWordCursor;
+                endWordCursor = wordCursor;
+                wordCursor++; // 跳过'\n'
+                paragraphCursor++;
+              } else {
+                // 最后一段需要拆段
+                paragraphSpans.removeLast();
+                final String paragraphTextDisplay = paragraph.substring(
+                    paragraphWordCursor, paragraphWordBlockCursor);
+                paragraphSpans.add(TextSpan(
+                  text: paragraphTextDisplay,
+                ));
+                spansInPage.addAll(paragraphSpans);
+                wordCursor += paragraphWordBlockCursor - paragraphWordCursor;
+                endWordCursor = wordCursor;
+              }
+            }
           }
         } else {
           // 没有排满一页

@@ -17,7 +17,7 @@ class ReaderSettings {
         height: 1.0,
       );
 
-  StrutStyle get strutStyle => StrutStyle.fromTextStyle(style);
+  StrutStyle get strutStyle => StrutStyle.disabled;// 必须禁用；不然有可能出现强制行高，影响段间距实现问题。
 
   Locale get locale => Locale.fromSubtags(
         languageCode: 'zh',

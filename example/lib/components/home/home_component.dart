@@ -81,6 +81,36 @@ class _HomeComponentState extends State<HomeComponent> {
               AppRouter.defaultRouter(context).pushNamed(ReaderComponentProvider.routeName);
             },
           ),
+          Row(
+            children: <Widget>[
+              Container(
+                color: Colors.red,
+                child: Text('测试\n测\n试'),
+              ),
+              Container(
+                color: Colors.green,
+                child: Text.rich(TextSpan(
+                  children: <InlineSpan>[
+                    TextSpan(
+                      text: '测试\n',
+                    ),
+                    TextSpan(
+                      text: '测',
+                      style: TextStyle(
+                        fontSize: 2.0,
+                      ),
+                    ),
+                    TextSpan(
+                      text: '\n'
+                    ),
+                    TextSpan(
+                      text: '试'
+                    )
+                  ],
+                )),
+              )
+            ],
+          ),
 //          ListTile(
 //            title: const Text('Test'),
 //            onTap: () async {
