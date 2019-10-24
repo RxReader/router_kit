@@ -49,6 +49,7 @@ class ReaderViewModel extends Model {
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
         final String paragraph = paragraphs[paragraphCursor];
+        final String paragraphInPreview = paragraph.substring(paragraphWordCursor);
         final List<InlineSpan> paragraphSpans = <InlineSpan>[
           if (shouldAppendNewLine)
             TextSpan(
@@ -59,7 +60,7 @@ class ReaderViewModel extends Model {
               text: textIndentPlaceholder,
             ),
           TextSpan(
-            text: paragraph.substring(paragraphWordCursor),
+            text: paragraphInPreview,
           ),
         ];
         final TextPainter textPainter = settings.textPainter;

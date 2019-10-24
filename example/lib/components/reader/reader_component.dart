@@ -80,6 +80,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                                     textPage.endWordCursor),
                                 style: _settings.style,
                               ),
+                              style: _settings.style,
                               strutStyle: _settings.strutStyle,
                               textAlign: _settings.textAlign,
                               textDirection: _settings.textDirection,
