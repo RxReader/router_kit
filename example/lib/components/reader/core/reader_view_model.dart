@@ -15,7 +15,6 @@ class ReaderViewModel extends Model {
 
   List<TextPage> get textPages => _textPages;
 
-  // TODO 空行测试
   Future<void> typeset(ReaderSettings settings, Size canvas) async {
     List<TextPage> textPages = <TextPage>[];
     print('开始');
