@@ -113,10 +113,15 @@ class _ReaderComponentState extends State<ReaderComponent> {
                           children: <Widget>[
                             Text.rich(
                               TextSpan(
-                                children: textPage.spansInPage.map((InlineSpan span) {
-                                  if (span is TextSpan && span.text == TextSymbol.paragraphSpacingPlaceholder) {
+                                children:
+                                    textPage.spansInPage.map((InlineSpan span) {
+                                  if (span is TextSpan &&
+                                      span.text ==
+                                          TextSymbol
+                                              .paragraphSpacingPlaceholder) {
                                     return TextSpan(
-                                      text: TextSymbol.paragraphSpacingPlaceholderFixed,
+                                      text: TextSymbol
+                                          .paragraphSpacingPlaceholderFixed,
                                       children: span.children,
                                       style: span.style,
                                       recognizer: span.recognizer,
@@ -134,6 +139,19 @@ class _ReaderComponentState extends State<ReaderComponent> {
                               textScaleFactor: _settings.textScaleFactor,
                               locale: _settings.locale,
                             ),
+                            ...textPage.paragraphEndOffsetMap.entries
+                                .map((MapEntry<int, Offset> entry) {
+                                  print('entry: ${entry.value.dx} ${entry.value.dy}');
+                              return Positioned(
+                                left: entry.value.dx,
+                                top: entry.value.dy,
+                                child: Container(
+                                  color: Colors.amber,
+                                  width: 5,
+                                  height: 5,
+                                ),
+                              );
+                            }).toList(),
                             Align(
                               alignment: Alignment.center,
                               child: Text(

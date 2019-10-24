@@ -26,6 +26,7 @@ class ReaderViewModel extends Model {
       int startWordCursor = wordCursor;
       int endWordCursor;
       List<InlineSpan> spansInPage = <InlineSpan>[];
+      Map<int, Offset> paragraphEndOffsetMap = <int, Offset>{};
       while (paragraphCursor < paragraphs.length && endWordCursor == null) {
         int paragraphWordCursor = wordCursor -
             (paragraphCursor == 0
@@ -119,6 +120,7 @@ class ReaderViewModel extends Model {
               } else if (position.offset == textInPreview.length) {
                 // 最后一段刚好结束
                 spansInPage.addAll(paragraphSpans);
+                paragraphEndOffsetMap[paragraphCursor] = offsetForCaret;
                 wordCursor += paragraph.length /*paragraphWordBlockCursor*/ -
                     paragraphWordCursor;
                 endWordCursor = wordCursor;
@@ -141,6 +143,11 @@ class ReaderViewModel extends Model {
         } else {
           // 没有排满一页
           spansInPage.addAll(paragraphSpans);
+          TextPosition position = textPainter.getPositionForOffset(
+              Offset(canvas.width, canvas.height));
+          Offset offsetForCaret = textPainter.getOffsetForCaret(
+              position, Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height));
+          paragraphEndOffsetMap[paragraphCursor] = offsetForCaret;
           wordCursor += paragraph.length - paragraphWordCursor;
           if (paragraphCursor == paragraphs.length - 1) {
             endWordCursor = wordCursor;
@@ -154,6 +161,7 @@ class ReaderViewModel extends Model {
         startWordCursor: startWordCursor,
         endWordCursor: endWordCursor,
         spansInPage: spansInPage,
+        paragraphEndOffsetMap: paragraphEndOffsetMap,
       ));
     }
 //    textPages
