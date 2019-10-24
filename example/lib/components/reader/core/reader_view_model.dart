@@ -26,7 +26,6 @@ class ReaderViewModel extends Model {
     final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
         ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
         : '';
-//    textIndentPlaceholder = '';
     final List<String> paragraphs = content.split('\n');
     int paragraphCursor = 0;
     int wordCursor = 0;
