@@ -154,7 +154,6 @@ class ReaderViewModel extends Model {
       textPages.add(TextPage(
         startWordCursor: startWordCursor,
         endWordCursor: endWordCursor,
-        content: content,
         textSpan: TextSpan(
           children: spansInPage,
           style: settings.style,
