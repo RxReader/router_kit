@@ -1,8 +1,6 @@
 import 'package:example/components/reader/core/reader_settings.dart';
-import 'package:example/components/reader/core/reader_view.dart';
 import 'package:example/components/reader/core/reader_view_model.dart';
-import 'package:example/components/reader/core/util/text_symbol.dart';
-import 'package:example/components/reader/core/view/text_page.dart';
+import 'package:example/components/reader/core/util/text_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
@@ -53,11 +51,11 @@ class _ReaderComponentState extends State<ReaderComponent> {
                   ),
                   onTap: () {
                     _model.typeset(
-                      _settings,
                       Size(
                         MediaQuery.of(context).size.width / 2,
                         240,
                       ),
+                      _settings,
                     );
                   },
                 ),
@@ -76,7 +74,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                           children: <Widget>[
                             Text.rich(
                               TextSpan(
-                                text: textPage.content.substring(
+                                text: model.article.content.substring(
                                     textPage.startWordCursor,
                                     textPage.endWordCursor),
                                 style: _settings.style,
@@ -113,7 +111,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                           children: <Widget>[
                             Text.rich(
                               TextSpan(
-                                children: textPage.spansInPage,
+                                children: textPage.inlineSpans,
                                 style: _settings.style,
                               ),
                               style: _settings.style,
@@ -123,7 +121,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                               textScaleFactor: _settings.textScaleFactor,
                               locale: _settings.locale,
                             ),
-                            ...textPage.paragraphEndOffsetMap.entries
+                            ...textPage.paragraphOffsetMap.entries
                                 .map((MapEntry<int, Offset> entry) {
                               print(
                                   'entry: ${entry.value.dx} ${entry.value.dy}');

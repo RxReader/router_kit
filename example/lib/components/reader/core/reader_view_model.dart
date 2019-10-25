@@ -1,151 +1,22 @@
 import 'package:example/components/reader/core/reader_settings.dart';
-import 'package:example/components/reader/core/util/text_symbol.dart';
-import 'package:example/components/reader/core/view/text_page.dart';
+import 'package:example/components/reader/core/util/text_layout.dart';
 import 'package:example/components/reader/model/article.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ReaderViewModel extends Model {
+  Article _article;
   List<TextPage> _textPages;
 
+  Article get article => _article;
   List<TextPage> get textPages => _textPages;
 
-  Future<void> typeset(ReaderSettings settings, Size canvas) async {
-    List<TextPage> textPages = <TextPage>[];
+  Future<void> typeset(Size canvas, ReaderSettings settings) async {
     print('开始');
-    final Article article = await loadArticle();
-    final String content = article.content;
-    final String textIndentPlaceholder = settings.locale.languageCode == 'zh'
-        ? '${TextSymbol.sbcSpace}${TextSymbol.sbcSpace}'
-        : '';
-    final List<String> paragraphs = content.split(TextSymbol.newLine);
-    int paragraphCursor = 0;
-    int wordCursor = 0;
-    while (paragraphCursor < paragraphs.length) {
-      int startWordCursor = wordCursor;
-      int endWordCursor;
-      List<InlineSpan> spansInPage = <InlineSpan>[];
-      Map<int, Offset> paragraphEndOffsetMap = <int, Offset>{};
-      while (paragraphCursor < paragraphs.length && endWordCursor == null) {
-        int paragraphWordCursor = wordCursor -
-            (paragraphCursor == 0
-                ? 0
-                : paragraphs
-                    .take(paragraphCursor)
-                    .map((String paragraph) => paragraph.length + 1)
-                    .reduce((int value, int element) => value + element));
-        if (paragraphWordCursor < 0) {
-          throw StateError('paragraphCursor = $paragraphWordCursor');
-        }
-        final bool shouldAppendNewLine =
-            spansInPage.isNotEmpty && paragraphWordCursor == 0;
-        final bool shouldAppendTextIndent =
-            textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
-        final String paragraph = paragraphs[paragraphCursor];
-        final List<InlineSpan> paragraphSpans = <InlineSpan>[
-          if (shouldAppendNewLine)
-            TextSpan(
-              text: TextSymbol.newLine,
-            ),
-          if (shouldAppendTextIndent)
-            TextSpan(
-              text: textIndentPlaceholder,
-            ),
-          TextSpan(
-            text: paragraph.substring(paragraphWordCursor),
-          ),
-        ];
-        final TextPainter textPainter = settings.textPainter;
-        textPainter.text = TextSpan(
-          children: <InlineSpan>[
-            ...spansInPage,
-            ...paragraphSpans,
-          ],
-          style: settings.style,
-        );
-        textPainter.layout(maxWidth: canvas.width);
-        if (textPainter.height >= canvas.height) {
-          // 排满一页
-          TextPosition position = textPainter.getPositionForOffset(
-              Offset(canvas.width, canvas.height)); // 可见区域范围内的文字，可能文字只会显示半行
-          Offset offsetForCaret = textPainter.getOffsetForCaret(
-              position, Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height));
-//          final double fullHeightForCaret = textPainter.getFullHeightForCaret(
-//            position,
-//            Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height),
-//          ); // 偏大
-          final double fontHeight =
-              settings.style.fontSize * settings.style.height; // 偏小
-//          final double averageHeight =
-//              (fullHeightForCaret + fontHeight) / 2.0; // 取平均值
-          if (canvas.height - offsetForCaret.dy < fontHeight) {
-            // 半行文字
-            position = textPainter.getPositionForOffset(
-                Offset(canvas.width, canvas.height - fontHeight));
-          }
-          final String textInPreview = textPainter.text.toPlainText(
-            includeSemanticsLabels: false,
-            includePlaceholders: true,
-          );
-          final int paragraphWordBlockCursor =
-              paragraph.length - (textInPreview.length - position.offset);
-          if (paragraphWordBlockCursor < paragraphWordCursor) {
-            // 最后一段还没开始就结束了，offset 定位换行符
-            endWordCursor = wordCursor;
-          } else if (position.offset == textInPreview.length) {
-            // 最后一段刚好结束
-            spansInPage.addAll(paragraphSpans);
-            paragraphEndOffsetMap[paragraphCursor] = offsetForCaret;
-            wordCursor += paragraph.length /*paragraphWordBlockCursor*/ -
-                paragraphWordCursor;
-            endWordCursor = wordCursor;
-            wordCursor++; // 跳过'\n'
-            paragraphCursor++;
-          } else {
-            // 最后一段需要拆段
-            paragraphSpans.removeLast();
-            final String paragraphTextDisplay = paragraph.substring(
-                paragraphWordCursor, paragraphWordBlockCursor);
-            paragraphSpans.add(TextSpan(
-              text: paragraphTextDisplay,
-            ));
-            spansInPage.addAll(paragraphSpans);
-            wordCursor += paragraphWordBlockCursor - paragraphWordCursor;
-            endWordCursor = wordCursor;
-          }
-        } else {
-          // 没有排满一页
-          spansInPage.addAll(paragraphSpans);
-          TextPosition position = textPainter
-              .getPositionForOffset(Offset(canvas.width, canvas.height));
-          Offset offsetForCaret = textPainter.getOffsetForCaret(
-              position, Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height));
-          paragraphEndOffsetMap[paragraphCursor] = offsetForCaret;
-          wordCursor += paragraph.length - paragraphWordCursor;
-          if (paragraphCursor == paragraphs.length - 1) {
-            endWordCursor = wordCursor;
-          } else {
-            wordCursor++; // 跳过'\n'
-          }
-          paragraphCursor++;
-        }
-      }
-      textPages.add(TextPage(
-        startWordCursor: startWordCursor,
-        endWordCursor: endWordCursor,
-        content: content,
-        spansInPage: spansInPage,
-        paragraphEndOffsetMap: paragraphEndOffsetMap,
-      ));
-    }
-//    textPages
-//        .map((TextPage textPage) =>
-//            content.substring(textPage.startWordCursor, textPage.endWordCursor))
-//        .forEach((String pair) => print(
-//            'pair: ${pair.length > 30 ? '${pair.substring(0, 5)} - ${pair.substring(pair.length - 5, pair.length)}' : pair}'));
-    print('结束');
-    _textPages = textPages;
+    _article = await loadArticle();
+    _textPages = await TextLayout.layout(
+        canvas: canvas, settings: settings, content: article.content);
     notifyListeners();
   }
 
