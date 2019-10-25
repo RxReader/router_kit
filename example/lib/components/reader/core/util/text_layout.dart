@@ -163,7 +163,6 @@ class TextLayout {
               paragraphWordCursor: paragraphWordCursor,
             ));
             inlineSpans.addAll(paragraphSpans);
-            paragraphOffsetMap[paragraphCursor] = offsetForCaret;
             wordCursor = blockEndWordCursor;
             endWordCursor = wordCursor;
           }
