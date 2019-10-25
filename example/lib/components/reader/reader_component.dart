@@ -69,37 +69,37 @@ class _ReaderComponentState extends State<ReaderComponent> {
                   child: Container(
                     color: Colors.red,
                     height: 240,
-//                    child: PageView.builder(
-//                      itemBuilder: (BuildContext context, int index) {
-//                        TextPage textPage = model.textPages[index];
-//                        return Stack(
-//                          children: <Widget>[
-//                            Text.rich(
-//                              TextSpan(
-//                                text: textPage.content.substring(
-//                                    textPage.startWordCursor,
-//                                    textPage.endWordCursor),
-//                                style: _settings.style,
-//                              ),
-//                              style: _settings.style,
-//                              strutStyle: _settings.strutStyle,
-//                              textAlign: _settings.textAlign,
-//                              textDirection: _settings.textDirection,
-//                              textScaleFactor: _settings.textScaleFactor,
-//                              locale: _settings.locale,
-//                            ),
-//                            Align(
-//                              alignment: Alignment.center,
-//                              child: Text(
-//                                'index - $index',
-//                                style: TextStyle(color: Colors.white),
-//                              ),
-//                            ),
-//                          ],
-//                        );
-//                      },
-//                      itemCount: model.textPages.length,
-//                    ),
+                    child: PageView.builder(
+                      itemBuilder: (BuildContext context, int index) {
+                        TextPage textPage = model.textPages[index];
+                        return Stack(
+                          children: <Widget>[
+                            Text.rich(
+                              TextSpan(
+                                text: textPage.content.substring(
+                                    textPage.startWordCursor,
+                                    textPage.endWordCursor),
+                                style: _settings.style,
+                              ),
+                              style: _settings.style,
+                              strutStyle: _settings.strutStyle,
+                              textAlign: _settings.textAlign,
+                              textDirection: _settings.textDirection,
+                              textScaleFactor: _settings.textScaleFactor,
+                              locale: _settings.locale,
+                            ),
+                            Align(
+                              alignment: Alignment.center,
+                              child: Text(
+                                'index - $index',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                      itemCount: model.textPages.length,
+                    ),
                   ),
                 ),
                 Expanded(
@@ -113,23 +113,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                           children: <Widget>[
                             Text.rich(
                               TextSpan(
-                                children:
-                                    textPage.spansInPage.map((InlineSpan span) {
-                                  if (span is TextSpan &&
-                                      span.text ==
-                                          TextSymbol
-                                              .paragraphSpacingPlaceholder) {
-                                    return TextSpan(
-                                      text: TextSymbol
-                                          .paragraphSpacingPlaceholderFixed,
-                                      children: span.children,
-                                      style: span.style,
-                                      recognizer: span.recognizer,
-                                      semanticsLabel: span.semanticsLabel,
-                                    );
-                                  }
-                                  return span;
-                                }).toList(),
+                                children: textPage.spansInPage,
                                 style: _settings.style,
                               ),
                               style: _settings.style,
@@ -141,7 +125,8 @@ class _ReaderComponentState extends State<ReaderComponent> {
                             ),
                             ...textPage.paragraphEndOffsetMap.entries
                                 .map((MapEntry<int, Offset> entry) {
-                                  print('entry: ${entry.value.dx} ${entry.value.dy}');
+                              print(
+                                  'entry: ${entry.value.dx} ${entry.value.dy}');
                               return Positioned(
                                 left: entry.value.dx,
                                 top: entry.value.dy,
