@@ -39,10 +39,10 @@ class ReaderViewModel extends Model {
           throw StateError('paragraphCursor = $paragraphWordCursor');
         }
         final bool shouldAppendNewLine =
-            spansInPage.length > 0 && paragraphWordCursor == 0;
+            spansInPage.isNotEmpty && paragraphWordCursor == 0;
         final bool shouldAppendParagraphSpacing =
             TextSymbol.paragraphSpacingPlaceholder.isNotEmpty &&
-                spansInPage.length > 0 &&
+                spansInPage.isNotEmpty &&
                 paragraphWordCursor == 0;
         final bool shouldAppendTextIndent =
             textIndentPlaceholder.isNotEmpty && paragraphWordCursor == 0;
@@ -55,7 +55,10 @@ class ReaderViewModel extends Model {
           if (shouldAppendParagraphSpacing)
             TextSpan(
               text: TextSymbol.paragraphSpacingPlaceholder,
-              style: TextStyle(fontSize: 7.0),
+              style: TextStyle(
+                fontSize: 7.0,
+                height: 1.0,
+              ),
             ),
           if (shouldAppendTextIndent)
             TextSpan(
@@ -143,8 +146,8 @@ class ReaderViewModel extends Model {
         } else {
           // 没有排满一页
           spansInPage.addAll(paragraphSpans);
-          TextPosition position = textPainter.getPositionForOffset(
-              Offset(canvas.width, canvas.height));
+          TextPosition position = textPainter
+              .getPositionForOffset(Offset(canvas.width, canvas.height));
           Offset offsetForCaret = textPainter.getOffsetForCaret(
               position, Rect.fromLTRB(0.0, 0.0, canvas.width, canvas.height));
           paragraphEndOffsetMap[paragraphCursor] = offsetForCaret;
