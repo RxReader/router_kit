@@ -1,66 +1,18 @@
 import 'dart:ui' as ui;
 
-import 'package:csslib/parser.dart' as css_parser;
-import 'package:flutter/cupertino.dart';
+import 'package:example/html/html.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:quiver/strings.dart';
 
 typedef TapLinkCallback = void Function(
-  String target,
-  String media,
-  String mimeType,
-  String href,
-);
+    String target, String media, String mimeType, String href);
 
 typedef TapImageCallback = void Function(
-  String src,
-  double width,
-  double height,
-);
+    String src, double width, double height);
 
 typedef TapVideoCallback = void Function(
-  String poster,
-  String src,
-  double width,
-  double height,
-);
-
-typedef AncestorSpan = InlineSpan Function();
-
-class HtmlParseContext {
-  final ValueGetter findParent;
-  final TextStyle textStyle;
-  final int indentLevel;
-  final bool condenseWhitespace;
-
-  HtmlParseContext.rootContext({
-    double fontSize,
-  })  : findParent = null,
-        textStyle = TextStyle(fontSize: fontSize),
-        indentLevel = 0,
-        condenseWhitespace = true;
-
-  HtmlParseContext.nextContext(
-    HtmlParseContext context, {
-    @required this.findParent,
-    int indentLevel,
-    TextStyle textStyle,
-    bool condenseWhitespace,
-  })  : assert(findParent != null),
-        textStyle = textStyle ?? context.textStyle,
-        indentLevel = indentLevel ?? context.indentLevel,
-        condenseWhitespace = condenseWhitespace ?? context.condenseWhitespace;
-
-  HtmlParseContext.removeIndentContext(HtmlParseContext context)
-      : findParent = context.findParent,
-        textStyle = context.textStyle,
-        indentLevel = 0,
-        condenseWhitespace = context.condenseWhitespace;
-
-  InlineSpan get parent => findParent?.call();
-}
+    String poster, String src, double width, double height);
 
 class HtmlTapCallbacks {
   HtmlTapCallbacks.all({
@@ -77,64 +29,55 @@ class HtmlTapCallbacks {
 typedef CustomRender = InlineSpan Function(
   Size window,
   HtmlParseContext context,
+  String sourceUrl,
   dom.Node node,
-  ChildrenRender childrenRender,
+  ParseNodes parseNodes,
   HtmlTapCallbacks callbacks,
 );
 
-typedef ChildrenRender = List<InlineSpan> Function(
+typedef ParseNodes = void Function(
   HtmlParseContext context,
   List<dom.Node> nodes,
+  List<InlineSpan> children,
 );
 
-const Map<String, Color> _htmlColorNameMap = <String, Color>{
-  'aqua': Color(0xFF00FFFF),
-  'black': Colors.black,
-  'blue': Color(0xFF0000FF),
-  'fuchsia': Color(0xFFFF00FF),
-  'gray': Color(0xFF888888),
-  'green': Color(0xFF00FF00),
-  'lime': Color(0xFF00FF00),
-  'maroon': Color(0xFF800000),
-  'navy': Color(0xFF000080),
-  'olive': Color(0xFF808000),
-  'purple': Color(0xFF800080),
-  'red': Color(0xFFFF0000),
-  'silver': Color(0xFFC0C0C0),
-  'teal': Color(0xFF008080),
-  'white': Colors.white,
-  'yellow': Color(0xFFFFFF00),
-};
+class HtmlParseContext {
+  HtmlParseContext.rootContext({
+    double fontSize,
+  })  : parent = null,
+        textStyle = TextStyle(fontSize: fontSize),
+        indentLevel = 0,
+        condenseWhitespace = true;
 
-Color parseHtmlColor(String color) {
-  Color htmlColor = _htmlColorNameMap[color];
-  if (htmlColor == null) {
-    css_parser.Color parsedColor = css_parser.Color.css(color);
-    htmlColor = Color(parsedColor.argbValue);
-  }
-  return htmlColor;
+  HtmlParseContext.nextContext(
+    HtmlParseContext context, {
+    @required this.parent,
+    int indentLevel,
+    TextStyle textStyle,
+    bool condenseWhitespace,
+  })  : assert(parent != null),
+        textStyle = textStyle ?? context.textStyle,
+        indentLevel = indentLevel ?? context.indentLevel,
+        condenseWhitespace = condenseWhitespace ?? context.condenseWhitespace;
+
+  HtmlParseContext.removeIndentContext(HtmlParseContext context)
+      : parent = context.parent,
+        textStyle = context.textStyle,
+        indentLevel = 0,
+        condenseWhitespace = context.condenseWhitespace;
+
+  final InlineSpan parent;
+  final TextStyle textStyle;
+  final int indentLevel;
+  final bool condenseWhitespace;
 }
 
-double parseHtmlWH(String value, double refValue) {
-  if (isNotEmpty(value)) {
-    if (value.endsWith('%')) {
-      value = value.replaceAll('%', '');
-      return refValue != null && double.tryParse(value) != null
-          ? double.tryParse(value) * refValue
-          : null;
-    } else {
-      value = value.toLowerCase().replaceAll('px', '');
-      return double.tryParse(value);
-    }
-  }
-  return null;
-}
-
-InlineSpan imageRender(
+InlineSpan defaultImgRender(
   Size window,
   HtmlParseContext context,
-  dom.Node node,
-  ChildrenRender childrenRender,
+  String sourceUrl,
+  dom.Element node,
+  ParseNodes parseNodes,
   HtmlTapCallbacks callbacks, {
   ImageProvider networkImage(String url, double width, double height),
 }) {
@@ -146,7 +89,6 @@ InlineSpan imageRender(
   String hspace = node.attributes['hspace'];
   String vspace = node.attributes['vspace'];
   String width = node.attributes['width'];
-  Uri uri = isNotEmpty(src) ? Uri.tryParse(src) : null;
   ui.PlaceholderAlignment alignment;
   switch (align) {
     case 'top':
@@ -164,9 +106,13 @@ InlineSpan imageRender(
       alignment = ui.PlaceholderAlignment.bottom;
       break;
   }
-  double widthValue = parseHtmlWH(width, window?.width);
-  double heightValue = parseHtmlWH(height, window?.height) ?? widthValue;
+  String srcValue = isNotEmpty(sourceUrl)
+      ? Uri.parse(sourceUrl).resolve(src).toString()
+      : src;
+  double widthValue = Html.parseHtmlWH(width, window?.width);
+  double heightValue = Html.parseHtmlWH(height, window?.height) ?? widthValue;
   Widget child;
+  Uri uri = isNotEmpty(srcValue) ? Uri.tryParse(srcValue) : null;
   if (uri == null) {
     child = SizedBox(
       width: widthValue,
@@ -182,7 +128,7 @@ InlineSpan imageRender(
               children: <Widget>[
                 Icon(
                   Icons.image,
-                  color: _htmlColorNameMap['gray'],
+                  color: Html.parseHtmlColor('gray'),
                 ),
                 Text.rich(TextSpan(
                   text: alt ?? '',
@@ -199,8 +145,8 @@ InlineSpan imageRender(
     if (uri.data != null && uri.data.isBase64) {
       image = MemoryImage(uri.data.contentAsBytes());
     } else {
-      image = networkImage?.call(uri.toString(), widthValue, heightValue) ??
-          NetworkImage(uri.toString());
+      image = networkImage?.call(srcValue, widthValue, heightValue) ??
+          NetworkImage(srcValue);
     }
     child = Image(
       image: image,
@@ -212,19 +158,19 @@ InlineSpan imageRender(
   return WidgetSpan(
     child: Container(
       padding: EdgeInsets.symmetric(
-        vertical: parseHtmlWH(vspace, null) ?? 0.0,
-        horizontal: parseHtmlWH(hspace, null) ?? 0.0,
+        vertical: Html.parseHtmlWH(vspace) ?? 0.0,
+        horizontal: Html.parseHtmlWH(hspace) ?? 0.0,
       ),
-      decoration: parseHtmlWH(border, null) != null
+      decoration: Html.parseHtmlWH(border) != null
           ? ShapeDecoration(
               shape: RoundedRectangleBorder(
-                side: BorderSide(width: parseHtmlWH(border, null) ?? 0.0),
+                side: BorderSide(width: Html.parseHtmlWH(border) ?? 0.0),
               ),
             )
           : null,
       child: GestureDetector(
         onTap: () {
-          callbacks.onTapImage?.call(src, widthValue, heightValue);
+          callbacks.onTapImage?.call(srcValue, widthValue, heightValue);
         },
         child: child,
       ),
@@ -233,33 +179,41 @@ InlineSpan imageRender(
   );
 }
 
-InlineSpan videoRender(
+InlineSpan defaultVideoRender(
   Size window,
   HtmlParseContext context,
-  dom.Node node,
-  ChildrenRender childrenRender,
+  String sourceUrl,
+  dom.Element node,
+  ParseNodes parseNodes,
   HtmlTapCallbacks callbacks, {
-  Widget customPoster(String poster, double width, double height),
+  Widget posterRender(String poster, double width, double height),
 }) {
   String height = node.attributes['height'];
   String poster = node.attributes['poster'];
   String src = node.attributes['src'];
   String width = node.attributes['width'];
-  double widthValue = parseHtmlWH(width, null);
-  double heightValue = parseHtmlWH(height, null);
-  Widget child = customPoster?.call(poster, widthValue, heightValue) ??
-      defaultPost(poster, widthValue, heightValue);
+  String posterValue = isNotEmpty(sourceUrl)
+      ? Uri.parse(sourceUrl).resolve(poster).toString()
+      : poster;
+  String srcValue = isNotEmpty(sourceUrl)
+      ? Uri.parse(sourceUrl).resolve(src).toString()
+      : src;
+  double widthValue = Html.parseHtmlWH(width, null);
+  double heightValue = Html.parseHtmlWH(height, null);
+  Widget child = posterRender?.call(posterValue, widthValue, heightValue) ??
+      defaultPosterRender(posterValue, widthValue, heightValue);
   return WidgetSpan(
     child: GestureDetector(
       onTap: () {
-        callbacks.onTapVideo?.call(poster, src, widthValue, heightValue);
+        callbacks.onTapVideo
+            ?.call(posterValue, srcValue, widthValue, heightValue);
       },
       child: child,
     ),
   );
 }
 
-Widget defaultPost(
+Widget defaultPosterRender(
   String poster,
   double width,
   double height, {
@@ -274,7 +228,7 @@ Widget defaultPost(
     if (uri.data != null && uri.data.isBase64) {
       image = MemoryImage(uri.data.contentAsBytes());
     } else {
-      image = NetworkImage(uri.toString());
+      image = networkImage?.call(poster, width, height) ?? NetworkImage(poster);
     }
     child = Image(
       image: image,

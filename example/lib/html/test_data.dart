@@ -3,8 +3,9 @@ const Map<String, String> htmlTestData = <String, String>{
   'abbr': '<abbr>HLO-WRLD</abbr>',
   'b': '<b>Hello, World!<b>Hello, World!<b>Hello, World!</b></b></b>',
   'strong': '<strong>Hello, World!</strong>',
-  'big': '<big>Hello, World!<big>Hello, World!</big></big>',
-  'blockquote': '<blockquote>Hello, World!\nHello, World!\nHello, World!\n</blockquote>',
+  'big': 'Hello, World!<big>Hello, World!<big>Hello, World!<big>Hello, World!<big>Hello, World!<big>Hello, World!</big></big></big></big></big>',
+  'blockquote':
+      '<blockquote>Hello, World!\nHello, World!\nHello, World!Hello, World!Hello, World!Hello, World!\nHello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!</blockquote>',
   'br': '<a>Hello,<br />World!</a>',
   'center': '<center>Hello, World!</center><a>xxxxx</a>',
   'code': '<code>Hello, World!</code>',
@@ -28,13 +29,14 @@ const Map<String, String> htmlTestData = <String, String>{
   'h6': '<h6>Hello, World!</h6>',
 //  'header': '<header>Hello, World!</header>',
   'hr': '<div>Hello</div><hr width="100"/><div>World!</div>',
-  'img': '<img alt="Hello, World!" src="https://www.baidu.com/img/bd_logo1.png?where=super" align="middle" height="50" border="10" /><a>Hello, World!</a>',
+  'img':
+      '<img alt="Hello, World!" src="https://www.baidu.com/img/bd_logo1.png?where=super" align="middle" height="50" border="10" /><a>Hello, World!</a>',
   'img_alt': '<img alt="Hello, World!" src="" width="30"/>',
   'ins': '<ins>Hello, World!</ins>',
   'u': '<u>Hello, World!</u>',
   'mark': '<mark>Hello, World!</mark>',
   'li': '<li>Hello</li>xxx<li>World!</li>',
-  'li_ul': '<ul>xxx<li>Hello</li>xxx<li>World!</li></ul>',
+  'li_ul': '<ul>xxx<li>Hello</li>xxx<li>World!</li>xxx</ul>',
   'li_ol': '<ol><li>Hello</li><li>World!</li></ol>',
   'p': '<p>Hello, World!</p>xxx<p>Hello, World!</p>',
   'pre': '<pre>Hello, World!</pre>',
@@ -42,7 +44,10 @@ const Map<String, String> htmlTestData = <String, String>{
   'span': '<span>Hello, World!</span>',
   'sub': '<a>Hello, World!</a><sub>Hello, World!</sub>',
   'sup': '<a>Hello, World!</a><sup>Hello, World!</sup>',
-  'sub_sup': '<p>log<sub>2</sub>(<em>x</em><sup>2</sup> - 6<em>x</em>) = 3 + log<sub>2</sub>(1 - <em>x</em>)</p>',
-  'video': '<video src="movie.ogg" controls="controls">您的浏览器不支持 video 标签。</video>',
-  'video_post': '<video src="movie.ogg" poster="https://www.baidu.com/img/bd_logo1.png?where=super" height="100" controls="controls">您的浏览器不支持 video 标签。</video>',
+  'sub_sup':
+      '<p>log<sub>2</sub>(<em>x</em><sup>2</sup> - 6<em>x</em>) = 3 + log<sub>2</sub>(1 - <em>x</em>)</p>',
+  'video':
+      '<video src="movie.ogg" controls="controls">您的浏览器不支持 video 标签。</video>',
+  'video_post':
+      '<video src="movie.ogg" poster="https://www.baidu.com/img/bd_logo1.png?where=super" height="100" controls="controls">您的浏览器不支持 video 标签。</video>',
 };
