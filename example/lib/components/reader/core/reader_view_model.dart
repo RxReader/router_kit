@@ -1,5 +1,5 @@
 import 'package:example/components/reader/core/reader_settings.dart';
-import 'package:example/components/reader/core/util/text_layout.dart';
+import 'package:example/components/reader/core/util/reader_layout.dart';
 import 'package:example/components/reader/model/article.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,15 +7,15 @@ import 'package:scoped_model/scoped_model.dart';
 
 class ReaderViewModel extends Model {
   Article _article;
-  List<TextPage> _textPages;
+  List<ReaderPage> _textPages;
 
   Article get article => _article;
-  List<TextPage> get textPages => _textPages;
+  List<ReaderPage> get textPages => _textPages;
 
   Future<void> typeset(Size canvas, ReaderSettings settings) async {
     print('开始');
     _article = await loadArticle();
-    _textPages = await TextLayout.layout(
+    _textPages = await ReaderLayout.layout(
         canvas: canvas, settings: settings, content: article.content);
     notifyListeners();
   }

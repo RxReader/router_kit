@@ -1,6 +1,6 @@
 import 'package:example/components/reader/core/reader_settings.dart';
 import 'package:example/components/reader/core/reader_view_model.dart';
-import 'package:example/components/reader/core/util/text_layout.dart';
+import 'package:example/components/reader/core/util/reader_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
@@ -69,7 +69,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                     height: 240,
                     child: PageView.builder(
                       itemBuilder: (BuildContext context, int index) {
-                        TextPage textPage = model.textPages[index];
+                        ReaderPage textPage = model.textPages[index];
                         return Stack(
                           children: <Widget>[
                             Text.rich(
@@ -106,7 +106,7 @@ class _ReaderComponentState extends State<ReaderComponent> {
                     height: 240,
                     child: PageView.builder(
                       itemBuilder: (BuildContext context, int index) {
-                        TextPage textPage = model.textPages[index];
+                        ReaderPage textPage = model.textPages[index];
                         return Stack(
                           children: <Widget>[
                             Text.rich(

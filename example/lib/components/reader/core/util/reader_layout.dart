@@ -3,44 +3,56 @@ import 'package:example/components/reader/core/util/text_symbol.dart';
 import 'package:flutter/material.dart';
 import 'package:quiver/strings.dart' as strings;
 
-class TextBlock {
-  const TextBlock({
-    @required this.startWordCursor,
-    @required this.endWordCursor,
-    @required this.paragraphCursor,
-    @required this.paragraphWordCursor,
+abstract class TextBlock {
+  TextBlock({
+    this.startWordCursor,
+    this.endWordCursor,
   });
 
   final int startWordCursor;
   final int endWordCursor;
+}
+
+class ReaderBlock extends TextBlock {
+  ReaderBlock({
+    @required int startWordCursor,
+    @required int endWordCursor,
+    @required this.paragraphCursor,
+    @required this.paragraphWordCursor,
+  }) : super(
+          startWordCursor: startWordCursor,
+          endWordCursor: endWordCursor,
+        );
+
   final int paragraphCursor;
   final int paragraphWordCursor;
 }
 
-class TextPage {
-  const TextPage({
-    @required this.startWordCursor,
-    @required this.endWordCursor,
-    @required this.textBlocks,
+class ReaderPage extends TextBlock {
+  ReaderPage({
+    @required int startWordCursor,
+    @required int endWordCursor,
+    @required this.readerBlocks,
     @required this.inlineSpans,
     @required this.paragraphOffsetMap,
-  });
+  }) : super(
+          startWordCursor: startWordCursor,
+          endWordCursor: endWordCursor,
+        );
 
-  final int startWordCursor;
-  final int endWordCursor;
-  final List<TextBlock> textBlocks;
+  final List<ReaderBlock> readerBlocks;
   final List<InlineSpan> inlineSpans;
   final Map<int, Offset> paragraphOffsetMap;
 }
 
-class TextLayout {
-  const TextLayout._();
+class ReaderLayout {
+  const ReaderLayout._();
 
   static String _preferredText(Locale locale) {
     return locale.languageCode == 'zh' ? '一' : 'a';
   }
 
-  static Future<List<TextPage>> layout({
+  static Future<List<ReaderPage>> layout({
     @required Size canvas,
     @required ReaderSettings settings,
     @required String content,
@@ -48,7 +60,7 @@ class TextLayout {
     assert(strings.isNotEmpty(content));
     assert(canvas != null && !canvas.isEmpty);
     assert(settings != null);
-    List<TextPage> textPages = <TextPage>[];
+    List<ReaderPage> readerPages = <ReaderPage>[];
     print('开始');
     final String textIndentPlaceholder = settings.textIndentPlaceholder();
     final TextPainter textPainter = settings.textPainter;
@@ -65,7 +77,7 @@ class TextLayout {
     while (paragraphCursor < paragraphs.length) {
       int startWordCursor = wordCursor;
       int endWordCursor;
-      List<TextBlock> textBlocks = <TextBlock>[];
+      List<ReaderBlock> readerBlocks = <ReaderBlock>[];
       List<InlineSpan> inlineSpans = <InlineSpan>[];
       Map<int, Offset> paragraphOffsetMap = <int, Offset>{};
       while (paragraphCursor < paragraphs.length && endWordCursor == null) {
@@ -77,7 +89,7 @@ class TextLayout {
                     .map((String paragraph) => paragraph.length + 1)
                     .reduce((int value, int element) => value + element));
         if (paragraphWordCursor < 0) {
-          throw StateError('paragraphCursor = $paragraphWordCursor');
+          throw StateError('paragraphWordCursor = $paragraphWordCursor');
         }
         final bool shouldAppendNewLine =
             inlineSpans.isNotEmpty && paragraphWordCursor == 0;
@@ -134,7 +146,7 @@ class TextLayout {
             final int blockEndWordCursor = wordCursor +
                 paragraph.length /*textInPreviewBlockCursor*/ -
                 paragraphWordCursor;
-            textBlocks.add(TextBlock(
+            readerBlocks.add(ReaderBlock(
               startWordCursor: wordCursor,
               endWordCursor: blockEndWordCursor,
               paragraphCursor: paragraphCursor,
@@ -156,7 +168,7 @@ class TextLayout {
             ));
             final int blockEndWordCursor =
                 wordCursor + textInPreviewBlockCursor - paragraphWordCursor;
-            textBlocks.add(TextBlock(
+            readerBlocks.add(ReaderBlock(
               startWordCursor: wordCursor,
               endWordCursor: blockEndWordCursor,
               paragraphCursor: paragraphCursor,
@@ -170,7 +182,7 @@ class TextLayout {
           // 没有排满一页
           final int blockEndWordCursor =
               wordCursor + paragraph.length - paragraphWordCursor;
-          textBlocks.add(TextBlock(
+          readerBlocks.add(ReaderBlock(
             startWordCursor: wordCursor,
             endWordCursor: blockEndWordCursor,
             paragraphCursor: paragraphCursor,
@@ -192,15 +204,15 @@ class TextLayout {
           paragraphCursor++;
         }
       }
-      textPages.add(TextPage(
+      readerPages.add(ReaderPage(
         startWordCursor: startWordCursor,
         endWordCursor: endWordCursor,
-        textBlocks: textBlocks,
+        readerBlocks: readerBlocks,
         inlineSpans: inlineSpans,
         paragraphOffsetMap: paragraphOffsetMap,
       ));
     }
     print('结束');
-    return textPages;
+    return readerPages;
   }
 }
