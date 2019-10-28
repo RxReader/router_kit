@@ -140,7 +140,7 @@ class ReaderLayout {
               paragraph.length - (textInPreview.length - position.offset);
           if (textInPreviewBlockCursor < paragraphWordCursor) {
             // 最后一段还没开始就结束了，offset 定位换行符
-            endWordCursor = wordCursor;
+            endWordCursor = wordCursor - 1;
           } else if (position.offset == textInPreview.length) {
             // 最后一段刚好结束
             final int blockEndWordCursor = wordCursor +
