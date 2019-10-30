@@ -16,6 +16,7 @@ import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
 import 'package:example/components/reader/reader_component.dart';
 import 'package:example/components/splash/splash_component.dart';
+import 'package:example/components/yunyan/yunyan_component.dart';
 
 class AppRouterProvider {
   const AppRouterProvider._();
@@ -33,5 +34,6 @@ class AppRouterProvider {
     PaymentComponentProvider.routeName: PaymentComponentProvider.routeBuilder,
     ReaderComponentProvider.routeName: ReaderComponentProvider.routeBuilder,
     SplashComponentProvider.routeName: SplashComponentProvider.routeBuilder,
+    YunyanComponentProvider.routeName: YunyanComponentProvider.routeBuilder,
   };
 }

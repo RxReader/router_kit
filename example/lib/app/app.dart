@@ -1,4 +1,5 @@
 import 'package:example/components/not_found/not_found_component.dart';
+import 'package:example/components/yunyan/yunyan_component.dart';
 import 'package:example/router/app_router.dart';
 import 'package:example/router/app_router.router.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       onGenerateRoute: _onGenerateRoute,
       onUnknownRoute: _onUnknownRoute,
+      initialRoute: YunyanComponentProvider.routeName,
       builder: (BuildContext context, Widget child) {
         /// 禁用系统字体控制
         return MediaQuery(
