@@ -19,6 +19,13 @@ class YunyanView extends StatefulWidget {
 }
 
 class _YunyanViewState extends State<YunyanView> {
+
+  @override
+  void initState() {
+    super.initState();
+    print('${widget.runtimeType} - ${widget.title}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -38,13 +45,6 @@ class _YunyanViewState extends State<YunyanView> {
                     42.5,
                 child: Stack(
                   children: <Widget>[
-//                  SizedBox(
-//                    width: double.infinity,
-//                    height: MediaQuery.of(context).padding.top + kToolbarHeight + 114.0,
-//                    child: Material(
-//                      color: Colors.blue,
-//                    ),
-//                  ),
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: ClipPath(
@@ -61,6 +61,42 @@ class _YunyanViewState extends State<YunyanView> {
                     ),
                   ],
                 ),
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.white,
+                height: 200,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.red,
+                height: 200,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.blue,
+                height: 200,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.amber,
+                height: 200,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.cyan,
+                height: 200,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                color: Colors.black,
+                height: 200,
               ),
             ),
           ],
@@ -84,7 +120,13 @@ class _BannerClipper extends CustomClipper<Path> {
     path.lineTo(0.0, size.height);
     path.lineTo(size.width, size.height);
     path.lineTo(size.width, offset);
-    path.arcToPoint(Offset(0.0, offset), radius: Radius.circular(offset / 2 + math.pow(size.width, 2) / (8 * offset)), rotation: 1.0 / 3.0, clockwise: false);
+    path.arcToPoint(
+      Offset(0.0, offset),
+      radius:
+          Radius.circular(offset / 2 + math.pow(size.width, 2) / (8 * offset)),
+      rotation: 1.0 / 3.0,
+      clockwise: false,
+    );
     return path;
   }
 
