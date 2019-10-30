@@ -1,4 +1,3 @@
-import 'package:example/widgets/ok_http_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +32,7 @@ class BookCoverImage extends StatelessWidget {
             children: <Widget>[
               FadeInImage(
                 placeholder: AssetImage('assets/images/placeholder_cover.png'),
-                image: OkHttpImage(url),
+                image: NetworkImage(url),
                 fit: BoxFit.cover,
                 width: double.infinity,
                 height: double.infinity,
