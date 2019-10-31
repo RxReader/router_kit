@@ -7,10 +7,12 @@ class YunyanView extends StatefulWidget {
   const YunyanView({
     Key key,
     @required this.title,
+    @required this.notifier,
   })  : assert(title != null),
         super(key: key);
 
   final String title;
+  final ValueNotifier<double> notifier;
 
   @override
   State<StatefulWidget> createState() {
@@ -23,6 +25,7 @@ class _YunyanViewState extends State<YunyanView> {
   @override
   void initState() {
     super.initState();
+    widget.notifier.value = 0.0;
     print('${widget.runtimeType} - ${widget.title}');
   }
 
@@ -34,72 +37,80 @@ class _YunyanViewState extends State<YunyanView> {
         Container(
           color: Colors.green,
         ),
-        CustomScrollView(
-          slivers: <Widget>[
-            SliverToBoxAdapter(
-              child: SizedBox(
-                width: double.infinity,
-                height: MediaQuery.of(context).padding.top +
-                    kToolbarHeight +
-                    114.0 +
-                    42.5,
-                child: Stack(
-                  children: <Widget>[
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ClipPath(
-                        clipper: _BannerClipper(offset: 10.0),
-                        child: Container(
-                          color: Colors.white,
-                          height: 42.5 + 10.0,
+        NotificationListener<ScrollNotification>(
+          onNotification: (ScrollNotification notification) {
+            if (notification.metrics.axis == Axis.vertical) {
+              widget.notifier.value = notification.metrics.pixels;
+            }
+            return false;
+          },
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverToBoxAdapter(
+                child: SizedBox(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).padding.top +
+                      kToolbarHeight +
+                      114.0 +
+                      42.5,
+                  child: Stack(
+                    children: <Widget>[
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ClipPath(
+                          clipper: _BannerClipper(offset: 10.0),
+                          child: Container(
+                            color: Colors.white,
+                            height: 42.5 + 10.0,
+                          ),
                         ),
                       ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text('看，有灰机！'),
-                    ),
-                  ],
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text('看，有灰机！'),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.white,
-                height: 200,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white,
+                  height: 200,
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.red,
-                height: 200,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.red,
+                  height: 200,
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.blue,
-                height: 200,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.blue,
+                  height: 200,
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.amber,
-                height: 200,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.amber,
+                  height: 200,
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.cyan,
-                height: 200,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.cyan,
+                  height: 200,
+                ),
               ),
-            ),
-            SliverToBoxAdapter(
-              child: Container(
-                color: Colors.black,
-                height: 200,
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.black,
+                  height: 200,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ],
     );
