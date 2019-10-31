@@ -25,18 +25,11 @@ class _YunyanViewState extends State<YunyanView> {
   static const String _imageUrl =
       'http://b-ssl.duitang.com/uploads/blog/201312/04/20131204184148_hhXUT.jpeg';
 
-  ValueNotifier<Color> colorNotifier;
-
   @override
   void initState() {
     super.initState();
     print('${widget.runtimeType} - ${widget.title}');
     widget.notifier.value = 0.0;
-    colorNotifier = ValueNotifier<Color>(Colors.green);
-    PaletteGenerator.fromImageProvider(NetworkImage(_imageUrl))
-        .then((PaletteGenerator palette) {
-      colorNotifier.value = palette.dominantColor.color;
-    });
   }
 
   @override
@@ -44,13 +37,8 @@ class _YunyanViewState extends State<YunyanView> {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
-        ValueListenableBuilder<Color>(
-          valueListenable: colorNotifier,
-          builder: (BuildContext context, Color value, Widget child) {
-            return Container(
-              color: value,
-            );
-          },
+        Container(
+          color: Colors.green,
         ),
         NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
@@ -60,6 +48,7 @@ class _YunyanViewState extends State<YunyanView> {
             return false;
           },
           child: CustomScrollView(
+            anchor: 0.5,
             slivers: <Widget>[
               SliverToBoxAdapter(
                 child: SizedBox(
@@ -80,14 +69,20 @@ class _YunyanViewState extends State<YunyanView> {
                           ),
                         ),
                       ),
-//                      Align(
-//                        alignment: Alignment.bottomCenter,
-//                        child: Image(
-//                          image: NetworkImage(_imageUrl),
-//                        ),
-//                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Image(
+                          image: NetworkImage(_imageUrl),
+                        ),
+                      ),
                     ],
                   ),
+                ),
+              ),
+              SliverToBoxAdapter(
+                child: Container(
+                  color: Colors.white.withOpacity(0.99),
+                  height: 11,
                 ),
               ),
               SliverToBoxAdapter(
@@ -98,7 +93,7 @@ class _YunyanViewState extends State<YunyanView> {
               ),
               SliverToBoxAdapter(
                 child: Container(
-                  color: Colors.red,
+                  color: Colors.white,
                   height: 200,
                 ),
               ),
