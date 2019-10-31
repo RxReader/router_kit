@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:palette_generator/palette_generator.dart';
 
 class YunyanView extends StatefulWidget {
   const YunyanView({
@@ -21,12 +22,21 @@ class YunyanView extends StatefulWidget {
 }
 
 class _YunyanViewState extends State<YunyanView> {
+  static const String _imageUrl =
+      'http://b-ssl.duitang.com/uploads/blog/201312/04/20131204184148_hhXUT.jpeg';
+
+  ValueNotifier<Color> colorNotifier;
 
   @override
   void initState() {
     super.initState();
-    widget.notifier.value = 0.0;
     print('${widget.runtimeType} - ${widget.title}');
+    widget.notifier.value = 0.0;
+    colorNotifier = ValueNotifier<Color>(Colors.green);
+    PaletteGenerator.fromImageProvider(NetworkImage(_imageUrl))
+        .then((PaletteGenerator palette) {
+      colorNotifier.value = palette.dominantColor.color;
+    });
   }
 
   @override
@@ -34,8 +44,13 @@ class _YunyanViewState extends State<YunyanView> {
     return Stack(
       fit: StackFit.expand,
       children: <Widget>[
-        Container(
-          color: Colors.green,
+        ValueListenableBuilder<Color>(
+          valueListenable: colorNotifier,
+          builder: (BuildContext context, Color value, Widget child) {
+            return Container(
+              color: value,
+            );
+          },
         ),
         NotificationListener<ScrollNotification>(
           onNotification: (ScrollNotification notification) {
@@ -65,10 +80,12 @@ class _YunyanViewState extends State<YunyanView> {
                           ),
                         ),
                       ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text('看，有灰机！'),
-                      ),
+//                      Align(
+//                        alignment: Alignment.bottomCenter,
+//                        child: Image(
+//                          image: NetworkImage(_imageUrl),
+//                        ),
+//                      ),
                     ],
                   ),
                 ),

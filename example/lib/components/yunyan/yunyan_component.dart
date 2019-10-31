@@ -169,18 +169,19 @@ class _CustomAppBarState extends State<CustomAppBar> {
                               ? Colors.green
                               : Colors.white,
                           indicatorSize: TabBarIndicatorSize.label,
+                          labelColor: value >= appbarHeight
+                              ? Colors.green
+                              : Colors.white,
                           labelStyle: TextStyle(
                             fontSize: 18.0,
                           ),
-                          labelColor: value >= appbarHeight
-                              ? Colors.green
+                          labelPadding: EdgeInsets.symmetric(horizontal: 12.5),
+                          unselectedLabelColor: value >= appbarHeight
+                              ? Colors.black
                               : Colors.white,
                           unselectedLabelStyle: TextStyle(
                             fontSize: 16.0,
                           ),
-                          unselectedLabelColor: value >= appbarHeight
-                              ? Colors.black
-                              : Colors.white,
                         ),
                       ),
                       ConstrainedBox(
