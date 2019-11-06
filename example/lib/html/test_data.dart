@@ -3,7 +3,7 @@ const Map<String, String> htmlTestData = <String, String>{
   'abbr': '<abbr>HLO-WRLD</abbr>',
   'b': '<b>Hello, World!<b>Hello, World!<b>Hello, World!</b></b></b>',
   'strong': '<strong>Hello, World!</strong>',
-  'big': 'Hello, World!<big>Hello, World!<big>Hello, World!<big>Hello, World!<big>Hello, World!<big>Hello, World!</big></big></big></big></big>',
+  'big': '<big>Hello, World!<big>Hello, World!</big></big>',
   'blockquote':
       '<blockquote>Hello, World!\nHello, World!\nHello, World!Hello, World!Hello, World!Hello, World!\nHello, World!Hello, World!Hello, World!Hello, World!Hello, World!Hello, World!</blockquote>',
   'br': '<a>Hello,<br />World!</a>',

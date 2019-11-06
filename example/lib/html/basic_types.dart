@@ -107,7 +107,7 @@ InlineSpan defaultImgRender(
       break;
   }
   String srcValue = isNotEmpty(sourceUrl)
-      ? Uri.parse(sourceUrl).resolve(src).toString()
+      ? Uri.tryParse(sourceUrl).resolve(src).toString()
       : src;
   double widthValue = Html.parseHtmlWH(width, window?.width);
   double heightValue = Html.parseHtmlWH(height, window?.height) ?? widthValue;
@@ -193,10 +193,10 @@ InlineSpan defaultVideoRender(
   String src = node.attributes['src'];
   String width = node.attributes['width'];
   String posterValue = isNotEmpty(sourceUrl)
-      ? Uri.parse(sourceUrl).resolve(poster).toString()
+      ? Uri.tryParse(sourceUrl).resolve(poster).toString()
       : poster;
   String srcValue = isNotEmpty(sourceUrl)
-      ? Uri.parse(sourceUrl).resolve(src).toString()
+      ? Uri.tryParse(sourceUrl).resolve(src).toString()
       : src;
   double widthValue = Html.parseHtmlWH(width, null);
   double heightValue = Html.parseHtmlWH(height, null);
@@ -222,7 +222,7 @@ Widget defaultPosterRender(
   Widget child;
   Uri uri = isNotEmpty(poster) ? Uri.tryParse(poster) : null;
   if (uri == null) {
-    child = Text.rich(TextSpan(text: 'video'));
+    child = const Text.rich(TextSpan(text: 'video'));
   } else {
     ImageProvider image;
     if (uri.data != null && uri.data.isBase64) {

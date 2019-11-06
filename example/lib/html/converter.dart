@@ -38,12 +38,6 @@ class HtmlToSpannedConverter {
   static const List<String> _supportedBlockElements = <String>[
     'center',
     'div',
-//    'h1',
-//    'h2',
-//    'h3',
-//    'h4',
-//    'h5',
-//    'h6',
     'hr',
     'li',
     'p',
@@ -295,7 +289,7 @@ class HtmlToSpannedConverter {
             media,
             mimeType,
             isNotEmpty(sourceUrl)
-                ? Uri.parse(sourceUrl).resolve(href).toString()
+                ? Uri.tryParse(sourceUrl).resolve(href).toString()
                 : href,
           );
         },
@@ -623,7 +617,7 @@ class HtmlToSpannedConverter {
           .where(
               (dom.Node node) => node is dom.Element && node.localName == 'li')
           .toList()
-          .indexOf(node);
+          .indexWhere((dom.Node element) => identical(element, node));
       leading = '${index + 1}.';
     } else {
       leading = '•';
