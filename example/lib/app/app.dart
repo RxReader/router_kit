@@ -19,7 +19,7 @@ class _AppState extends State<App> {
     return MaterialApp(
       onGenerateRoute: _onGenerateRoute,
       onUnknownRoute: _onUnknownRoute,
-      initialRoute: HtmlComponentProvider.routeName,
+      initialRoute: YunyanComponentProvider.routeName,
       builder: (BuildContext context, Widget child) {
         /// 禁用系统字体控制
         return MediaQuery(

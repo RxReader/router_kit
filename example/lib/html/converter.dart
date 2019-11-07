@@ -7,7 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
-import 'package:quiver/strings.dart';
+import 'package:quiver/strings.dart' as strings;
 
 class HtmlToSpannedConverter {
   HtmlToSpannedConverter(
@@ -235,7 +235,7 @@ class HtmlToSpannedConverter {
 
   InlineSpan _textRender(HtmlParseContext context, dom.Text node) {
     String finalText = node.text;
-    if (isEmpty(node.text.trim()) && !node.text.contains(' ')) {
+    if (strings.isEmpty(node.text.trim()) && !node.text.contains(' ')) {
       return null;
     }
     if (context.condenseWhitespace) {
@@ -254,7 +254,7 @@ class HtmlToSpannedConverter {
         }
       }
     }
-    if (isEmpty(finalText) || finalText == ' ') {
+    if (strings.isEmpty(finalText) || finalText == ' ') {
       return null;
     }
     return TextSpan(
@@ -294,7 +294,7 @@ class HtmlToSpannedConverter {
             target,
             media,
             mimeType,
-            isNotEmpty(sourceUrl)
+            strings.isNotEmpty(sourceUrl)
                 ? Uri.tryParse(sourceUrl).resolve(href).toString()
                 : href,
           );
@@ -796,8 +796,7 @@ class HtmlToSpannedConverter {
 //    String style = node.attributes['style'];
     TextStyle textStyle = context.textStyle.merge(TextStyle());
     List<InlineSpan> children = <InlineSpan>[];
-    InlineSpan result;
-    result = TextSpan(
+    InlineSpan result = TextSpan(
       children: children,
       style: textStyle,
     );

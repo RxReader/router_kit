@@ -86,15 +86,19 @@ class _YunyanViewState extends State<YunyanView> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  height: 200,
+                child: RepaintBoundary(
+                  child: Container(
+                    color: Colors.white,
+                    height: 200,
+                  ),
                 ),
               ),
               SliverToBoxAdapter(
-                child: Container(
-                  color: Colors.white,
-                  height: 200,
+                child: RepaintBoundary(
+                  child: Container(
+                    color: Colors.white,
+                    height: 200,
+                  ),
                 ),
               ),
               SliverToBoxAdapter(

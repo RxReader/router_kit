@@ -2,7 +2,7 @@ import 'package:csslib/parser.dart' as css_parser;
 import 'package:example/html/basic_types.dart';
 import 'package:example/html/converter.dart';
 import 'package:flutter/material.dart';
-import 'package:quiver/strings.dart';
+import 'package:quiver/strings.dart' as strings;
 
 class Html {
   Html._();
@@ -50,18 +50,21 @@ class Html {
   }
 
   static Color parseHtmlColor(String color) {
-    Color htmlColor = _htmlColorNameMap[color];
-    if (htmlColor == null) {
-      if (color.startsWith('#')) {
-        color = color.substring(1);
-        if (color.length == 3) {
-          color = '#FF${color.split('').map((String s) => '$s$s').join('')}';
-        } else if (color.length == 6) {
-          color = '#FF$color';
+    Color htmlColor;
+    if (strings.isNotEmpty(color)) {
+      htmlColor = _htmlColorNameMap[color];
+      if (htmlColor == null) {
+        if (color.startsWith('#')) {
+          color = color.substring(1);
+          if (color.length == 3) {
+            color = '#FF${color.split('').map((String s) => '$s$s').join('')}';
+          } else if (color.length == 6) {
+            color = '#FF$color';
+          }
         }
+        css_parser.Color parsedColor = css_parser.Color.css(color);
+        htmlColor = Color(parsedColor.argbValue);
       }
-      css_parser.Color parsedColor = css_parser.Color.css(color);
-      htmlColor = Color(parsedColor.argbValue);
     }
     return htmlColor;
   }
@@ -71,7 +74,7 @@ class Html {
   }
 
   static double parseHtmlWH(String value, [double refValue]) {
-    if (isNotEmpty(value)) {
+    if (strings.isNotEmpty(value)) {
       if (value.endsWith('%')) {
         value = value.replaceAll('%', '');
         return refValue != null && double.tryParse(value) != null
