@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:example/widgets/red_blue_voting.dart';
+import 'package:example/widgets/list_voting.dart' as list;
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
@@ -51,6 +52,18 @@ class _AboutComponentState extends State<AboutComponent> {
               title: '不赞同118人',
               number: 118,
             ),
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          list.ListVotingBar(
+            votings: List<list.Voting>.generate(
+                4,
+                (int index) => list.Voting(
+                      title: '选项$index',
+                      number: math.pow(index, 5),
+                    )),
+            selected: 1,
           ),
         ],
       ),
