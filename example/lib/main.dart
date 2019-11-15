@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:example/app/app.dart';
-import 'package:example/logs/collect-console-logs.dart';
+import 'package:example/logs/collect_console_logs.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
