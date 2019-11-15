@@ -45,7 +45,7 @@ class _AboutComponentState extends State<AboutComponent> {
                     shadows: <BoxShadow>[
                       BoxShadow(
                         color: Color(0x69FCA25E),
-                        offset: Offset(0, -2),
+                        offset: Offset(0.0, 2.0),
                         blurRadius: 4.0,
                       ),
                     ],
@@ -69,7 +69,7 @@ class _AboutComponentState extends State<AboutComponent> {
                     shadows: <BoxShadow>[
                       BoxShadow(
                         color: Color(0x7551ACF9),
-                        offset: Offset(0, -2),
+                        offset: Offset(0.0, 2.0),
                         blurRadius: 4.0,
                       ),
                     ],
