@@ -94,26 +94,34 @@ class _LeftShapeClipper extends CustomClipper<Path> {
       rotation: 1.0 / 2.0,
       clockwise: false,
     );
-    path.lineTo(size.width - size.height / math.sqrt(3.0) + 1.0 / math.sqrt(3.0) * cornerRadius, size.height);
+    path.lineTo(
+        size.width -
+            size.height / math.sqrt(3.0) +
+            math.sqrt(3.0) * cornerRadius -
+            1.0 / 2.0 * cornerRadius,
+        size.height);
     path.arcToPoint(
-      Offset(size.width - size.height / math.sqrt(3.0) + (1.0 + 1.0 / 2.0) * cornerRadius + 1.0 / math.sqrt(3.0) * cornerRadius,
-          size.height - math.sqrt(3.0) / 2.0 * cornerRadius),
-      radius: Radius.circular(cornerRadius + 2.0),// 加大半径抗锯齿
-      rotation: 1.0 / 3.0,
+      Offset(
+          size.width -
+              size.height / math.sqrt(3.0) +
+              math.sqrt(3.0) * cornerRadius +
+              1.0 / 4.0 * cornerRadius,
+          size.height - math.sqrt(3.0) / 4.0 * cornerRadius),
+      radius: Radius.circular(cornerRadius),
+      rotation: 1.0 / 6.0,
       clockwise: false,
     );
-    path.lineTo(size.width, cornerRadius);
+    path.lineTo(size.width - (1.0 - math.sqrt(3.0) / 2.0) * cornerRadius,
+        (1.0 + 1.0 / 2.0) * cornerRadius);
     path.arcToPoint(
       Offset(size.width - cornerRadius, 0.0),
       radius: Radius.circular(cornerRadius),
-      rotation: 1.0 / 4.0,
+      rotation: 1.0 / 3.0,
       clockwise: false,
     );
     path.close();
     return path;
   }
-
-  // 1.0 / math.sqrt(3.0) * cornerRadius
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
@@ -144,17 +152,25 @@ class _RightShapeClipper extends CustomClipper<Path> {
     );
     path.lineTo(cornerRadius, size.height);
     path.arcToPoint(
-      Offset(0.0, size.height - cornerRadius),
+      Offset((1.0 - math.sqrt(3.0) / 2.0) * cornerRadius,
+          size.height - (1.0 + 1.0 / 2.0) * cornerRadius),
       radius: Radius.circular(cornerRadius),
-      rotation: 1.0 / 4.0,
+      rotation: 120.0 / 360.0,
       clockwise: true,
     );
-    path.lineTo(size.height / math.sqrt(3.0) - (1.0 + 1.0 / 2.0) * cornerRadius - 1.0 / math.sqrt(3.0) * cornerRadius,
-        math.sqrt(3.0) / 2.0 * cornerRadius);
+    path.lineTo(
+        size.height / math.sqrt(3.0) -
+            math.sqrt(3.0) * cornerRadius -
+            1.0 / 4.0 * cornerRadius,
+        math.sqrt(3.0) / 4 * cornerRadius);
     path.arcToPoint(
-      Offset(size.height / math.sqrt(3.0) - 1.0 / math.sqrt(3.0) * cornerRadius, 0.0),
-      radius: Radius.circular(cornerRadius + 2.0),// 加大半径抗锯齿
-      rotation: 1.0 / 3.0,
+      Offset(
+          size.height / math.sqrt(3.0) -
+              math.sqrt(3.0) * cornerRadius +
+              1.0 / 2.0 * cornerRadius,
+          0.0),
+      radius: Radius.circular(cornerRadius + 2.0),
+      rotation: 1.0 / 6.0,
       clockwise: true,
     );
     path.close();
