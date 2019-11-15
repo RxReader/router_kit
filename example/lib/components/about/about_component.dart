@@ -98,7 +98,7 @@ class _LeftShapeClipper extends CustomClipper<Path> {
     path.arcToPoint(
       Offset(size.width - size.height / math.sqrt(3.0) + (1.0 + 1.0 / 2.0) * cornerRadius + 1.0 / math.sqrt(3.0) * cornerRadius,
           size.height - math.sqrt(3.0) / 2.0 * cornerRadius),
-      radius: Radius.circular(cornerRadius),
+      radius: Radius.circular(cornerRadius * 1.5),
       rotation: 1.0 / 3.0,
       clockwise: false,
     );
@@ -144,7 +144,7 @@ class _RightShapeClipper extends CustomClipper<Path> {
     );
     path.lineTo(cornerRadius, size.height);
     path.arcToPoint(
-      Offset(0.0, size.height - cornerRadius), //
+      Offset(0.0, size.height - cornerRadius),
       radius: Radius.circular(cornerRadius),
       rotation: 1.0 / 4.0,
       clockwise: true,
@@ -153,7 +153,7 @@ class _RightShapeClipper extends CustomClipper<Path> {
         math.sqrt(3.0) / 2.0 * cornerRadius);
     path.arcToPoint(
       Offset(size.height / math.sqrt(3.0) - 1.0 / math.sqrt(3.0) * cornerRadius, 0.0),
-      radius: Radius.circular(cornerRadius),
+      radius: Radius.circular(cornerRadius * 1.5),
       rotation: 1.0 / 3.0,
       clockwise: true,
     );
