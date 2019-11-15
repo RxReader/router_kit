@@ -94,17 +94,17 @@ class _LeftShapeClipper extends CustomClipper<Path> {
       rotation: 1.0 / 2.0,
       clockwise: false,
     );
-    path.lineTo(size.width - size.height / 2.0, size.height);
+    path.lineTo(size.width - size.height / 2.0 + 1.0 / math.sqrt(3.0) * cornerRadius, size.height);
     path.arcToPoint(
-      Offset(size.width - size.height / 2.0 + (1.0 + 1.0 / 2.0) * cornerRadius,
+      Offset(size.width - size.height / 2.0 + (1.0 + 1.0 / 2.0) * cornerRadius + 1.0 / math.sqrt(3.0) * cornerRadius,
           size.height - math.sqrt(3.0) / 2.0 * cornerRadius),
       radius: Radius.circular(cornerRadius),
       rotation: 1.0 / 3.0,
       clockwise: false,
     );
-    path.lineTo(size.width - 1.0 / math.sqrt(3.0) * cornerRadius, cornerRadius);
+    path.lineTo(size.width, cornerRadius);
     path.arcToPoint(
-      Offset(size.width - (1.0 / math.sqrt(3.0) + 1.0) * cornerRadius, 0.0),
+      Offset(size.width - cornerRadius, 0.0),
       radius: Radius.circular(cornerRadius),
       rotation: 1.0 / 4.0,
       clockwise: false,
@@ -112,6 +112,8 @@ class _LeftShapeClipper extends CustomClipper<Path> {
     path.close();
     return path;
   }
+
+  // 1.0 / math.sqrt(3.0) * cornerRadius
 
   @override
   bool shouldReclip(CustomClipper<Path> oldClipper) {
@@ -140,18 +142,17 @@ class _RightShapeClipper extends CustomClipper<Path> {
       rotation: 1.0 / 2.0,
       clockwise: true,
     );
-    path.lineTo((1.0 / math.sqrt(3.0) + 1.0) * cornerRadius, size.height);
+    path.lineTo(cornerRadius, size.height);
     path.arcToPoint(
-      Offset(
-          1.0 / math.sqrt(3.0) * cornerRadius, size.height - cornerRadius), //
+      Offset(0.0, size.height - cornerRadius), //
       radius: Radius.circular(cornerRadius),
       rotation: 1.0 / 4.0,
       clockwise: true,
     );
-    path.lineTo(size.height / 2.0 - (1.0 + 1.0 / 2.0) * cornerRadius,
+    path.lineTo(size.height / 2.0 - (1.0 + 1.0 / 2.0) * cornerRadius - 1.0 / math.sqrt(3.0) * cornerRadius,
         math.sqrt(3.0) / 2.0 * cornerRadius);
     path.arcToPoint(
-      Offset(size.height / 2.0, 0.0),
+      Offset(size.height / 2.0 - 1.0 / math.sqrt(3.0) * cornerRadius, 0.0),
       radius: Radius.circular(cornerRadius),
       rotation: 1.0 / 3.0,
       clockwise: true,
