@@ -445,7 +445,7 @@ class _LeftShapeBorder extends ShapeBorder {
     path.arcToPoint(
       Offset(rect.left + size.height / 2.0, rect.top + size.height),
       radius: Radius.circular(size.height / 2.0),
-      rotation: 1.0 / 2.0,
+      rotation: 1.0 / 2.0 * math.pi,
       clockwise: false,
     );
     path.lineTo(
@@ -464,7 +464,7 @@ class _LeftShapeBorder extends ShapeBorder {
               1.0 / 4.0 * cornerRadius,
           rect.top + size.height - math.sqrt(3.0) / 4.0 * cornerRadius),
       radius: Radius.circular(cornerRadius),
-      rotation: 1.0 / 6.0,
+      rotation: 1.0 / 6.0 * math.pi,
       clockwise: false,
     );
     path.lineTo(
@@ -473,7 +473,7 @@ class _LeftShapeBorder extends ShapeBorder {
     path.arcToPoint(
       Offset(rect.left + size.width - cornerRadius, rect.top + 0.0),
       radius: Radius.circular(cornerRadius),
-      rotation: 1.0 / 3.0,
+      rotation: 1.0 / 3.0 * math.pi,
       clockwise: false,
     );
     path.close();
@@ -554,7 +554,7 @@ class _RightShapeBorder extends ShapeBorder {
       Offset(
           rect.left + size.width - size.height / 2.0, rect.top + size.height),
       radius: Radius.circular(size.height / 2.0),
-      rotation: 1.0 / 2.0,
+      rotation: 1.0 / 2.0 * math.pi,
       clockwise: true,
     );
     path.lineTo(rect.left + cornerRadius, rect.top + size.height);
@@ -562,7 +562,7 @@ class _RightShapeBorder extends ShapeBorder {
       Offset(rect.left + (1.0 - math.sqrt(3.0) / 2.0) * cornerRadius,
           rect.top + size.height - (1.0 + 1.0 / 2.0) * cornerRadius),
       radius: Radius.circular(cornerRadius),
-      rotation: 120.0 / 360.0,
+      rotation: 120.0 / 360.0 * math.pi,
       clockwise: true,
     );
     path.lineTo(
@@ -579,7 +579,7 @@ class _RightShapeBorder extends ShapeBorder {
               1.0 / 2.0 * cornerRadius,
           rect.top + 0.0),
       radius: Radius.circular(cornerRadius),
-      rotation: 1.0 / 6.0,
+      rotation: 1.0 / 6.0 * math.pi,
       clockwise: true,
     );
     path.close();
