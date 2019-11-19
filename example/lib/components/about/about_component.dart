@@ -1,5 +1,7 @@
 import 'dart:math' as math;
 
+import 'package:example/components/about/cell/forum_activity_cell.dart';
+import 'package:example/components/about/cell/forum_subject_cell.dart';
 import 'package:example/widgets/red_blue_voting.dart';
 import 'package:example/widgets/list_voting.dart' as list;
 import 'package:flutter/material.dart';
@@ -25,7 +27,7 @@ class _AboutComponentState extends State<AboutComponent> {
       appBar: AppBar(
         title: const Text('About'),
       ),
-      body: Column(
+      body: ListView(
         children: <Widget>[
           SizedBox(
             height: 10.0,
@@ -64,6 +66,24 @@ class _AboutComponentState extends State<AboutComponent> {
                       number: math.pow(index, 5),
                     )),
             selected: 1,
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          ForumSubjectCell(
+            subjects: <String>[
+              '#最后悔的\n一件事#',
+              '#给你1个亿\n你有啥计划#',
+              '#推荐一本你\n最喜欢的书#',
+              '#给你1个亿\n你有啥计划#',
+            ],
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          ForumActivityCell(),
+          SizedBox(
+            height: 10.0,
           ),
         ],
       ),

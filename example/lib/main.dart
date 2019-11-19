@@ -4,6 +4,7 @@ import 'dart:isolate';
 
 import 'package:example/app/app.dart';
 import 'package:example/logs/collect_console_logs.dart';
+import 'package:example/widgets/error_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +24,7 @@ void main() {
 
   runZoned(
     () {
+      ErrorWidget.builder = AwkErrorWidget.builder;
       runApp(App());
     },
     zoneSpecification: ZoneSpecification(
