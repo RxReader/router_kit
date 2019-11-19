@@ -24,7 +24,9 @@ void main() {
 
   runZoned(
     () {
-      ErrorWidget.builder = AwkErrorWidget.builder;
+      if (kReleaseMode) {
+        ErrorWidget.builder = AwkErrorWidget.builder;
+      }
       runApp(App());
     },
     zoneSpecification: ZoneSpecification(
