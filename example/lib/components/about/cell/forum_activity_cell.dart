@@ -123,7 +123,7 @@ class _ForumActivityCellState extends State<ForumActivityCell> {
                   shadows: <BoxShadow>[
                     BoxShadow(
                       color: snapshot.hasData
-                          ? snapshot.data.dominantColor.color
+                          ? (snapshot.data.dominantColor?.color ?? Colors.transparent)
                           : Colors.transparent, //未取到色值
                       offset: Offset(0.0, 2.0),
                       blurRadius: 4.0,

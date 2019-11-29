@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:example/components/about/cell/forum_activity_cell.dart';
 import 'package:example/components/about/cell/forum_subject_cell.dart';
+import 'package:example/widgets/coupon_widget.dart';
 import 'package:example/widgets/red_blue_voting.dart';
 import 'package:example/widgets/list_voting.dart' as list;
 import 'package:flutter/material.dart';
@@ -29,6 +30,10 @@ class _AboutComponentState extends State<AboutComponent> {
       ),
       body: ListView(
         children: <Widget>[
+          SizedBox(
+            height: 10.0,
+          ),
+          CouponWidget(),
           SizedBox(
             height: 10.0,
           ),
