@@ -2,7 +2,7 @@ name: router_compiler
 description: A starting point for Dart libraries or applications.
 version: 0.0.1
 author: v7lin <v7lin@qq.com>
-homepage: https://github.com/v7lin
+homepage: https://github.com/v7lin/router_kit
 
 environment:
   sdk: '>=2.2.0 <3.0.0'

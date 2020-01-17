@@ -63,12 +63,12 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Router> {
 
 Builder componentCompilerBuilder({String header}) => PartBuilder(
       [ComponentCompilerGenerator()],
-      '.component.dart',
+      '.g.dart',
       header: header,
     );
 
 Builder routerCompilerBuilder({String header}) => LibraryBuilder(
       RouterCompilerGenerator(),
-      generatedExtension: '.router.dart',
+      generatedExtension: '.g.dart',
       header: header,
     );
