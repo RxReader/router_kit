@@ -1,8 +1,8 @@
 name: router_api
-description: A new Flutter package.
+description: Flutter Router Api.
 version: 0.0.1
 author: v7lin <v7lin@qq.com>
-homepage: https://github.com/v7lin
+homepage: https://github.com/v7lin/router_kit
 
 environment:
   sdk: ">=2.1.0 <3.0.0"
