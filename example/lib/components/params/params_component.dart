@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'params_component.component.dart';
+part 'params_component.c.dart';
 
 typedef String Callback(String info);
 
@@ -11,13 +11,13 @@ typedef String Callback(String info);
 // ignore: must_be_immutable
 class ParamsComponent extends StatefulWidget {
   ParamsComponent(
-    this.paramA, {
-    Key key,
-    @required this.paramB,
-    this.paramC,
-    this.paramE,
-    this.callback,
-  }) : super(key: key);
+      this.paramA, {
+        Key key,
+        @required this.paramB,
+        this.paramC,
+        this.paramE,
+        this.callback,
+      }) : super(key: key);
 
   final String paramA;
 

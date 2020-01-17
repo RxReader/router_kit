@@ -1,28 +1,13 @@
-import 'dart:io';
-import 'dart:typed_data';
-
-import 'package:archive/archive.dart';
-import 'package:device_info/device_info.dart';
-import 'package:example/components/banner/banner_component.dart';
-import 'package:example/components/html/html_component.dart';
-import 'package:example/components/nested_scroll/nested_scroll_component.dart';
+import 'package:example/components/about/about_component.dart';
 import 'package:example/components/params/params_component.dart';
 import 'package:example/components/payment/payment_component.dart';
-import 'package:example/components/reader/core/reader_settings.dart';
-import 'package:example/components/reader/core/reader_view_model.dart';
-import 'package:example/components/reader/reader_component.dart';
-import 'package:example/logs/collect_console_logs.dart';
 import 'package:example/router/app_router.dart';
-import 'package:example/utility/path_provider.dart';
-import 'package:example/utility/utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path/path.dart' as path;
 import 'package:router_annotation/router_annotation.dart';
 
-part 'home_component.component.dart';
+part 'home_component.c.dart';
 
 @Component(
   routeName: Navigator.defaultRouteName,
@@ -47,7 +32,7 @@ class _HomeComponentState extends State<HomeComponent> {
             title: const Text('Banner'),
             onTap: () {
               AppRouter.defaultRouter(context)
-                  .pushNamed(BannerComponentProvider.routeName);
+                  .pushNamed(AboutComponentProvider.routeName);
             },
           ),
           ListTile(
@@ -64,157 +49,10 @@ class _HomeComponentState extends State<HomeComponent> {
               AppRouter.defaultRouter(context).pushNamed(
                 ParamsComponentProvider.routeName,
                 arguments:
-                    ParamsComponentProvider.routeArgument('aaa', paramB: 'bbb'),
+                ParamsComponentProvider.routeArgument('aaa', paramB: 'bbb'),
               );
             },
           ),
-          ListTile(
-            title: const Text('Nested Scroll'),
-            onTap: () {
-              AppRouter.defaultRouter(context)
-                  .pushNamed(NestedScrollComponentProvider.routeName);
-            },
-          ),
-          ListTile(
-            title: const Text('Typeset'),
-            onTap: () {
-              AppRouter.defaultRouter(context).pushNamed(ReaderComponentProvider.routeName);
-            },
-          ),
-          Row(
-            children: <Widget>[
-              Container(
-                color: Colors.red,
-                child: Text('测试\n测\n试'),
-              ),
-              Container(
-                color: Colors.green,
-                child: Text.rich(TextSpan(
-                  children: <InlineSpan>[
-                    TextSpan(
-                      text: '测试\n',
-                    ),
-                    TextSpan(
-                      text: '测',
-                      style: TextStyle(
-                        fontSize: 2.0,
-                      ),
-                    ),
-                    TextSpan(
-                      text: '\n'
-                    ),
-                    TextSpan(
-                      text: '试'
-                    )
-                  ],
-                )),
-              )
-            ],
-          ),
-//          ListTile(
-//            title: const Text('Test'),
-//            onTap: () async {
-//              AndroidDeviceInfo deviceInfo =
-//                  await DeviceInfoPlugin().androidInfo;
-//              if (deviceInfo.supportedAbis != null &&
-//                  deviceInfo.supportedAbis.isNotEmpty) {
-//                print('读取 apk');
-//                ByteData byteData =
-//                    await rootBundle.load('apk/app-release.apk');
-//                Uint8List bytes = byteData.buffer.asUint8List();
-//                print('读取 apk 压缩信息');
-//                ZipDecoder decoder = ZipDecoder();
-//                Archive archive = decoder.decodeBytes(bytes);
-//                print('查询 libapp.so');
-//                List<ArchiveFile> nativeLibraries =
-//                    archive.where((ArchiveFile file) {
-//                  return file.name.startsWith('lib/') &&
-//                      file.name.endsWith('/libapp.so');
-//                }).toList();
-//                print('匹配 abi');
-//                ArchiveFile targetNativeLibrary;
-//                for (String supportedAbi in deviceInfo.supportedAbis) {
-//                  for (ArchiveFile nativeLibrary in nativeLibraries) {
-//                    if (nativeLibrary.name.contains(supportedAbi)) {
-//                      targetNativeLibrary = nativeLibrary;
-//                      break;
-//                    }
-//                  }
-//                  if (targetNativeLibrary != null) {
-//                    break;
-//                  }
-//                }
-//                if (targetNativeLibrary == null) {
-//                  targetNativeLibrary = nativeLibraries.firstWhere(
-//                      (ArchiveFile nativeLibrary) =>
-//                          nativeLibrary.name.contains('armeabi-v7a'));
-//                }
-//                print('解压');
-//                Directory nativeLibraryDir = await PathProvider.buildFileDir(type: PathProvider.nativeLibrary);
-//                File nativeLibraryFile = File(path.join(nativeLibraryDir.path, path.basename(targetNativeLibrary.name)));
-//                if (nativeLibraryFile.existsSync()) {
-//                  nativeLibraryFile.deleteSync();
-//                }
-//                nativeLibraryFile.createSync(recursive: true);
-//                nativeLibraryFile.writeAsBytesSync(targetNativeLibrary.content);
-//
-////                print('替换');
-////                try {
-////                  String nativeLibraryDir = await Utils.getNativeLibraryDir();
-////                  Directory(nativeLibraryDir).listSync().forEach((FileSystemEntity file) => print('file: ${file.path}'));
-////                  File nativeLibraryFile = File(path.join(nativeLibraryDir, path.basename(targetNativeLibrary.name)));
-////                  nativeLibraryTempFile.renameSync(nativeLibraryFile.path);
-//////                  print('替换成功');
-////                  showDialog<void>(context: context, builder: (BuildContext context) {
-////                    return AlertDialog(
-////                      title: Text('Hotfix'),
-////                      content: Text('Hotfix success'),
-////                    );
-////                  });
-////                } catch (e) {
-////                  showDialog<void>(context: context, builder: (BuildContext context) {
-////                    return AlertDialog(
-////                      title: Text('Hotfix'),
-////                      content: Text('Hotfix fail: ${e.toString()}'),
-////                    );
-////                  });
-////                }
-//              }
-//            },
-//          ),
-          ListTile(
-            title: const Text('Html'),
-            onTap: () {
-              AppRouter.defaultRouter(context).pushNamed(HtmlComponentProvider.routeName);
-            },
-          ),
-          ListTile(
-            title: const Text('Null'),
-            onTap: () {
-              String xxx;
-              print(xxx.length);
-            },
-          ),
-          ListTile(
-            title: const Text('All Logs'),
-            onTap: () async {
-              List<File> logs = await CollectConsoleLogs.get().getAllLogs();
-              if (logs != null && logs.isNotEmpty) {
-                logs.forEach((File log) {
-                  print('log: ${log.path}');
-                });
-              }
-            },
-          ),
-//          Center(
-//            child: Image.asset('assets/images/launch_icon.png'),
-//          ),
-//          Center(
-//            child: Image.asset('assets/images/about_logo.png'),
-//          ),
-//          Center(
-//            child: Image.asset('assets/images/bookshelf_top.png'),
-//          ),
         ],
       ),
     );
