@@ -29,7 +29,7 @@ class _HomeComponentState extends State<HomeComponent> {
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: const Text('Banner'),
+            title: const Text('About'),
             onTap: () {
               AppRouter.defaultRouter(context)
                   .pushNamed(AboutComponentProvider.routeName);

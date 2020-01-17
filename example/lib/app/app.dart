@@ -7,7 +7,7 @@ class App extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return null;
+    return _AppState();
   }
 }
 
@@ -28,7 +28,7 @@ class _AppState extends State<App> {
         );
       },
       onGenerateTitle: (BuildContext context) {
-        return 'Router';
+        return 'RouterKit';
       },
       theme: ThemeData.light().copyWith(
         platform: TargetPlatform.iOS,
