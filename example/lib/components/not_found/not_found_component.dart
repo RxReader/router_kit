@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'not_found_component.c.dart';
+part 'not_found_component.g.dart';
 
 @Component(
   routeName: '/not_found',

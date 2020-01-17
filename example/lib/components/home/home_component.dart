@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'home_component.c.dart';
+part 'home_component.g.dart';
 
 @Component(
   routeName: Navigator.defaultRouteName,
@@ -24,17 +24,10 @@ class _HomeComponentState extends State<HomeComponent> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Router'),
+        title: const Text('RouterKit'),
       ),
       body: ListView(
         children: <Widget>[
-          ListTile(
-            title: const Text('About'),
-            onTap: () {
-              AppRouter.defaultRouter(context)
-                  .pushNamed(AboutComponentProvider.routeName);
-            },
-          ),
           ListTile(
             title: const Text('Payment'),
             onTap: () {
@@ -51,6 +44,13 @@ class _HomeComponentState extends State<HomeComponent> {
                 arguments:
                 ParamsComponentProvider.routeArgument('aaa', paramB: 'bbb'),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('About'),
+            onTap: () {
+              AppRouter.defaultRouter(context)
+                  .pushNamed(AboutComponentProvider.routeName);
             },
           ),
         ],

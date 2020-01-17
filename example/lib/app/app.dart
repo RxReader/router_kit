@@ -1,5 +1,5 @@
 import 'package:example/components/not_found/not_found_component.dart';
-import 'package:example/router/app_router.r.dart';
+import 'package:example/router/app_router.router.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {

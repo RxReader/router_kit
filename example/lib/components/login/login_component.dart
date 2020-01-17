@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'login_component.c.dart';
+part 'login_component.g.dart';
 
 @Component(
   routeName: '/login',

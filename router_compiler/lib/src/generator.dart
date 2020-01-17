@@ -11,9 +11,11 @@ import 'package:source_gen/source_gen.dart';
 
 final Logger _log = Logger("RouterCompiler");
 
-final Map<String, ComponentInfo> infoMap = <String, ComponentInfo>{};
-
 class ComponentCompilerGenerator extends GeneratorForAnnotation<Component> {
+  ComponentCompilerGenerator(this.infoMap);
+
+  final Map<String, ComponentInfo> infoMap;
+
   static const String _onlyClassMsg =
       "Component annotation can only be defined on a class.";
 
@@ -40,6 +42,10 @@ class ComponentCompilerGenerator extends GeneratorForAnnotation<Component> {
 }
 
 class RouterCompilerGenerator extends GeneratorForAnnotation<Router> {
+  RouterCompilerGenerator(this.infoMap);
+
+  final Map<String, ComponentInfo> infoMap;
+
   static const String _onlyClassMsg =
       "Router annotation can only be defined on a class.";
 
@@ -61,14 +67,18 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Router> {
   }
 }
 
+final Map<String, ComponentInfo> infoMap = <String, ComponentInfo>{};
+
 Builder componentCompilerBuilder({String header}) => PartBuilder(
-      [ComponentCompilerGenerator()],
-      '.c.dart',
+      <Generator>[
+        ComponentCompilerGenerator(infoMap),
+      ],
+      '.g.dart',
       header: header,
     );
 
 Builder routerCompilerBuilder({String header}) => LibraryBuilder(
-      RouterCompilerGenerator(),
-      generatedExtension: '.r.dart',
+      RouterCompilerGenerator(infoMap),
+      generatedExtension: '.router.dart',
       header: header,
     );
