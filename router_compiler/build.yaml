@@ -10,7 +10,7 @@ builders:
   componentCompiler:
     import: "package:router_compiler/builder.dart"
     builder_factories: ["componentCompiler"]
-    build_extensions: {".dart": [".g.dart"]}
+    build_extensions: {".dart": [".component.dart"]}
     auto_apply: root_package
     runs_before: ['router_compiler|routerCompiler']
     build_to: source

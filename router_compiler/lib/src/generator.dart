@@ -73,7 +73,7 @@ Builder componentCompilerBuilder({String header}) => PartBuilder(
       <Generator>[
         ComponentCompilerGenerator(infoMap),
       ],
-      '.g.dart',
+      '.component.dart',
       header: header,
     );
 
