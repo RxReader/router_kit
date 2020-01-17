@@ -57,8 +57,7 @@ class ComponentWriter {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
           ctor2.writeln(
-              '${ctorParameter.type.displayName} ${ctorParameter
-                  .displayName},');
+              '${ctorParameter.type.displayName} ${ctorParameter.displayName},');
         }
       }
       bool hasOptionalParameters = false;
@@ -70,11 +69,8 @@ class ComponentWriter {
             ctor2.writeln('{');
           }
           ctor2.writeln(
-            // ignore: deprecated_member_use
-              '${ctorNamedParameter.isRequired
-                  ? '@required '
-                  : ''}${ctorNamedParameter.type
-                  .displayName} ${ctorNamedParameter.displayName},');
+              // ignore: deprecated_member_use
+              '${ctorNamedParameter.isRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
         }
       }
       if (hasOptionalParameters) {
@@ -82,22 +78,20 @@ class ComponentWriter {
       }
       _buffer.writeln(
           'static Map<dynamic, dynamic> routeArgument(\n${ctor2.toString()}){');
-      _buffer.writeln(
-          'Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
+      _buffer
+          .writeln('Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
       for (ParameterElement ctorParameter in info.ctorParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
           _buffer.write(
-              'arguments[\'${info.nameFormatter(
-                  fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
+              'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
         }
       }
       for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
         if (!fieldInfo.ignore) {
           _buffer.write(
-              'arguments[\'${info.nameFormatter(
-                  fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
+              'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
         }
       }
       _buffer.writeln('return arguments;');

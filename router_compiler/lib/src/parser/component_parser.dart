@@ -10,7 +10,8 @@ import 'package:source_gen/source_gen.dart';
 class ComponentParser {
   ComponentParser._();
 
-  static ComponentInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
+  static ComponentInfo parse(
+      ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) => supertype.displayName)
         .contains('Widget')) {

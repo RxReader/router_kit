@@ -35,9 +35,11 @@ class RouterWriter {
     // blank
     _buffer.writeln('');
 
-    _buffer.writeln('static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{');
+    _buffer.writeln(
+        'static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{');
     for (ComponentInfo info in infos) {
-      _buffer.writeln('${info.providerDisplayName}.routeName: ${info.providerDisplayName}.routeBuilder,');
+      _buffer.writeln(
+          '${info.providerDisplayName}.routeName: ${info.providerDisplayName}.routeBuilder,');
     }
     _buffer.writeln('};');
 
