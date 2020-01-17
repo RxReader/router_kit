@@ -24,10 +24,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
-  router_api:
-    path: ../router_api
-  router_annotation:
-    path: ../router_annotation
+  router_api: ^0.0.1
+#    path: ../router_api
+  router_annotation: ^0.0.1
+#    path: ../router_annotation
 
 dev_dependencies:
   flutter_test:

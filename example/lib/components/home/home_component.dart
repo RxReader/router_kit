@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'home_component.g.dart';
+part 'home_component.component.dart';
 
 @Component(
   routeName: Navigator.defaultRouteName,

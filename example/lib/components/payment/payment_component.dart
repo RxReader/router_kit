@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'payment_component.g.dart';
+part 'payment_component.component.dart';
 
 @Component(
   routeName: '/payment',

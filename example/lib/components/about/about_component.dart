@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-part 'about_component.g.dart';
+part 'about_component.component.dart';
 
 @Component(
   routeName: '/about',
