@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-typedef String NameFormatter(String fieldName);
+typedef NameFormatter = String Function(String fieldName);
 
 class Router {
   const Router();
@@ -34,26 +34,15 @@ abstract class Field {
   final bool ignore;
 }
 
-class Alias implements Field {
+class Alias extends Field {
   const Alias(
-    this.alias, {
-    this.nullable,
-  }) : ignore = false;
-
-  final String alias;
-  final bool nullable;
-  final bool ignore;
+    String alias, {
+    bool nullable,
+  }) : super(alias: alias, nullable: nullable, ignore: false);
 }
 
-class Ignore implements Field {
-  const Ignore()
-      : alias = null,
-        nullable = null,
-        ignore = true;
-
-  final String alias;
-  final bool nullable;
-  final bool ignore;
+class Ignore extends Field {
+  const Ignore() : super(alias: null, nullable: null, ignore: true);
 }
 
 class Provider {
