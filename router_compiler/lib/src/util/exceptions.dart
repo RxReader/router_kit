@@ -1,10 +1,13 @@
 class RouterCompilerException implements Exception {
-  final String message;
-
   RouterCompilerException([this.message]);
 
+  final String message;
+
+  @override
   String toString() {
-    if (message == null) return "RouterCompilerException";
-    return "RouterCompilerException: $message";
+    if (message == null) {
+      return 'RouterCompilerException';
+    }
+    return 'RouterCompilerException: $message';
   }
 }
