@@ -6,8 +6,8 @@ class Router {
   const Router();
 }
 
-class Component {
-  const Component({
+class Page {
+  const Page({
     @required this.routeName,
     this.ignoreKey = true,
     this.autowired = true,
@@ -54,4 +54,12 @@ class Ignore implements Field {
   final String alias;
   final bool nullable;
   final bool ignore;
+}
+
+class Provider {
+  const Provider({
+    @required this.routeName,
+  }) : assert(routeName != null);
+
+  final String routeName;
 }

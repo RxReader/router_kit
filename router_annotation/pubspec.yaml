@@ -1,6 +1,6 @@
 name: router_annotation
 description: Router Annotation.
-version: 0.0.1
+version: 0.1.0
 author: v7lin <v7lin@qq.com>
 homepage: https://github.com/v7lin/router_kit
 
@@ -11,5 +11,5 @@ dependencies:
   meta: ^1.1.6
 
 dev_dependencies:
-  pedantic: ^1.0.0
-  test: ^1.0.0
+  pedantic:
+  test:
