@@ -11,5 +11,6 @@ dependencies:
   meta: ^1.1.6
 
 dev_dependencies:
-  pedantic:
   test:
+
+  pedantic:
