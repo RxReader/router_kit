@@ -1,5 +1,3 @@
-import 'package:example/components/not_found/not_found_component.dart';
-import 'package:example/router/app_router.router.dart';
 import 'package:flutter/material.dart';
 
 class App extends StatefulWidget {
@@ -15,8 +13,8 @@ class _AppState extends State<App> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      onGenerateRoute: _onGenerateRoute,
-      onUnknownRoute: _onUnknownRoute,
+//      onGenerateRoute: _onGenerateRoute,
+//      onUnknownRoute: _onUnknownRoute,
       builder: (BuildContext context, Widget child) {
         /// 禁用系统字体控制
         return MediaQuery(
@@ -36,20 +34,20 @@ class _AppState extends State<App> {
     );
   }
 
-  Route<dynamic> _onGenerateRoute(RouteSettings settings) {
-    if (AppRouterProvider.routes.containsKey(settings.name)) {
-      return MaterialPageRoute<dynamic>(
-        builder: AppRouterProvider.routes[settings.name],
-        settings: settings,
-      );
-    }
-    return null;
-  }
+//  Route<dynamic> _onGenerateRoute(RouteSettings settings) {
+//    if (AppRouterProvider.routes.containsKey(settings.name)) {
+//      return MaterialPageRoute<dynamic>(
+//        builder: AppRouterProvider.routes[settings.name],
+//        settings: settings,
+//      );
+//    }
+//    return null;
+//  }
 
-  Route<dynamic> _onUnknownRoute(RouteSettings settings) {
-    return MaterialPageRoute<dynamic>(
-      builder: AppRouterProvider.routes[NotFoundComponentProvider.routeName],
-      settings: settings,
-    );
-  }
+//  Route<dynamic> _onUnknownRoute(RouteSettings settings) {
+//    return MaterialPageRoute<dynamic>(
+//      builder: AppRouterProvider.routes[NotFoundPageProvider.routeName],
+//      settings: settings,
+//    );
+//  }
 }

@@ -1,10 +1,10 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:router_compiler/src/info/info.dart';
 
-class ComponentWriter {
-  ComponentWriter(this.info);
+class PageWriter {
+  PageWriter(this.info);
 
-  final ComponentInfo info;
+  final PageInfo info;
 
   final StringBuffer _buffer = StringBuffer();
 

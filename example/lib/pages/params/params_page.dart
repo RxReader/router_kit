@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart';
+import 'package:router_annotation/router_annotation.dart' as router;
 
-part 'params_component.component.dart';
+part 'params_page.g.dart';
 
-typedef String Callback(String info);
+typedef Callback = String Function(String info);
 
-@Component(
+@router.Page(
   routeName: '/params',
 )
 // ignore: must_be_immutable
-class ParamsComponent extends StatefulWidget {
-  ParamsComponent(
+class ParamsPage extends StatefulWidget {
+  ParamsPage(
       this.paramA, {
         Key key,
         @required this.paramB,
@@ -23,13 +23,13 @@ class ParamsComponent extends StatefulWidget {
 
   final String paramB;
 
-  @Alias('paramD')
+  @router.Alias('paramD')
   final String paramC;
 
-  @Ignore()
+  @router.Ignore()
   String paramD;
 
-  @Ignore()
+  @router.Ignore()
   String paramE;
 
   final String paramF = '';
@@ -40,11 +40,11 @@ class ParamsComponent extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    return _ParamsComponentState();
+    return _ParamsPageState();
   }
 }
 
-class _ParamsComponentState extends State<ParamsComponent> {
+class _ParamsPageState extends State<ParamsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

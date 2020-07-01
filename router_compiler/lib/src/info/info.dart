@@ -3,8 +3,8 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 import 'package:router_annotation/router_annotation.dart';
 
-class ComponentInfo {
-  ComponentInfo({
+class PageInfo {
+  PageInfo({
     @required this.uri,
     @required this.displayName,
     @required this.routeName,

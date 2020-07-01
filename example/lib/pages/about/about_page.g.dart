@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'not_found_component.dart';
+part of 'about_page.dart';
 
 // **************************************************************************
-// ComponentCompilerGenerator
+// PageCompilerGenerator
 // **************************************************************************
 
-class NotFoundComponentProvider {
-  const NotFoundComponentProvider._();
+class AboutPageProvider {
+  const AboutPageProvider._();
 
-  static const String routeName = '/not_found';
+  static const String routeName = '/about';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return NotFoundComponent();
+    return AboutPage();
   };
 }

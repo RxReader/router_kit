@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart';
+import 'package:router_annotation/router_annotation.dart' as router;
 
-part 'not_found_component.component.dart';
+part 'not_found_page.g.dart';
 
-@Component(
+@router.Page(
   routeName: '/not_found',
 )
-class NotFoundComponent extends StatefulWidget {
+class NotFoundPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _NotFoundComponentState();
+    return _NotFoundPageState();
   }
 }
 
-class _NotFoundComponentState extends State<NotFoundComponent> {
+class _NotFoundPageState extends State<NotFoundPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -44,11 +44,3 @@ class Alias extends Field {
 class Ignore extends Field {
   const Ignore() : super(alias: null, nullable: null, ignore: true);
 }
-
-class Provider {
-  const Provider({
-    @required this.routeName,
-  }) : assert(routeName != null);
-
-  final String routeName;
-}

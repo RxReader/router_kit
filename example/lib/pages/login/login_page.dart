@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart';
+import 'package:router_annotation/router_annotation.dart' as router;
 
-part 'login_component.component.dart';
+part 'login_page.g.dart';
 
-@Component(
+@router.Page(
   routeName: '/login',
 )
-class LoginComponent extends StatefulWidget {
+class LoginPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _LoginComponentState();
+    return _LoginPageState();
   }
 }
 
-class _LoginComponentState extends State<LoginComponent> {
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

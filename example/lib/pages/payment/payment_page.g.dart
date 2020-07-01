@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'about_component.dart';
+part of 'payment_page.dart';
 
 // **************************************************************************
-// ComponentCompilerGenerator
+// PageCompilerGenerator
 // **************************************************************************
 
-class AboutComponentProvider {
-  const AboutComponentProvider._();
+class PaymentPageProvider {
+  const PaymentPageProvider._();
 
-  static const String routeName = '/about';
+  static const String routeName = '/payment';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return AboutComponent();
+    return PaymentPage();
   };
 }

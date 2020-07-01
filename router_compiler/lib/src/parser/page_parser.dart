@@ -7,16 +7,16 @@ import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:source_gen/source_gen.dart';
 
-class ComponentParser {
-  ComponentParser._();
+class PageParser {
+  PageParser._();
 
-  static ComponentInfo parse(
+  static PageInfo parse(
       ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) => supertype.displayName)
         .contains('Widget')) {
       throw RouterCompilerException(
-          'Component annotation can only be defined on a Widget class.');
+          'Page annotation can only be defined on a Widget class.');
     }
 
     String routeName = annotation.peek('routeName').stringValue;
@@ -37,7 +37,7 @@ class ComponentParser {
     NameFormatter nameFormatter =
         _parseFieldFormatter(annotation.peek('nameFormatter')) ?? toSnakeCase;
 
-    return ComponentInfo(
+    return PageInfo(
       uri: buildStep.inputId.uri,
       displayName: element.displayName,
       routeName: routeName,
@@ -81,7 +81,7 @@ class ComponentParser {
 
       DartObject annotation = field.metadata
           .firstWhere(
-            (ElementAnnotation annotation) => TypeChecker.fromRuntime(Field)
+            (ElementAnnotation annotation) => const TypeChecker.fromRuntime(Field)
                 .isAssignableFromType(annotation.computeConstantValue().type),
             orElse: () => null,
           )
@@ -89,8 +89,8 @@ class ComponentParser {
 
       if (annotation != null) {
         alias = annotation.getField('alias')?.toStringValue() ?? alias;
-        nullable = annotation.getField('nullable').toBoolValue() ?? nullable;
-        ignore = annotation.getField('ignore').toBoolValue() ?? ignore;
+        nullable = annotation.getField('nullable')?.toBoolValue() ?? nullable;
+        ignore = annotation.getField('ignore')?.toBoolValue() ?? ignore;
       }
 
       if (autowired || annotation != null) {

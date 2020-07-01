@@ -1,20 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_annotation/router_annotation.dart';
+import 'package:router_annotation/router_annotation.dart' as router;
 
-part 'about_component.component.dart';
+part 'about_page.g.dart';
 
-@Component(
+@router.Page(
   routeName: '/about',
 )
-class AboutComponent extends StatefulWidget {
+class AboutPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _AboutComponentState();
+    return _AboutPageState();
   }
 }
 
-class _AboutComponentState extends State<AboutComponent> {
+class _AboutPageState extends State<AboutPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

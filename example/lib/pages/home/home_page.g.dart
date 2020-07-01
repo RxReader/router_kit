@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'home_component.dart';
+part of 'home_page.dart';
 
 // **************************************************************************
-// ComponentCompilerGenerator
+// PageCompilerGenerator
 // **************************************************************************
 
-class HomeComponentProvider {
-  const HomeComponentProvider._();
+class HomePageProvider {
+  const HomePageProvider._();
 
   static const String routeName = '/';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return HomeComponent();
+    return HomePage();
   };
 }

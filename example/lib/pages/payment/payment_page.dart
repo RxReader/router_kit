@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart';
+import 'package:router_annotation/router_annotation.dart' as router;
 
-part 'payment_component.component.dart';
+part 'payment_page.g.dart';
 
-@Component(
+@router.Page(
   routeName: '/payment',
 )
-class PaymentComponent extends StatefulWidget {
+class PaymentPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return _PaymentComponentState();
+    return _PaymentPageState();
   }
 }
 
-class _PaymentComponentState extends State<PaymentComponent> {
+class _PaymentPageState extends State<PaymentPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

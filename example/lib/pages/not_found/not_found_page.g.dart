@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_component.dart';
+part of 'not_found_page.dart';
 
 // **************************************************************************
-// ComponentCompilerGenerator
+// PageCompilerGenerator
 // **************************************************************************
 
-class LoginComponentProvider {
-  const LoginComponentProvider._();
+class NotFoundPageProvider {
+  const NotFoundPageProvider._();
 
-  static const String routeName = '/login';
+  static const String routeName = '/not_found';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return LoginComponent();
+    return NotFoundPage();
   };
 }
