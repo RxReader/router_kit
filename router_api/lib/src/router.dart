@@ -62,25 +62,25 @@ class CRouterBuilder {
   CRouter build() {
     return CRouter._(
       _context,
-      List.unmodifiable(_interceptors),
+      List<Interceptor>.unmodifiable(_interceptors),
     );
   }
 }
 
-typedef FutureOr<dynamic> NextDispatcher(
+typedef NextDispatcher = FutureOr<dynamic> Function(
   CRouter router,
   String routeName,
   Object arguments,
 );
 
-typedef FutureOr<dynamic> Interceptor(
+typedef Interceptor = FutureOr<dynamic> Function(
   CRouter router,
   String routeName,
   Object arguments,
   NextDispatcher next,
 );
 
-typedef FutureOr<dynamic> Navigation(
+typedef Navigation = FutureOr<dynamic> Function(
   BuildContext context,
   String routeName,
   Object arguments,
