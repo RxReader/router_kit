@@ -3,7 +3,7 @@
 part of 'params_page.dart';
 
 // **************************************************************************
-// PageCompilerGenerator
+// RouterCompilerGenerator
 // **************************************************************************
 
 class ParamsPageProvider {

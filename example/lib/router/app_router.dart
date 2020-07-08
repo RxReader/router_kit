@@ -1,21 +1,33 @@
 import 'dart:async';
 
+import 'package:example/pages/about/about_page.dart';
+import 'package:example/pages/home/home_page.dart';
 import 'package:example/pages/login/login_page.dart';
+import 'package:example/pages/not_found/not_found_page.dart';
+import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_annotation/router_annotation.dart' as router;
 import 'package:router_api/router_api.dart';
 
-@router.Router()
 class AppRouter {
   AppRouter._();
+
+  static final Map<String, WidgetBuilder> _routes = <String, WidgetBuilder>{
+    HomePageProvider.routeName: HomePageProvider.routeBuilder,
+    NotFoundPageProvider.routeName: NotFoundPageProvider.routeBuilder,
+    ParamsPageProvider.routeName: ParamsPageProvider.routeBuilder,
+    LoginPageProvider.routeName: LoginPageProvider.routeBuilder,
+    PaymentPageProvider.routeName: PaymentPageProvider.routeBuilder,
+    AboutPageProvider.routeName: AboutPageProvider.routeBuilder,
+  };
 
   static const List<String> _shouldLoginRoute = <String>[
     PaymentPageProvider.routeName,
   ];
 
   static FutureOr<dynamic> _routerLogger(
-    CRouter router,
+    Router router,
     String routeName,
     Object arguments,
     NextDispatcher next,
@@ -25,7 +37,7 @@ class AppRouter {
   }
 
   static FutureOr<dynamic> _shouldLogin(
-    CRouter router,
+    Router router,
     String routeName,
     Object arguments,
     NextDispatcher next,
@@ -40,10 +52,30 @@ class AppRouter {
     return next(router, routeName, arguments);
   }
 
-  static CRouter defaultRouter(BuildContext context) {
-    return CRouter.of(context)
-        .addInterceptor(_routerLogger)
-        .addInterceptor(_shouldLogin)
-        .build();
+  static Router defaultRouter(BuildContext context) {
+    return Router(
+      context,
+      interceptors: <Interceptor>[
+        _routerLogger,
+        _shouldLogin,
+      ],
+    );
+  }
+
+  static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+    if (_routes.containsKey(settings.name)) {
+      return MaterialPageRoute<dynamic>(
+        builder: _routes[settings.name],
+        settings: settings,
+      );
+    }
+    return null;
+  }
+
+  static Route<dynamic> onUnknownRoute(RouteSettings settings) {
+    return MaterialPageRoute<dynamic>(
+      builder: _routes[NotFoundPageProvider.routeName],
+      settings: settings,
+    );
   }
 }

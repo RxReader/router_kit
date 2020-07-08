@@ -3,7 +3,7 @@
 part of 'home_page.dart';
 
 // **************************************************************************
-// PageCompilerGenerator
+// RouterCompilerGenerator
 // **************************************************************************
 
 class HomePageProvider {

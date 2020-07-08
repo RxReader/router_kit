@@ -7,8 +7,8 @@ Created from templates made available by Stagehand under a BSD-style
 
 ```shell
 # flutter packages pub upgrade
-flutter clean
-flutter pub get
+# flutter clean
+# flutter pub get
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 

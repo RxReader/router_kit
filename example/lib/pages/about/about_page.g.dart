@@ -3,7 +3,7 @@
 part of 'about_page.dart';
 
 // **************************************************************************
-// PageCompilerGenerator
+// RouterCompilerGenerator
 // **************************************************************************
 
 class AboutPageProvider {

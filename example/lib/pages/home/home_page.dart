@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
               AppRouter.defaultRouter(context).pushNamed(
                 ParamsPageProvider.routeName,
                 arguments:
-                ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
+                    ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
               );
             },
           ),

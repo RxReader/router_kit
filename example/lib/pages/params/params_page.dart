@@ -11,13 +11,13 @@ typedef Callback = String Function(String info);
 // ignore: must_be_immutable
 class ParamsPage extends StatefulWidget {
   ParamsPage(
-      this.paramA, {
-        Key key,
-        @required this.paramB,
-        this.paramC,
-        this.paramE,
-        this.callback,
-      }) : super(key: key);
+    this.paramA, {
+    Key key,
+    @required this.paramB,
+    this.paramC,
+    this.paramE,
+    this.callback,
+  }) : super(key: key);
 
   final String paramA;
 

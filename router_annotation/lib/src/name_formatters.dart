@@ -19,8 +19,9 @@ Iterable<String> splitCamelCase(String str) => str
 String toCamelCase(String input) =>
     _toCamelCaseFromSeparator(input, _snakeCaseSeparator);
 
-String toSnakeCase(String input) =>
-    splitCamelCase(input).map((String s) => s.toLowerCase()).join(_snakeCaseSeparator);
+String toSnakeCase(String input) => splitCamelCase(input)
+    .map((String s) => s.toLowerCase())
+    .join(_snakeCaseSeparator);
 
 String toKebabCase(String input) => splitCamelCase(input)
     .map((String s) => s.toLowerCase())

@@ -3,7 +3,7 @@
 part of 'login_page.dart';
 
 // **************************************************************************
-// PageCompilerGenerator
+// RouterCompilerGenerator
 // **************************************************************************
 
 class LoginPageProvider {
