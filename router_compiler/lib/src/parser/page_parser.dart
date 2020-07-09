@@ -81,8 +81,9 @@ class PageParser {
 
       DartObject annotation = field.metadata
           .firstWhere(
-            (ElementAnnotation annotation) => const TypeChecker.fromRuntime(Field)
-                .isAssignableFromType(annotation.computeConstantValue().type),
+            (ElementAnnotation annotation) =>
+                const TypeChecker.fromRuntime(Field).isAssignableFromType(
+                    annotation.computeConstantValue().type),
             orElse: () => null,
           )
           ?.constantValue;

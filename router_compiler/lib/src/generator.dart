@@ -14,13 +14,16 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Page> {
   RouterCompilerGenerator();
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('Page annotation can only be defined on a class.');
+      throw RouterCompilerException(
+          'Page annotation can only be defined on a class.');
     }
 
     try {
-      PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
+      PageInfo info =
+          PageParser.parse(element as ClassElement, annotation, buildStep);
       _log.info('${info.routeName}-${info.displayName};');
 
       PageWriter writer = PageWriter(info);
@@ -35,7 +38,8 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Page> {
   }
 }
 
-Builder routerCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
+Builder routerCompilerBuilder({Map<String, dynamic> config}) =>
+    SharedPartBuilder(
       <Generator>[
         RouterCompilerGenerator(),
       ],
