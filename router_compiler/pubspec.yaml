@@ -1,6 +1,6 @@
 name: router_compiler
 description: Flutter Router Compiler.
-version: 0.1.0
+version: 0.1.1
 # author: v7lin <v7lin@qq.com>
 homepage: https://github.com/v7lin/router_kit
 
@@ -23,6 +23,6 @@ dev_dependencies:
   build_test: ^0.10.3
   collection: ^1.14.11
 
-dependency_overrides:
-  router_annotation:
-    path: ../router_annotation
+#dependency_overrides:
+#  router_annotation:
+#    path: ../router_annotation

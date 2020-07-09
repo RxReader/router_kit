@@ -35,10 +35,9 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Page> {
   }
 }
 
-Builder routerCompilerBuilder({String header}) => PartBuilder(
+Builder routerCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       <Generator>[
         RouterCompilerGenerator(),
       ],
-      '.g.dart',
-      header: header,
+      'router_compiler',
     );

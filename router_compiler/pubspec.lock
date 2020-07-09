@@ -361,9 +361,9 @@ packages:
   router_annotation:
     dependency: "direct main"
     description:
-      path: "../router_annotation"
-      relative: true
-    source: path
+      name: router_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.1.0"
   scratch_space:
     dependency: transitive
