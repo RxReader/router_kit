@@ -24,7 +24,7 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Page> {
     try {
       PageInfo info =
           PageParser.parse(element as ClassElement, annotation, buildStep);
-      _log.info('${info.routeName}-${info.displayName};');
+//      _log.info('${info.routeName}-${info.displayName};');
 
       PageWriter writer = PageWriter(info);
 
