@@ -364,24 +364,24 @@ packages:
   router_annotation:
     dependency: "direct main"
     description:
-      path: "../router_annotation"
-      relative: true
-    source: path
+      name: router_annotation
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.1.0"
   router_api:
     dependency: "direct main"
     description:
-      path: "../router_api"
-      relative: true
-    source: path
+      name: router_api
+      url: "https://pub.flutter-io.cn"
+    source: hosted
     version: "0.1.0"
   router_compiler:
     dependency: "direct dev"
     description:
-      path: "../router_compiler"
-      relative: true
-    source: path
-    version: "0.1.0"
+      name: router_compiler
+      url: "https://pub.flutter-io.cn"
+    source: hosted
+    version: "0.1.1"
   shelf:
     dependency: transitive
     description:
