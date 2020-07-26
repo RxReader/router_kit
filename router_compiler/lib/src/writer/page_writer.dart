@@ -42,7 +42,7 @@ class PageWriter {
     }
     if (ctor1.toString().isNotEmpty) {
       _buffer.writeln(
-          'Map<dynamic, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;');
+          'Map<String, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;');
     }
     _buffer.writeln('return ${info.displayName}(\n${ctor1.toString()});');
     _buffer.writeln('};');
@@ -77,9 +77,9 @@ class PageWriter {
         ctor2.writeln('}');
       }
       _buffer.writeln(
-          'static Map<dynamic, dynamic> routeArgument(\n${ctor2.toString()}){');
+          'static Map<String, dynamic> routeArgument(\n${ctor2.toString()}){');
       _buffer
-          .writeln('Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};');
+          .writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
       for (ParameterElement ctorParameter in info.ctorParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
