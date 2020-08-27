@@ -9,19 +9,20 @@ environment:
 
 dependencies:
   router_annotation: ^0.1.0
-  meta: ^1.1.5
-  logging: ^0.11.3
-  analyzer: ^0.36.0
-  build: ^1.1.4
-  source_gen: ^0.9.0
+
+  meta: ^1.1.0
+  analyzer: ^0.39.0
+  build: '>=0.12.6 <2.0.0'
+  source_gen: ^0.9.6
 
 dev_dependencies:
-  pedantic: ^1.0.0
-  test: ^1.0.0
-  build_runner: ^1.5.0
-  build_web_compilers: ^2.1.0
-  build_test: ^0.10.3
-  collection: ^1.14.11
+  pedantic:
+  test:
+
+  build_runner: ^1.0.0
+  build_web_compilers: '>=1.0.0 <3.0.0'
+  collection: ^1.14.0
+  logging: ^0.11.3+1
 
 #dependency_overrides:
 #  router_annotation:
