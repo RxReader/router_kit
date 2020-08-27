@@ -32,13 +32,13 @@ dev_dependencies:
     sdk: flutter
 
   build_runner:
-  router_compiler: ^0.1.2
+  router_compiler: ^0.1.4
 
-#dependency_overrides:
+dependency_overrides:
 #  router_annotation:
 #    path: ../router_annotation
-#  router_compiler:
-#    path: ../router_compiler
+  router_compiler:
+    path: ../router_compiler
 #  router_api:
 #    path: ../router_api
 

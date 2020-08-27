@@ -35,7 +35,7 @@ class PageWriter {
     for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
       // ignore: deprecated_member_use
-      if (ctorNamedParameter.isRequired || !fieldInfo.ignore) {
+      if (ctorNamedParameter.hasRequired || !fieldInfo.ignore) {
         ctor1.writeln(
             '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.displayName}' : 'null'},');
       }
@@ -70,7 +70,7 @@ class PageWriter {
           }
           ctor2.writeln(
               // ignore: deprecated_member_use
-              '${ctorNamedParameter.isRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
+              '${ctorNamedParameter.hasRequired ? '@required ' : ''}${ctorNamedParameter.type.displayName} ${ctorNamedParameter.displayName},');
         }
       }
       if (hasOptionalParameters) {

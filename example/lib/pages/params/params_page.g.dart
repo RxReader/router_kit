@@ -12,8 +12,8 @@ class ParamsPageProvider {
   static const String routeName = '/params';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<dynamic, dynamic> arguments =
-        ModalRoute.of(context).settings.arguments as Map<dynamic, dynamic>;
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
     return ParamsPage(
       arguments['param_a'] as String,
       paramB: arguments['param_b'] as String,
@@ -23,14 +23,14 @@ class ParamsPageProvider {
     );
   };
 
-  static Map<dynamic, dynamic> routeArgument(
+  static Map<String, dynamic> routeArgument(
     String paramA, {
     @required String paramB,
     String paramC,
     String paramE,
     String Function(String) callback,
   }) {
-    Map<dynamic, dynamic> arguments = <dynamic, dynamic>{};
+    Map<String, dynamic> arguments = <String, dynamic>{};
     arguments['param_a'] = paramA;
     arguments['param_b'] = paramB;
     arguments['param_c'] = paramC;
