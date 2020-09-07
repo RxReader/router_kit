@@ -1,6 +1,7 @@
 import 'package:example/pages/about/about_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
+import 'package:example/pages/reader/reader_page.dart';
 import 'package:example/router/app_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,13 @@ class _HomePageState extends State<HomePage> {
                 arguments:
                     ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
               );
+            },
+          ),
+          ListTile(
+            title: const Text('Reader'),
+            onTap: () {
+              AppRouter.defaultRouter(context)
+                  .pushNamed(ReaderPageProvider.routeName);
             },
           ),
           ListTile(
