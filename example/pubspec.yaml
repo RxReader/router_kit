@@ -30,6 +30,8 @@ dependencies:
   provider: ^4.0.4
   after_layout: ^1.0.7+2
 
+  flutter_html: ^1.0.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

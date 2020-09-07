@@ -33,9 +33,8 @@ class ReaderModel extends ChangeNotifier {
     assert(_constraints != null);
     await Future<void>.delayed(Duration(milliseconds: 10));// 让 async 真正生效
     print('constraints: $_constraints');
-    InlineSpan article = TextSpan(
-      text: '${_article.title}\n\n${_article.content}',
-    );
+    String data = '<h4>${_article.title}</h4><br/>${_article.content.split('\n').map((String paragraph) => '<p>$paragraph</p>').join('<br/>')}';
+    InlineSpan article;
     _pages = await ReaderLayout.layout(_constraints.biggest, EdgeInsets.zero, Typeset.defaultTypeset, article, zhHansCN);
     notifyListeners();
   }
