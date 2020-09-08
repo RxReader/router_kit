@@ -47,9 +47,20 @@ class _ReaderPageState extends State<ReaderPage> {
                             alignment: Alignment.center,
                             padding: typeset.padding,
                             color: index % 2 == 0 ? Colors.red : Colors.green,
-                            child: Text(
-                              '',
-                              style: typeset.resolveTextStyle(),
+                            child: Text.rich(
+                              TextSpan(
+                                children: <InlineSpan>[
+                                  TextSpan(text: model.article?.title ?? ''),
+                                  WidgetSpan(
+                                    child: Container(
+                                      width: 100,
+                                      height: 100,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              style: typeset.resolveTextStyle(zhHansCN),
                               strutStyle: typeset.strutStyle,
                               textAlign: typeset.textAlign,
                               textDirection: typeset.textDirection,

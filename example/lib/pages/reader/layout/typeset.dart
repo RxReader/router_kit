@@ -23,12 +23,13 @@ class Typeset {
     return padding/*.resolve(textDirection)*/.deflateSize(canvas);
   }
 
-  TextStyle resolveTextStyle() {
+  TextStyle resolveTextStyle(Locale locale) {
     return TextStyle(
       fontSize: fontSize,
       fontFamily: fontFamily,
       wordSpacing: wordSpacing, // 词间距
       letterSpacing: letterSpacing, // 字间距
+      locale: locale,
     );
   }
 

@@ -1,9 +1,11 @@
 import 'package:example/pages/reader/article.dart';
+import 'package:example/pages/reader/html/converter.dart';
 import 'package:example/pages/reader/layout/reader_layout.dart';
 import 'package:example/pages/reader/layout/text_block.dart';
 import 'package:example/pages/reader/layout/typeset.dart';
 import 'package:example/pages/reader/locales.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -31,10 +33,22 @@ class ReaderModel extends ChangeNotifier {
 
   Future<void> relayout() async {
     assert(_constraints != null);
-    await Future<void>.delayed(Duration(milliseconds: 10));// 让 async 真正生效
+    await Future<void>.delayed(Duration(milliseconds: 10)); // 让 async 真正生效
     print('constraints: $_constraints');
-    String data = '<h4>${_article.title}</h4><br/>${_article.content.split('\n').map((String paragraph) => '<p>$paragraph</p>').join('<br/>')}';
-    InlineSpan article;
+//    String data = '<h4>${_article.title}</h4><br/>${_article.content.split('\n').map((String paragraph) => '<p>$paragraph</p>').join('<br/>')}';
+    InlineSpan article = TextSpan(
+      children: <InlineSpan>[
+        TextSpan(text: _article.title),
+        WidgetSpan(
+          child: Container(
+            width: 100,
+            height: 100,
+            color: Colors.red,
+          ),
+        ),
+        ...(_article.content ?? '').split('\n').map((String paragraph) => TextSpan(text: '$paragraph\n')).toList(),
+      ],
+    );
     _pages = await ReaderLayout.layout(_constraints.biggest, EdgeInsets.zero, Typeset.defaultTypeset, article, zhHansCN);
     notifyListeners();
   }

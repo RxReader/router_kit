@@ -2,6 +2,7 @@ import 'dart:ui' as ui;
 
 import 'package:example/pages/reader/layout/text_block.dart';
 import 'package:example/pages/reader/layout/typeset.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 class ReaderLayout {
@@ -20,7 +21,7 @@ class ReaderLayout {
     List<PageBlock> pages = <PageBlock>[];
     Size canvas = typeset.resolveCanvas(padding.deflateSize(window));
     assert(!canvas.isEmpty);
-    final TextStyle textStyle = typeset.resolveTextStyle();
+    final TextStyle textStyle = typeset.resolveTextStyle(locale);
     final TextPainter textPainter = typeset.resolveTextPainter(locale);
     InlineSpan text = TextSpan(
       children: <InlineSpan>[
@@ -28,8 +29,16 @@ class ReaderLayout {
       ],
       style: textStyle,
     );
+//    RenderParagraph renderParagraph = RenderParagraph(text, textDirection: TextDirection.ltr);
+//    renderParagraph.layout(BoxConstraints.tight(canvas));
     while (true) {
       textPainter.text = text;
+//      textPainter.setPlaceholderDimensions(<PlaceholderDimensions>[
+//        PlaceholderDimensions(
+//          size: canvas,
+//          alignment: ui.PlaceholderAlignment.bottom,
+//        ),
+//      ]);
       textPainter.layout(maxWidth: canvas.width);
       textPainter.computeLineMetrics();
       if (textPainter.height > canvas.height) {
