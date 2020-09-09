@@ -3,7 +3,6 @@ import 'package:example/pages/reader/layout/typeset.dart';
 import 'package:example/pages/reader/locales.dart';
 import 'package:example/pages/reader/reader_model.dart';
 import 'package:extended_text/extended_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
@@ -51,35 +50,41 @@ class _ReaderPageState extends State<ReaderPage> {
                             color: index % 2 == 0 ? Colors.red : Colors.green,
                             child: Theme(
                               data: Theme.of(context).copyWith(platform: TargetPlatform.android),
-                              child: ExtendedText.rich(
-                                TextSpan(
-                                  children: <InlineSpan>[
-                                    TextSpan(text: model.article?.title ?? ''),
-                                    TextSpan(text: model.article?.title ?? ''),
-                                    TextSpan(text: model.article?.title ?? ''),
-                                    TextSpan(text: model.article?.title ?? ''),
-                                    WidgetSpan(
-                                      child: Container(
-                                        width: 100,
-                                        height: 100,
-                                        color: Colors.red,
-                                        child: Text(model.article?.title ?? ''),
-                                      ),
-                                    ),
-                                    TextSpan(text: model.article?.title ?? ''),
-                                    TextSpan(text: model.article?.title ?? ''),
-                                    TextSpan(text: model.article?.title ?? ''),
-                                  ],
-                                ),
-                                style: typeset.resolveTextStyle(zhHansCN),
-                                strutStyle: typeset.strutStyle,
-                                textAlign: typeset.textAlign,
+                              child: Directionality(
                                 textDirection: typeset.textDirection,
-                                textScaleFactor: typeset.textScaleFactor,
-                                locale: zhHansCN,
-                                selectionEnabled: true,
-                                textSelectionControls: extendedCupertinoTextSelectionControls,
+                                child: DefaultTextStyle.merge(
+                                  textAlign: typeset.textAlign,
+                                  child: ExtendedText.rich(
+                                    TextSpan(
+                                      children: <InlineSpan>[
+                                        TextSpan(text: model.article?.title ?? ''),
+                                        TextSpan(text: model.article?.title ?? ''),
+                                        TextSpan(text: model.article?.title ?? ''),
+                                        TextSpan(text: model.article?.title ?? ''),
+                                        WidgetSpan(
+                                          child: Container(
+                                            width: 100,
+                                            height: 100,
+                                            color: Colors.red,
+                                            child: Text(model.article?.title ?? ''),
+                                          ),
+                                        ),
+                                        TextSpan(text: model.article?.title ?? ''),
+                                        TextSpan(text: model.article?.title ?? ''),
+                                        TextSpan(text: model.article?.title ?? ''),
+                                      ],
+                                    ),
+                                    style: typeset.resolveTextStyle(zhHansCN),
+                                    strutStyle: typeset.strutStyle,
+                                    textAlign: typeset.textAlign,
+                                    textDirection: typeset.textDirection,
+                                    textScaleFactor: 1.0,
+                                    locale: zhHansCN,
+                                    selectionEnabled: true,
+                                    textSelectionControls: extendedCupertinoTextSelectionControls,
 //                                textSelectionControls: extendedMaterialTextSelectionControls,
+                                  ),
+                                ),
                               ),
                             ),
                           );

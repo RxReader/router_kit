@@ -1,27 +1,41 @@
+import 'dart:async';
+
+import 'package:example/pages/reader/html/converter.dart';
 import 'package:example/pages/reader/html/element/styled_element.dart';
-import 'package:example/pages/reader/html/style.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:html/dom.dart' as dom;
 
-class ReplacedElement extends StyledElement {
+abstract class ReplacedElement extends StyledElement {
   ReplacedElement({
-    String name,
-  }) : super(name: name);
+    @required String name,
+    @required String elementId,
+    @required dom.Node node,
+  }) : super(name: name, elementId: elementId, node: node);
 }
 
-class EmptyContentElement extends StyledElement {
-  EmptyContentElement() : super(name: '[empty]');
+class EmptyContentElement extends ReplacedElement {
+  EmptyContentElement({
+    @required String name,
+    @required String elementId,
+    @required dom.Node node,
+  }) : super(name: name, elementId: elementId, node: node);
+
+  @override
+  FutureOr<InlineSpan> apply({Size canvas, TextStyle style, String sourceUrl, TapCallbacks callbacks}) {
+    return null;
+  }
 }
 
-class TextContentElement extends StyledElement {
+class TextContentElement extends ReplacedElement {
   TextContentElement({
     @required this.text,
-    Style style,
-  }) : super(name: '[text]', style: style);
+    @required dom.Node node,
+  }) : super(name: '[text]', elementId: null, node: node);
 
   final String text;
 
   @override
-  String toString() {
-    return text.replaceAll('\n', '\\n');
+  FutureOr<InlineSpan> apply({Size canvas, TextStyle style, String sourceUrl, TapCallbacks callbacks}) async {
+    return TextSpan(text: text);
   }
 }

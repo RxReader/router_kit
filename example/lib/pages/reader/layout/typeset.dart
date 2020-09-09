@@ -9,7 +9,7 @@ class Typeset {
     this.fontFamily,
     @required this.wordSpacing,
     @required this.letterSpacing,
-    @required this.textScaleFactor,
+    @required this.fontSizeFactor,
   });
 
   final EdgeInsetsDirectional padding;
@@ -17,7 +17,7 @@ class Typeset {
   final String fontFamily;
   final double wordSpacing;
   final double letterSpacing;
-  final double textScaleFactor;
+  final double fontSizeFactor;
 
   Size resolveCanvas(Size canvas) {
     return padding/*.resolve(textDirection)*/.deflateSize(canvas);
@@ -30,14 +30,13 @@ class Typeset {
       wordSpacing: wordSpacing, // 词间距
       letterSpacing: letterSpacing, // 字间距
       locale: locale,
-    );
+    ).apply(fontSizeFactor: fontSizeFactor);
   }
 
   TextPainter resolveTextPainter(Locale locale) {
     return TextPainter(
       textAlign: textAlign,
       textDirection: textDirection,
-      textScaleFactor: textScaleFactor,
       locale: locale,
       strutStyle: strutStyle,
     );
@@ -55,6 +54,6 @@ class Typeset {
     fontSize: 14.0,
     wordSpacing: 0.0,
     letterSpacing: 0.0,
-    textScaleFactor: 1.0,
+    fontSizeFactor: 1.0,
   );
 }

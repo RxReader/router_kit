@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:example/pages/reader/html/element/interactable_element.dart';
 import 'package:example/pages/reader/html/element/replaced_element.dart';
 import 'package:example/pages/reader/html/element/styled_element.dart';
-import 'package:example/pages/reader/html/style.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:example/pages/reader/html/attributes.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
+import 'package:flutter/painting.dart';
 import 'package:html/dom.dart' as dom;
 import 'package:html/parser.dart' as html_parser;
 
@@ -15,7 +14,7 @@ typedef TapImageCallback = void Function(String src, double width, double height
 typedef TapVideoCallback = void Function(String poster, String src, double width, double height);
 
 class TapCallbacks {
-  TapCallbacks.all({
+  TapCallbacks({
     this.onTapLink,
     this.onTapImage,
     this.onTapVideo,
@@ -24,15 +23,17 @@ class TapCallbacks {
   final TapLinkCallback onTapLink;
   final TapImageCallback onTapImage;
   final TapVideoCallback onTapVideo;
-}
 
-class RenderContext {
-  RenderContext();
-
-  RenderContext.rootContext();
-
-  RenderContext nextContext() {
-    return RenderContext();
+  TapCallbacks copyWith({
+    final TapLinkCallback onTapLink,
+    final TapImageCallback onTapImage,
+    final TapVideoCallback onTapVideo,
+  }) {
+    return TapCallbacks(
+      onTapLink: onTapLink ?? this.onTapLink,
+      onTapImage: onTapImage ?? this.onTapImage,
+      onTapVideo: onTapVideo ?? this.onTapVideo,
+    );
   }
 }
 
@@ -42,11 +43,10 @@ class HtmlToSpannedConverter {
   HtmlToSpannedConverter(
     this.source, {
     this.sourceUrl,
-    this.window,
     TapLinkCallback onTapLink,
     TapImageCallback onTapImage,
     TapVideoCallback onTapVideo,
-  }) : callbacks = TapCallbacks.all(
+  }) : callbacks = TapCallbacks(
           onTapLink: onTapLink,
           onTapImage: onTapImage,
           onTapVideo: onTapVideo,
@@ -54,7 +54,6 @@ class HtmlToSpannedConverter {
 
   final String source;
   final String sourceUrl;
-  final Size window;
   final TapCallbacks callbacks;
 
   static const List<String> _styledElements = <String>[
@@ -144,23 +143,10 @@ class HtmlToSpannedConverter {
     'ruby',
   ];
 
-  static const List<String> _layoutElements = <String>[
-    'table',
-    'tr',
-    'tbody',
-    'tfoot',
-    'thead',
-  ];
-
-  static const List<String> _tableStyleElements = <String>[
-    'col',
-    'colgroup',
-  ];
-
-  FutureOr<InlineSpan> convert() {
+  FutureOr<InlineSpan> convert({Size canvas, TextStyle style}) {
     dom.Document html = html_parser.parse(source, generateSpans: true, sourceUrl: sourceUrl);
     StyledElement lexedTree = _lexDomTree(html);
-    return null;
+    return lexedTree.apply(canvas: canvas, style: style, sourceUrl: sourceUrl, callbacks: callbacks);
   }
 
   StyledElement _lexDomTree(dom.Document html) {
@@ -168,36 +154,48 @@ class HtmlToSpannedConverter {
       name: '[Tree Root]',
       children: _parseChildren(html),
       node: html.documentElement,
-      style: Style(),
     );
   }
 
   List<StyledElement> _parseChildren(dom.Node node) {
-    return node.nodes.map((dom.Node childNode) => _recursiveLexer(childNode)).toList();
+    List<StyledElement> children = <StyledElement>[];
+    for (dom.Node childNode in node.nodes) {
+      StyledElement child = _recursiveLexer(childNode);
+      if (child != null) {
+        children.add(child);
+      }
+    }
+    return children;
   }
 
   StyledElement _recursiveLexer(dom.Node node) {
     if (node is dom.Element) {
       if (_styledElements.contains(node.localName)) {
         return _parseStyledElement(node, _parseChildren(node));
+      } else if (_interactableElements.contains(node.localName)) {
+        return _parseInteractableElement(node, _parseChildren(node));
+      } else if (_replacedElements.contains(node.localName)) {
+        return _parseReplacedElement(node);
       } else {
-        return EmptyContentElement();
+        return EmptyContentElement(name: node.localName, elementId: node.id, node: node);
       }
     } else if (node is dom.Text) {
-      return TextContentElement();
+      return TextContentElement(text: node.text, node: node);
     } else {
-      return EmptyContentElement();
+      return EmptyContentElement(name: null, elementId: null, node: node);
     }
   }
 
   StyledElement _parseStyledElement(dom.Element element, List<StyledElement> children) {
-    Style style = Style();
+    Attributes attributes;
     switch (element.localName) {
       case 'abbr':
       case 'acronym':
-        TextStyle textStyle = TextStyle(
-          decoration: TextDecoration.underline,
-          decorationStyle: TextDecorationStyle.dotted,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            decoration: TextDecoration.underline,
+            decorationStyle: TextDecorationStyle.dotted,
+          ),
         );
         break;
       case 'address':
@@ -206,15 +204,19 @@ class HtmlToSpannedConverter {
       case 'em':
       case 'i':
       case 'var':
-        TextStyle textStyle = TextStyle(
-          fontStyle: FontStyle.italic,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontStyle: FontStyle.italic,
+          ),
         );
         break;
       case 'b':
       case 'strong':
       case 'th':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         );
         break;
       case 'bdo':
@@ -222,49 +224,63 @@ class HtmlToSpannedConverter {
         // TextDirection textDirection = ((element.attributes['dir'] ?? 'ltr') == 'rtl') ? TextDirection.rtl : TextDirection.ltr;
         break;
       case 'big':
-        double textScaleFactor = 1.2;
+        attributes = Attributes(
+          fontSizeFactor: 1.2,
+        );
         break;
       case 'code':
       case 'kbd':
       case 'samp':
       case 'tt':
-        TextStyle textStyle = TextStyle(
-          fontFamily: 'Monospace',
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontFamily: 'Monospace',
+          ),
         );
         break;
       case 'del':
       case 's':
       case 'strike':
-        TextStyle textStyle = TextStyle(
-          decoration: TextDecoration.lineThrough,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            decoration: TextDecoration.lineThrough,
+          ),
         );
         break;
       case 'ins':
       case 'u':
-        TextStyle textStyle = TextStyle(
-          decoration: TextDecoration.underline,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            decoration: TextDecoration.underline,
+          ),
         );
         break;
       case 'mark':
-        TextStyle textStyle = TextStyle(
-          color: Colors.black,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            color: Colors.black,
+          ),
+          backgroundColor: Colors.yellow,
         );
-        Color backgroundColor = Colors.yellow;
         break;
       case 'q':
-        String before = '\"';
-        String after = '\"';
+//        String before = '\"';
+//        String after = '\"';
         break;
       case 'small':
-        double textScaleFactor = 0.83;
+        attributes = Attributes(
+          fontSizeFactor: 0.83,
+        );
         break;
       case 'sub':
-        double textScaleFactor = 0.83;
-        // TODO
+        attributes = Attributes(
+          fontSizeFactor: 0.83,
+        );
         break;
       case 'sup':
-        double textScaleFactor = 0.83;
-        // TODO
+        attributes = Attributes(
+          fontSizeFactor: 0.83,
+        );
         break;
 
       // BLOCK ELEMENTS
@@ -299,63 +315,67 @@ class HtmlToSpannedConverter {
         // 暂不支持
         break;
       case 'h1':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          fontSizeFactor: 28.0 / 14.0,
         );
-        double textScaleFactor = 28.0 / 14.0;
-        // EdgeInsets margin = EdgeInsets.only(left: 18.67);
         break;
       case 'h2':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          fontSizeFactor: 21.0 / 14.0,
         );
-        double textScaleFactor = 21.0 / 14.0;
-        // EdgeInsets margin = EdgeInsets.only(left: 17.5);
         break;
       case 'h3':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          fontSizeFactor: 16.38 / 14.0,
         );
-        double textScaleFactor = 16.38 / 14.0;
-        // EdgeInsets margin = EdgeInsets.only(left: 16.5);
         break;
       case 'h4':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          fontSizeFactor: 14.0 / 14.0,
         );
-        double textScaleFactor = 14.0 / 14.0;
-        // EdgeInsets margin = EdgeInsets.only(left: 18.5);
         break;
       case 'h5':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          fontSizeFactor: 11.62 / 14.0,
         );
-        double textScaleFactor = 11.62 / 14.0;
-        // EdgeInsets margin = EdgeInsets.only(left: 19.25);
         break;
       case 'h6':
-        TextStyle textStyle = TextStyle(
-          fontWeight: FontWeight.bold,
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+          fontSizeFactor: 9.38 / 14.0,
         );
-        double textScaleFactor = 9.38 / 14.0;
-        // EdgeInsets margin = EdgeInsets.only(left: 22.0);
         break;
       case 'header':
         break;
       case 'hr':
-        // 暂不支持
-        // EdgeInsets margin = EdgeInsets.symmetric(vertical: 7.0);
-        // double width = double.infinity;
-        // Border border = Border(bottom: BorderSide(width: 1.0));
+//        double width = double.infinity;
+//        Border border = Border(bottom: BorderSide(width: 1.0));
         break;
       case 'html':
         break;
       case 'li':
-        if (element.parent.localName == 'ul') {
-          String markerContent = '${element.parent.children.indexOf(element) + 1}.';
-        } else {
-          String markerContent = '•';
-        }
+//        if (element.parent.localName == 'ul') {
+//          String markerContent = '${element.parent.children.where((dom.Element childElement) => childElement.localName == element.localName).toList().indexOf(element) + 1}.';
+//        } else {
+//          String markerContent = '•';
+//        }
         break;
       case 'main':
         break;
@@ -368,10 +388,12 @@ class HtmlToSpannedConverter {
       case 'p':
         break;
       case 'pre':
-        TextStyle textStyle = TextStyle(
-          fontFamily: 'Monospace'
-        );
         // EdgeInsets margin = EdgeInsets.only(left: 14.0);
+        attributes = Attributes(
+          textStyle: TextStyle(
+            fontFamily: 'Monospace',
+          ),
+        );
         break;
       case 'section':
         break;
@@ -381,18 +403,72 @@ class HtmlToSpannedConverter {
     return StyledElement(
       name: element.localName,
       elementId: element.id,
-      elementClasses: element.classes.toList(),
       children: children,
-      style: style,
+      attributes: attributes,
       node: element,
     );
   }
 
   InteractableElement _parseInteractableElement(dom.Element element, List<StyledElement> children) {
+    switch (element.localName) {
+      case 'a':
+        return InteractableElement(
+          name: element.localName,
+          elementId: element.id,
+          children: children,
+          attributes: Attributes(
+            textStyle: TextStyle(
+              color: Colors.blue,
+              decoration: TextDecoration.underline,
+            ),
+          ),
+          target: element.attributes['target'],
+          media: element.attributes['media'],
+          mimeType: element.attributes['type'],
+          href: element.attributes['href'],
+          node: element,
+        );
+    }
     return null;
   }
 
   ReplacedElement _parseReplacedElement(dom.Element element) {
+    switch (element.localName) {
+      case 'audio':
+        List<String> sources = <String>[
+          if (element.attributes['src'] != null) element.attributes['src'],
+          ..._parseMediaSources(element.children),
+        ];
+        break;
+      case 'br':
+        return TextContentElement(text: '\n', node: element);
+      case 'head':
+        break;
+      case 'iframe':
+        break;
+      case 'img':
+        break;
+      case 'svg':
+        break;
+      case 'template':
+        break;
+      case 'video':
+        break;
+      case 'rp':
+        break;
+      case 'rt':
+        break;
+      case 'ruby':
+        break;
+    }
     return null;
+  }
+
+  List<String> _parseMediaSources(List<dom.Element> elements) {
+    return elements.where((dom.Element element) {
+      return element.localName == 'source';
+    }).map((dom.Element element) {
+      return element.attributes['src'];
+    }).toList();
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 
+import 'package:example/pages/reader/html/span/style_span.dart';
 import 'package:example/pages/reader/layout/text_block.dart';
 import 'package:example/pages/reader/layout/typeset.dart';
 import 'package:flutter/rendering.dart';
@@ -33,12 +34,24 @@ class ReaderLayout {
 //    renderParagraph.layout(BoxConstraints.tight(canvas));
     while (true) {
       textPainter.text = text;
-      textPainter.setPlaceholderDimensions(<PlaceholderDimensions>[
-        PlaceholderDimensions(
-          size: canvas,
-          alignment: ui.PlaceholderAlignment.bottom,
-        ),
-      ]);
+      List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
+      textPainter.text.visitChildren((InlineSpan span) {
+        if (span is PlaceholderSpan) {
+          if (span is StyleSpan) {
+            StyleSpan styleSpan = span as StyleSpan;
+            placeholderDimensions.add(PlaceholderDimensions(
+              size: Size(styleSpan.width, styleSpan.height),
+              alignment: span.alignment,
+              baseline: span.baseline,
+              baselineOffset: null,
+            ));
+          } else {
+            throw UnsupportedError('${span.runtimeType} is unsupported.');
+          }
+        }
+        return true;
+      });
+      textPainter.setPlaceholderDimensions(placeholderDimensions);
       textPainter.layout(maxWidth: canvas.width);
       textPainter.computeLineMetrics();
       if (textPainter.height > canvas.height) {
