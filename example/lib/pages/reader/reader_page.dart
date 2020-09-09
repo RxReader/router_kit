@@ -63,6 +63,7 @@ class _ReaderPageState extends State<ReaderPage> {
                                         width: 100,
                                         height: 100,
                                         color: Colors.red,
+                                        child: Text(model.article?.title ?? ''),
                                       ),
                                     ),
                                     TextSpan(text: model.article?.title ?? ''),
