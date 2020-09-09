@@ -35,7 +35,7 @@ class ReaderModel extends ChangeNotifier {
     assert(_constraints != null);
     await Future<void>.delayed(Duration(milliseconds: 10)); // 让 async 真正生效
     print('constraints: $_constraints');
-    String source = '<h4>${_article.title}</h4><br/>${_article.content.replaceAll('\n', '<br/>')}';
+    String source = '<h1>${_article.title}</h1><br/><hr/><br/>${_article.content.replaceAll('\n', '<br/>')}';
     Typeset typeset = Typeset.defaultTypeset;
     InlineSpan article = await HtmlToSpannedConverter(source).convert(canvas: _constraints.smallest, style: typeset.resolveTextStyle(zhHansCN));
     _pages = await ReaderLayout.layout(_constraints.biggest, EdgeInsets.zero, typeset, article, zhHansCN);

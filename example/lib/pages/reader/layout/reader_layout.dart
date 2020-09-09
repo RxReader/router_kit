@@ -30,8 +30,6 @@ class ReaderLayout {
       ],
       style: textStyle,
     );
-//    RenderParagraph renderParagraph = RenderParagraph(text, textDirection: TextDirection.ltr);
-//    renderParagraph.layout(BoxConstraints.tight(canvas));
     while (true) {
       textPainter.text = text;
       List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
@@ -53,11 +51,11 @@ class ReaderLayout {
       });
       textPainter.setPlaceholderDimensions(placeholderDimensions);
       textPainter.layout(maxWidth: canvas.width);
-      textPainter.computeLineMetrics();
       if (textPainter.height > canvas.height) {
         // 超过一页
         double calculateLineHeight = 0.0;
         List<ui.LineMetrics> lineMetrics = textPainter.computeLineMetrics();
+        ui.LineMetrics latestLineMetrics;
         for (ui.LineMetrics lineMetric in lineMetrics) {
           if (lineMetric.hardBreak) {
             // '\n' 换行
@@ -67,13 +65,16 @@ class ReaderLayout {
             calculateLineHeight -= lineMetric.height;
             break;
           } else if (calculateLineHeight == canvas.height) {
+            latestLineMetrics = lineMetric;
             break;
           }
+          latestLineMetrics = lineMetric;
         }
         // 可见区域范围内的文字，可能文字只会显示半行，故而不能直接使用，需要借助 LineMetrics
-        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight));
+        // WidgetSpan 不能参与计算，因为这会导致计算错误
+        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
         Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
-
+        textPainter.text.getSpanForPosition(position);
         break;
       } else {
         // 不足一页
