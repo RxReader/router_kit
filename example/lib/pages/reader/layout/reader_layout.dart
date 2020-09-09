@@ -32,6 +32,7 @@ class ReaderLayout {
     );
     while (true) {
       textPainter.text = text;
+      // TODO 等价替换 StyleSpan - StylePlaceholderSpan
       List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
       textPainter.text.visitChildren((InlineSpan span) {
         if (span is PlaceholderSpan) {
