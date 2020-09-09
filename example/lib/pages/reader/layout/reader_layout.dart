@@ -33,12 +33,12 @@ class ReaderLayout {
 //    renderParagraph.layout(BoxConstraints.tight(canvas));
     while (true) {
       textPainter.text = text;
-//      textPainter.setPlaceholderDimensions(<PlaceholderDimensions>[
-//        PlaceholderDimensions(
-//          size: canvas,
-//          alignment: ui.PlaceholderAlignment.bottom,
-//        ),
-//      ]);
+      textPainter.setPlaceholderDimensions(<PlaceholderDimensions>[
+        PlaceholderDimensions(
+          size: canvas,
+          alignment: ui.PlaceholderAlignment.bottom,
+        ),
+      ]);
       textPainter.layout(maxWidth: canvas.width);
       textPainter.computeLineMetrics();
       if (textPainter.height > canvas.height) {
