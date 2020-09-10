@@ -24,33 +24,16 @@ class ReaderLayout {
     assert(!canvas.isEmpty);
     final TextStyle textStyle = typeset.resolveTextStyle(locale);
     final TextPainter textPainter = typeset.resolveTextPainter(locale);
+    // WidgetSpan 不能参与计算，因为这会导致计算错误
+    // 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
     InlineSpan text = TextSpan(
       children: <InlineSpan>[
         StyleWidgetSpan.swap(article),
       ],
       style: textStyle,
-    );// 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
+    );
     while (true) {
       textPainter.text = text;
-      /*
-      List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
-      textPainter.text.visitChildren((InlineSpan span) {
-        if (span is PlaceholderSpan) {
-          if (span is StyleWidgetSpan) {
-            placeholderDimensions.add(PlaceholderDimensions(
-              size: Size(span.width, span.height),
-              alignment: span.alignment,
-              baseline: span.baseline,
-              baselineOffset: null,
-            ));
-          } else {
-            throw UnsupportedError('${span.runtimeType} is unsupported.');
-          }
-        }
-        return true;
-      });
-      textPainter.setPlaceholderDimensions(placeholderDimensions);
-       */
       textPainter.layout(maxWidth: canvas.width);
       if (textPainter.height > canvas.height) {
         // 超过一页
@@ -72,7 +55,7 @@ class ReaderLayout {
           latestLineMetrics = lineMetric;
         }
         // 可见区域范围内的文字，可能文字只会显示半行，故而不能直接使用，需要借助 LineMetrics
-        // WidgetSpan 不能参与计算，因为这会导致计算错误
+        // 不能直接用最后一行的高度，这可能会导致定位到后面显示的半行
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
         Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
         textPainter.text.getSpanForPosition(position);
