@@ -34,7 +34,6 @@ class ReaderLayout {
       style: textStyle,
     );
     // 分页
-    // TODO 按段落拆
     textPainter.text = text;
     textPainter.layout(maxWidth: canvas.width);
     int wordCursor = 0;
@@ -44,7 +43,7 @@ class ReaderLayout {
     double pageReferHeight = 0;
     List<ui.LineMetrics> computeLineMetrics = textPainter.computeLineMetrics();
     for (int i = 0; i < computeLineMetrics.length; i++) {
-      int startWordCursor = wordCursor;
+      final int startWordCursor = wordCursor;
       int endWordCursor = wordCursor;
       Map<int, TextRange> paragraphTextRanges = <int, TextRange>{};
       Map<int, Offset> paragraphCaretOffsetMap = <int, Offset>{};
@@ -54,8 +53,10 @@ class ReaderLayout {
         // '\n'换行
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + primiaryLineMetrics.height / 2));
         Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + primiaryLineMetrics.height));
+        paragraphTextRanges[paragraphCursor] = TextRange(start: startWordCursor, end: position.offset);
         paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
         paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
+        wordCursor = paragraphWordCursor;
         paragraphCursor ++;
       }
       lineReferHeight += primiaryLineMetrics.height;
@@ -63,8 +64,11 @@ class ReaderLayout {
         // 超/满一页
         pageReferHeight = lineReferHeight;
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - primiaryLineMetrics.height / 2));
+        if (!primiaryLineMetrics.hardBreak) {
+          paragraphTextRanges[paragraphCursor] = TextRange(start: startWordCursor, end: position.offset);
+          wordCursor = textPainter.getOffsetAfter(position.offset);
+        }
         endWordCursor = position.offset;
-        wordCursor = textPainter.getOffsetAfter(position.offset);
       } else {
         i++;
         for (; i < computeLineMetrics.length; i++) {
@@ -76,8 +80,11 @@ class ReaderLayout {
             // tertiary -> primiary/latest secondary
             ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
             TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
+            if (!tertiaryLineMetrics.hardBreak) {
+              paragraphTextRanges[paragraphCursor] = TextRange(start: null, end: position.offset);// FIXME
+              wordCursor = textPainter.getOffsetAfter(position.offset);
+            }
             endWordCursor = position.offset;
-            wordCursor = textPainter.getOffsetAfter(position.offset);
             break;
           } else {
             bool shouldBreak = lineReferHeight + secondaryLineMetrics.height == pageReferHeight + canvas.height;
@@ -85,16 +92,21 @@ class ReaderLayout {
               // '\n'换行
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + secondaryLineMetrics.height / 2));
               Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + secondaryLineMetrics.height));
+              paragraphTextRanges[paragraphCursor] = TextRange(start: null, end: position.offset);// FIXME
               paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
               paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
+              wordCursor = paragraphWordCursor;
               paragraphCursor ++;
             }
             lineReferHeight += secondaryLineMetrics.height;
             if (shouldBreak) {
               // 满一页
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - secondaryLineMetrics.height / 2));
+              if (!secondaryLineMetrics.hardBreak) {
+                paragraphTextRanges[paragraphCursor] = TextRange(start: null, end: position.offset);// FIXME
+                wordCursor = textPainter.getOffsetAfter(position.offset);
+              }
               endWordCursor = position.offset;
-              wordCursor = textPainter.getOffsetAfter(position.offset);
               break;
             }
           }
