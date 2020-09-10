@@ -28,7 +28,7 @@ class ReaderLayout {
     // 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
     InlineSpan text = TextSpan(
       children: <InlineSpan>[
-        StyleWidgetSpan.swap(article),
+        _swapSpan(article),
       ],
       style: textStyle,
     );
@@ -73,5 +73,41 @@ class ReaderLayout {
       ]);
     }
     return pages;
+  }
+
+  static InlineSpan _subSpan(InlineSpan span, TextPosition position) {
+    return span;
+  }
+
+  static InlineSpan _reverseSwapSpan(InlineSpan span) {
+    if (span is StyleSwapperTextSpan) {
+      return span.wrapped;
+    }
+    if (span is TextSpan) {
+      return TextSpan(
+        text: span.text,
+        children: span.children.map((InlineSpan child) => _reverseSwapSpan(child)).toList(),
+        style: span.style,
+        recognizer: span.recognizer,
+        semanticsLabel: span.semanticsLabel,
+      );
+    }
+    return span;
+  }
+
+  static InlineSpan _swapSpan(InlineSpan span) {
+    if (span is StyleWidgetSpan) {
+      return StyleSwapperTextSpan(wrapped: span);
+    }
+    if (span is TextSpan) {
+      return TextSpan(
+        text: span.text,
+        children: span.children?.map((InlineSpan child) => _swapSpan(child))?.toList(),
+        style: span.style,
+        recognizer: span.recognizer,
+        semanticsLabel: span.semanticsLabel,
+      );
+    }
+    return span;
   }
 }

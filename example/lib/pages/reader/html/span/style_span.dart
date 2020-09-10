@@ -43,42 +43,6 @@ abstract class StyleWidgetSpan extends WidgetSpan {
 
   final double width;
   final double height;
-
-  StyleSwapperTextSpan swapper() {
-    return StyleSwapperTextSpan(wrapped: this);
-  }
-
-  static InlineSpan swap(InlineSpan span) {
-    if (span is StyleWidgetSpan) {
-      return span.swapper();
-    }
-    if (span is TextSpan) {
-      return TextSpan(
-        text: span.text,
-        children: span.children?.map((InlineSpan child) => swap(child))?.toList(),
-        style: span.style,
-        recognizer: span.recognizer,
-        semanticsLabel: span.semanticsLabel,
-      );
-    }
-    return span;
-  }
-
-  static InlineSpan reverseSwap(InlineSpan span) {
-    if (span is StyleSwapperTextSpan) {
-      return span.wrapped;
-    }
-    if (span is TextSpan) {
-      return TextSpan(
-        text: span.text,
-        children: span.children.map((InlineSpan child) => reverseSwap(child)).toList(),
-        style: span.style,
-        recognizer: span.recognizer,
-        semanticsLabel: span.semanticsLabel,
-      );
-    }
-    return span;
-  }
 }
 
 class GenericStyleWidgetSpan extends StyleWidgetSpan {
