@@ -3,8 +3,8 @@ import 'dart:ui' as ui;
 import 'package:example/pages/reader/layout/text_symbol.dart';
 import 'package:flutter/material.dart';
 
-class StyleSwapperTextSpan extends TextSpan {
-  StyleSwapperTextSpan({
+class StylePlaceholderTextSpan extends TextSpan {
+  StylePlaceholderTextSpan({
     @required this.wrapped,
   }) : super(
           text: TextSymbol.zeroWidthSpace,

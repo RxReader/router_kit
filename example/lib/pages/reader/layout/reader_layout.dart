@@ -115,7 +115,7 @@ class ReaderLayout {
   }
 
   static InlineSpan _reverseSwapSpan(InlineSpan span) {
-    if (span is StyleSwapperTextSpan) {
+    if (span is StylePlaceholderTextSpan) {
       return span.wrapped;
     }
     if (span is TextSpan) {
@@ -132,7 +132,7 @@ class ReaderLayout {
 
   static InlineSpan _swapSpan(InlineSpan span) {
     if (span is StyleWidgetSpan) {
-      return StyleSwapperTextSpan(wrapped: span);
+      return StylePlaceholderTextSpan(wrapped: span);
     }
     if (span is TextSpan) {
       return TextSpan(
