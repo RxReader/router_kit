@@ -81,7 +81,7 @@ class ReaderLayout {
             ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
             TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
             if (!tertiaryLineMetrics.hardBreak) {
-              paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);// FIXME
+              paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
               wordCursor = textPainter.getOffsetAfter(position.offset);
             }
             endWordCursor = position.offset;
@@ -92,7 +92,7 @@ class ReaderLayout {
               // '\n'换行
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + secondaryLineMetrics.height / 2));
               Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + secondaryLineMetrics.height));
-              paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);// FIXME
+              paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
               paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
               paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
               wordCursor = paragraphWordCursor;
@@ -103,7 +103,7 @@ class ReaderLayout {
               // 满一页
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - secondaryLineMetrics.height / 2));
               if (!secondaryLineMetrics.hardBreak) {
-                paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);// FIXME
+                paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
                 wordCursor = textPainter.getOffsetAfter(position.offset);
               }
               endWordCursor = position.offset;
