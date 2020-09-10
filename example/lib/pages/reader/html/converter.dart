@@ -143,24 +143,28 @@ class HtmlToSpannedConverter {
     'ruby',
   ];
 
-  FutureOr<InlineSpan> convert({Size canvas, TextStyle style}) {
+  FutureOr<InlineSpan> convert({@required Size canvas, @required TextStyle style, bool reduce = false}) {
     dom.Document html = html_parser.parse(source, generateSpans: true, sourceUrl: sourceUrl);
     StyledElement lexedTree = _lexDomTree(html);
-    return lexedTree.apply(canvas: canvas, style: style, sourceUrl: sourceUrl, callbacks: callbacks);
+    return lexedTree.apply(canvas: canvas, style: style, sourceUrl: sourceUrl, callbacks: callbacks, reduce: reduce);
   }
 
   StyledElement _lexDomTree(dom.Document html) {
-    return StyledElement(
+    List<StyledElement> children = <StyledElement>[];
+    StyledElement root = StyledElement(
       name: '[Tree Root]',
-      children: _parseChildren(html),
+      children: children,
       node: html.documentElement,
+      parent: null,
     );
+    children.addAll(_parseChildren(html, root));
+    return root;
   }
 
-  List<StyledElement> _parseChildren(dom.Node node) {
+  List<StyledElement> _parseChildren(dom.Node node, StyledElement parent) {
     List<StyledElement> children = <StyledElement>[];
     for (dom.Node childNode in node.nodes) {
-      StyledElement child = _recursiveLexer(childNode);
+      StyledElement child = _recursiveLexer(childNode, parent);
       if (child != null) {
         children.add(child);
       }
@@ -168,25 +172,31 @@ class HtmlToSpannedConverter {
     return children;
   }
 
-  StyledElement _recursiveLexer(dom.Node node) {
+  StyledElement _recursiveLexer(dom.Node node, StyledElement parent) {
     if (node is dom.Element) {
       if (_styledElements.contains(node.localName)) {
-        return _parseStyledElement(node, _parseChildren(node));
+        List<StyledElement> children = <StyledElement>[];
+        StyledElement current = _parseStyledElement(node, parent, children);
+        children.addAll(_parseChildren(node, current));
+        return current;
       } else if (_interactableElements.contains(node.localName)) {
-        return _parseInteractableElement(node, _parseChildren(node));
+        List<StyledElement> children = <StyledElement>[];
+        StyledElement current =  _parseInteractableElement(node, parent, children);
+        children.addAll(_parseChildren(node, current));
+        return current;
       } else if (_replacedElements.contains(node.localName)) {
-        return _parseReplacedElement(node);
+        return _parseReplacedElement(node, parent);
       } else {
-        return EmptyContentElement(name: node.localName, elementId: node.id, node: node);
+        return EmptyContentElement(name: node.localName, elementId: node.id, node: node, parent: parent);
       }
     } else if (node is dom.Text) {
-      return TextContentElement(text: node.text, node: node);
+      return TextContentElement(text: node.text, node: node, parent: parent);
     } else {
-      return EmptyContentElement(name: null, elementId: null, node: node);
+      return EmptyContentElement(name: null, elementId: null, node: node, parent: parent);
     }
   }
 
-  StyledElement _parseStyledElement(dom.Element element, List<StyledElement> children) {
+  StyledElement _parseStyledElement(dom.Element element, StyledElement parent, List<StyledElement> children) {
     Attributes attributes;
     switch (element.localName) {
       case 'abbr':
@@ -476,19 +486,20 @@ class HtmlToSpannedConverter {
         break;
     }
     return StyledElement(
-      name: element.localName,
+      name: '[${element.localName}]',
       elementId: element.id,
       children: children,
       attributes: attributes,
       node: element,
+      parent: parent,
     );
   }
 
-  InteractableElement _parseInteractableElement(dom.Element element, List<StyledElement> children) {
+  InteractableElement _parseInteractableElement(dom.Element element, StyledElement parent, List<StyledElement> children) {
     switch (element.localName) {
       case 'a':
         return InteractableElement(
-          name: element.localName,
+          name: '[${element.localName}]',
           elementId: element.id,
           children: children,
           attributes: Attributes(
@@ -502,12 +513,13 @@ class HtmlToSpannedConverter {
           mimeType: element.attributes['type'],
           href: element.attributes['href'],
           node: element,
+          parent: parent,
         );
     }
     return null;
   }
 
-  ReplacedElement _parseReplacedElement(dom.Element element) {
+  ReplacedElement _parseReplacedElement(dom.Element element, StyledElement parent) {
     switch (element.localName) {
       case 'audio':
         List<String> sources = <String>[
@@ -516,7 +528,7 @@ class HtmlToSpannedConverter {
         ];
         break;
       case 'br':
-        return TextContentElement(text: '\n', node: element);
+        return TextContentElement(text: '\n', node: element, parent: parent);
       case 'head':
         break;
       case 'iframe':

@@ -13,6 +13,7 @@ class StyledElement {
     this.children,
     this.attributes,
     @required this.node,
+    @required this.parent,
   });
 
   final String name;
@@ -20,8 +21,9 @@ class StyledElement {
   final List<StyledElement> children;
   final Attributes attributes;
   final dom.Node node;
+  final StyledElement parent;
 
-  FutureOr<InlineSpan> apply({Size canvas, TextStyle style, String sourceUrl, TapCallbacks callbacks}) async {
+  FutureOr<InlineSpan> apply({@required Size canvas, @required TextStyle style, String sourceUrl, TapCallbacks callbacks, bool reduce = false}) async {
     TextStyle mergeStyle = style.merge(attributes?.textStyle).apply(fontSizeFactor: attributes?.fontSizeFactor ?? 1.0);
     List<InlineSpan> spans = <InlineSpan>[];
     for (StyledElement child in children) {
@@ -133,17 +135,21 @@ class StyledElement {
     }
     if (spans.isNotEmpty && attributes.display == Display.BLOCK) {
       // 换行
+      StyledElement previous;
+      StyledElement next;
     }
     TextSpan result = TextSpan(
       children: spans,
       style: mergeStyle != style ? mergeStyle : null,
     );
-    if (result.style == null) {
+    if (reduce) {
       // 削减嵌套
-      if (result.children.isEmpty) {
-        return null;
-      } else if (result.children.length == 1) {
-        return result.children.first;
+      if (result.style == null) {
+        if (result.children.isEmpty) {
+          return null;
+        } else if (result.children.length == 1) {
+          return result.children.first;
+        }
       }
     }
     return result;

@@ -18,7 +18,8 @@ class InteractableElement extends StyledElement {
     @required this.mimeType,
     @required this.href,
     @required dom.Node node,
-  }) : super(name: name, elementId: elementId, children: children, attributes: attributes, node: node);
+    @required StyledElement parent,
+  }) : super(name: name, elementId: elementId, children: children, attributes: attributes, node: node, parent: parent);
 
   final String target;
   final String media;
@@ -26,7 +27,7 @@ class InteractableElement extends StyledElement {
   final String href;
 
   @override
-  FutureOr<InlineSpan> apply({Size canvas, TextStyle style, String sourceUrl, TapCallbacks callbacks}) async {
+  FutureOr<InlineSpan> apply({@required Size canvas, @required TextStyle style, String sourceUrl, TapCallbacks callbacks, bool reduce = false}) async {
     InlineSpan inner = await super.apply(canvas: canvas, style: style, sourceUrl: sourceUrl, callbacks: callbacks);
     TapGestureRecognizer recognizer;
     recognizer.dispose();

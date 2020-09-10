@@ -10,7 +10,8 @@ abstract class ReplacedElement extends StyledElement {
     @required String name,
     @required String elementId,
     @required dom.Node node,
-  }) : super(name: name, elementId: elementId, node: node);
+    @required StyledElement parent,
+  }) : super(name: name, elementId: elementId, node: node, parent: parent);
 }
 
 class EmptyContentElement extends ReplacedElement {
@@ -18,10 +19,11 @@ class EmptyContentElement extends ReplacedElement {
     @required String name,
     @required String elementId,
     @required dom.Node node,
-  }) : super(name: name, elementId: elementId, node: node);
+    @required StyledElement parent,
+  }) : super(name: name, elementId: elementId, node: node, parent: parent);
 
   @override
-  FutureOr<InlineSpan> apply({Size canvas, TextStyle style, String sourceUrl, TapCallbacks callbacks}) {
+  FutureOr<InlineSpan> apply({@required Size canvas, @required TextStyle style, String sourceUrl, TapCallbacks callbacks, bool reduce = false}) {
     return null;
   }
 }
@@ -30,12 +32,13 @@ class TextContentElement extends ReplacedElement {
   TextContentElement({
     @required this.text,
     @required dom.Node node,
-  }) : super(name: '[text]', elementId: null, node: node);
+    @required StyledElement parent,
+  }) : super(name: '[text]', elementId: null, node: node, parent: parent);
 
   final String text;
 
   @override
-  FutureOr<InlineSpan> apply({Size canvas, TextStyle style, String sourceUrl, TapCallbacks callbacks}) async {
+  FutureOr<InlineSpan> apply({@required Size canvas, @required TextStyle style, String sourceUrl, TapCallbacks callbacks, bool reduce = false}) async {
     return TextSpan(text: text);
   }
 }
