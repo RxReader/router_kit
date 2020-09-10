@@ -64,6 +64,10 @@ class ReaderLayout {
           if (lineReferHeight + secondaryLineMetrics.height > pageReferHeight + canvas.height) {
             // 超一页
             i--;
+            // tertiary -> primiary/latest secondary
+            ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
+            TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
+            wordCursor = textPainter.getOffsetAfter(position.offset);
             break;
           } else {
             bool shouldBreak = lineReferHeight + secondaryLineMetrics.height == pageReferHeight + canvas.height;
@@ -76,15 +80,13 @@ class ReaderLayout {
             lineReferHeight += secondaryLineMetrics.height;
             if (shouldBreak) {
               // 满一页
+              TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - secondaryLineMetrics.height / 2));
+              wordCursor = textPainter.getOffsetAfter(position.offset);
               break;
             }
           }
         }
         pageReferHeight = lineReferHeight;
-        // tertiary -> primiary/latest secondary
-        ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
-        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
-        wordCursor = textPainter.getOffsetAfter(position.offset);
       }
       pages.add(PageBlock(
         startWordCursor: null,
