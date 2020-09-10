@@ -32,81 +32,73 @@ class ReaderLayout {
       ],
       style: textStyle,
     );
-
-    // 测量段落
-    List<TextRange> paragraphRanges = <TextRange>[];
-    {
-      textPainter.text = text;
-      textPainter.layout(maxWidth: canvas.width);
-      List<ui.LineMetrics> lineMetrics = textPainter.computeLineMetrics();
-      double calculateLineHeight = 0.0;
-      int paragraphWordCursor = 0;
-      for (ui.LineMetrics lineMetric in lineMetrics) {
-        calculateLineHeight += lineMetric.height;
-        if (lineMetric.hardBreak) {
-          // '\n'换行
-          TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - lineMetric.height / 2));
-          paragraphRanges.add(TextRange(start: paragraphWordCursor, end: position.offset));
-          paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
-        }
-      }
-    }
-
     // 分页
+    List<TextRange> paragraphRanges = <TextRange>[];
+    textPainter.text = text;
+    textPainter.layout(maxWidth: canvas.width);
     int wordCursor = 0;
-    while (true) {
-      textPainter.text = text;
-      textPainter.layout(maxWidth: canvas.width);
-      if (textPainter.height >= canvas.height) {
-        // 超过一页
-        double calculateLineHeight = 0.0;
-        List<ui.LineMetrics> lineMetrics = textPainter.computeLineMetrics();
-        ui.LineMetrics latestLineMetrics;
-        for (ui.LineMetrics lineMetric in lineMetrics) {
-          calculateLineHeight += lineMetric.height;
-          if (calculateLineHeight > canvas.height) {
-            calculateLineHeight -= lineMetric.height;
+    int paragraphWordCursor = 0;
+    double lineReferHeight = 0.0;
+    double pageReferHeight = 0;
+    List<ui.LineMetrics> computeLineMetrics = textPainter.computeLineMetrics();
+    for (int i = 0; i < computeLineMetrics.length; i++) {
+      // primiary
+      ui.LineMetrics primiaryLineMetrics = computeLineMetrics[i];
+      if (primiaryLineMetrics.hardBreak) {
+        // '\n'换行
+        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + primiaryLineMetrics.height / 2));
+        paragraphRanges.add(TextRange(start: paragraphWordCursor, end: position.offset));
+        paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
+      }
+      lineReferHeight += primiaryLineMetrics.height;
+      if (lineReferHeight >= pageReferHeight + canvas.height) {
+        // 超/满一页
+        pageReferHeight = lineReferHeight;
+        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - primiaryLineMetrics.height / 2));
+        wordCursor = textPainter.getOffsetAfter(position.offset);
+      } else {
+        i++;
+        for (; i < computeLineMetrics.length; i++) {
+          // secondary
+          ui.LineMetrics secondaryLineMetrics = computeLineMetrics[i];
+          if (lineReferHeight + secondaryLineMetrics.height > pageReferHeight + canvas.height) {
+            // 超一页
+            i--;
             break;
           } else {
-            latestLineMetrics = lineMetric;
-            if (lineMetric.hardBreak) {
+            bool shouldBreak = lineReferHeight + secondaryLineMetrics.height == pageReferHeight + canvas.height;
+            if (secondaryLineMetrics.hardBreak) {
               // '\n'换行
-              TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
-              Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
+              TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + secondaryLineMetrics.height / 2));
+              paragraphRanges.add(TextRange(start: paragraphWordCursor, end: position.offset));
+              paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
             }
-            if (calculateLineHeight == canvas.height) {
+            lineReferHeight += secondaryLineMetrics.height;
+            if (shouldBreak) {
+              // 满一页
               break;
             }
           }
         }
-        // 可见区域范围内的文字，可能文字只会显示半行，故而不能直接使用，需要借助 LineMetrics
-        // 不能直接用最后一行的高度，这可能会导致定位到后面显示的半行
-        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
-        textPainter.text.getSpanForPosition(position);
+        pageReferHeight = lineReferHeight;
+        // tertiary -> primiary/latest secondary
+        ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
+        TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
         wordCursor = textPainter.getOffsetAfter(position.offset);
-        break;
-      } else {
-        // 不足或刚好一页
-        List<ui.LineMetrics> lineMetrics = textPainter.computeLineMetrics();
-        double calculateLineHeight = 0.0;
-        for (ui.LineMetrics lineMetric in lineMetrics) {
-          calculateLineHeight += lineMetric.height;
-          if (lineMetric.hardBreak) {
-            // '\n'换行
-            TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - lineMetric.height / 2));
-            Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
-
-          }
-        }
-        break;
       }
+      pages.add(PageBlock(
+        startWordCursor: null,
+        endWordCursor: null,
+        paragraphBlocks: null,
+        paragraphCaretOffsetMap: null,
+      ));
     }
 
-    pages.clear();
-    pages.addAll(<PageBlock>[
-      PageBlock.dummy,
-      PageBlock.dummy,
-    ]);
+//    pages.clear();
+//    pages.addAll(<PageBlock>[
+//      PageBlock.dummy,
+//      PageBlock.dummy,
+//    ]);
     return pages;
   }
 

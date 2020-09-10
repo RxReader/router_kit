@@ -58,20 +58,14 @@ class _ReaderPageState extends State<ReaderPage> {
                                     TextSpan(
                                       children: <InlineSpan>[
                                         TextSpan(text: model.article?.title ?? ''),
-                                        TextSpan(text: model.article?.title ?? ''),
-                                        TextSpan(text: model.article?.title ?? ''),
-                                        TextSpan(text: model.article?.title ?? ''),
                                         WidgetSpan(
                                           child: Container(
                                             width: 100,
                                             height: 100,
-                                            color: Colors.red,
-                                            child: Text(model.article?.title ?? ''),
+                                            color: Colors.blue,
+                                            child: Text('$index'),
                                           ),
                                         ),
-                                        TextSpan(text: model.article?.title ?? ''),
-                                        TextSpan(text: model.article?.title ?? ''),
-                                        TextSpan(text: model.article?.title ?? ''),
                                       ],
                                     ),
                                     style: typeset.resolveTextStyle(zhHansCN),
