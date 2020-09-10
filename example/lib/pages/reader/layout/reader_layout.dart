@@ -26,9 +26,10 @@ class ReaderLayout {
     final TextPainter textPainter = typeset.resolveTextPainter(locale);
     // WidgetSpan 不能参与计算，因为这会导致计算错误
     // 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
+    InlineSpan swap = _swapSpan(article);
     InlineSpan text = TextSpan(
       children: <InlineSpan>[
-        _swapSpan(article),
+        swap,
       ],
       style: textStyle,
     );
