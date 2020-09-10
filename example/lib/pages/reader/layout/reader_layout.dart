@@ -48,7 +48,7 @@ class ReaderLayout {
           } else {
             latestLineMetrics = lineMetric;
             if (lineMetric.hardBreak) {
-              // '\n' 换行
+              // 段落换行
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
               Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
             }
@@ -63,7 +63,18 @@ class ReaderLayout {
         textPainter.text.getSpanForPosition(position);
         break;
       } else {
-        // 不足一页
+        // 不足或刚好一页
+        List<ui.LineMetrics> lineMetrics = textPainter.computeLineMetrics();
+        double calculateLineHeight = 0.0;
+        for (ui.LineMetrics lineMetric in lineMetrics) {
+          calculateLineHeight += lineMetric.height;
+          if (lineMetric.hardBreak) {
+            // 段落换行
+            TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - lineMetric.height / 2));
+            Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
+
+          }
+        }
         break;
       }
     }
