@@ -131,13 +131,20 @@ class StyledElement {
           break;
       }
     }
+    if (spans.isNotEmpty && attributes.display == Display.BLOCK) {
+      // 换行
+    }
     TextSpan result = TextSpan(
       children: spans,
       style: mergeStyle != style ? mergeStyle : null,
     );
-    if (result.style == null && result.children.length == 1) {
+    if (result.style == null) {
       // 削减嵌套
-      return result.children.first;
+      if (result.children.isEmpty) {
+        return null;
+      } else if (result.children.length == 1) {
+        return result.children.first;
+      }
     }
     return result;
   }

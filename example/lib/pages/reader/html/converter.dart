@@ -285,37 +285,73 @@ class HtmlToSpannedConverter {
 
       // BLOCK ELEMENTS
       case 'article':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'aside':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'blockquote':
         // EdgeInsets margin = EdgeInsets.symmetric(vertical: 14.0, horizontal: 40.0);
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'body':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'center':
         // Alignment align = Alignment.center;
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'dd':
         // EdgeInsets margin = EdgeInsets.only(left: 40.0);
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'div':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'dl':
         // EdgeInsets margin = EdgeInsets.symmetric(vertical: 14.0);
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'dt':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'figcaption':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'figure':
         // EdgeInsets margin = EdgeInsets.symmetric(vertical: 14.0, horizontal: 40.0);
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'footer':
-        // 暂不支持
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'h1':
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -324,6 +360,7 @@ class HtmlToSpannedConverter {
         break;
       case 'h2':
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -332,6 +369,7 @@ class HtmlToSpannedConverter {
         break;
       case 'h3':
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -340,6 +378,7 @@ class HtmlToSpannedConverter {
         break;
       case 'h4':
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -348,6 +387,7 @@ class HtmlToSpannedConverter {
         break;
       case 'h5':
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -356,6 +396,7 @@ class HtmlToSpannedConverter {
         break;
       case 'h6':
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -363,12 +404,21 @@ class HtmlToSpannedConverter {
         );
         break;
       case 'header':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'hr':
 //        double width = double.infinity;
 //        Border border = Border(bottom: BorderSide(width: 1.0));
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'html':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'li':
 //        if (element.parent.localName == 'ul') {
@@ -376,28 +426,53 @@ class HtmlToSpannedConverter {
 //        } else {
 //          String markerContent = '•';
 //        }
+        attributes = Attributes(
+          display: Display.LIST_ITEM,
+        );
         break;
       case 'main':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'nav':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'noscript':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'ol':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'p':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'pre':
         // EdgeInsets margin = EdgeInsets.only(left: 14.0);
         attributes = Attributes(
+          display: Display.BLOCK,
           textStyle: TextStyle(
             fontFamily: 'Monospace',
           ),
         );
         break;
       case 'section':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
       case 'ul':
+        attributes = Attributes(
+          display: Display.BLOCK,
+        );
         break;
     }
     return StyledElement(
