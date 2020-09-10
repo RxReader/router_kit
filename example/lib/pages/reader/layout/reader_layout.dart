@@ -86,7 +86,7 @@ class ReaderLayout {
     if (span is TextSpan) {
       return TextSpan(
         text: span.text,
-        children: span.children.map((InlineSpan child) => _reverseSwapSpan(child)).toList(),
+        children: span.children?.map((InlineSpan child) => _reverseSwapSpan(child))?.toList(),
         style: span.style,
         recognizer: span.recognizer,
         semanticsLabel: span.semanticsLabel,
