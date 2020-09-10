@@ -48,10 +48,9 @@ class StyledElement {
           List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
           textPainter.text.visitChildren((InlineSpan span) {
             if (span is PlaceholderSpan) {
-              if (span is StyleSpan) {
-                StyleSpan styleSpan = span as StyleSpan;
+              if (span is StyleWidgetSpan) {
                 placeholderDimensions.add(PlaceholderDimensions(
-                  size: Size(styleSpan.width, styleSpan.height),
+                  size: Size(span.width, span.height),
                   alignment: span.alignment,
                   baseline: span.baseline,
                   baselineOffset: null,
@@ -78,10 +77,9 @@ class StyledElement {
           List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
           textPainter.text.visitChildren((InlineSpan span) {
             if (span is PlaceholderSpan) {
-              if (span is StyleSpan) {
-                StyleSpan styleSpan = span as StyleSpan;
+              if (span is StyleWidgetSpan) {
                 placeholderDimensions.add(PlaceholderDimensions(
-                  size: Size(styleSpan.width, styleSpan.height),
+                  size: Size(span.width, span.height),
                   alignment: span.alignment,
                   baseline: span.baseline,
                   baselineOffset: null,
@@ -100,7 +98,7 @@ class StyledElement {
 
         // BLOCK ELEMENTS
         case 'hr':
-          spans.add(StyleWidgetSpan(
+          spans.add(GenericStyleWidgetSpan(
             child: Container(
               width: double.infinity,
               decoration: BoxDecoration(
@@ -125,7 +123,7 @@ class StyledElement {
     }
     return TextSpan(
       children: spans,
-      style: mergeStyle,
+      style: node.parent == null && mergeStyle != style ? mergeStyle : null,
     );
   }
 }

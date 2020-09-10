@@ -1,28 +1,96 @@
 import 'dart:ui' as ui;
 
+import 'package:example/pages/reader/layout/text_symbol.dart';
 import 'package:flutter/material.dart';
 
-abstract class StyleSpan {
-  double get width;
-  double get height;
+class StyleSwapperTextSpan extends TextSpan {
+  StyleSwapperTextSpan({
+    @required this.wrapped,
+  }) : super(
+          text: TextSymbol.zeroWidthSpace,
+          style: TextStyle(
+            fontSize: _generateFontSize(TextSymbol.zeroWidthSpace, wrapped.height),
+            letterSpacing: wrapped.width,
+          ),
+        );
+
+  final StyleWidgetSpan wrapped;
+
+  static double _generateFontSize(String text, double height) {
+    TextPainter painter = TextPainter();
+    painter.text = TextSpan(
+      text: text,
+      style: TextStyle(
+        fontSize: height,
+      ),
+    );
+    painter.layout();
+    return height * height / painter.height;
+  }
 }
 
-class StyleWidgetSpan extends WidgetSpan implements StyleSpan {
+abstract class StyleWidgetSpan extends WidgetSpan {
   StyleWidgetSpan({
     @required Widget child,
-    @required this.placeholder,
     @required this.width,
     @required this.height,
     ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
     TextBaseline baseline,
     TextStyle style,
-  }): super(child: child, alignment: alignment, baseline: baseline, style: style);
+  }) : super(child: child, alignment: alignment, baseline: baseline, style: style);
+
+  final double width;
+  final double height;
+
+  StyleSwapperTextSpan swapper() {
+    return StyleSwapperTextSpan(wrapped: this);
+  }
+
+  static InlineSpan swap(InlineSpan span) {
+    if (span is StyleWidgetSpan) {
+      return span.swapper();
+    }
+    if (span is TextSpan) {
+      return TextSpan(
+        text: span.text,
+        children: span.children.map((InlineSpan child) => swap(child)).toList(),
+        style: span.style,
+        recognizer: span.recognizer,
+        semanticsLabel: span.semanticsLabel,
+      );
+    }
+    return span;
+  }
+
+  static InlineSpan reverseSwap(InlineSpan span) {
+    if (span is StyleSwapperTextSpan) {
+      return span.wrapped;
+    }
+    if (span is TextSpan) {
+      return TextSpan(
+        text: span.text,
+        children: span.children.map((InlineSpan child) => reverseSwap(child)).toList(),
+        style: span.style,
+        recognizer: span.recognizer,
+        semanticsLabel: span.semanticsLabel,
+      );
+    }
+    return span;
+  }
+}
+
+class GenericStyleWidgetSpan extends StyleWidgetSpan {
+  GenericStyleWidgetSpan({
+    @required Widget child,
+    @required this.placeholder,
+    @required double width,
+    @required double height,
+    ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
+    TextBaseline baseline,
+    TextStyle style,
+  }) : super(child: child, width: width, height: height, alignment: alignment, baseline: baseline, style: style);
 
   final String placeholder;
-  @override
-  final double width;
-  @override
-  final double height;
 
   @override
   void computeToPlainText(StringBuffer buffer, {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {
@@ -33,20 +101,16 @@ class StyleWidgetSpan extends WidgetSpan implements StyleSpan {
   }
 }
 
-class SubWidgetSpan extends WidgetSpan implements StyleSpan {
+class SubWidgetSpan extends StyleWidgetSpan {
   SubWidgetSpan({
     @required this.textSpan,
-    @required this.width,
-    @required this.height,
+    @required double width,
+    @required double height,
     TextBaseline baseline,
     TextStyle style,
-  }): super(child: Text.rich(textSpan, textScaleFactor: 0), alignment: ui.PlaceholderAlignment.bottom, baseline: baseline, style: style);
+  }) : super(child: Text.rich(textSpan, textScaleFactor: 0), width: width, height: height, alignment: ui.PlaceholderAlignment.bottom, baseline: baseline, style: style);
 
   final TextSpan textSpan;
-  @override
-  final double width;
-  @override
-  final double height;
 
   @override
   void computeToPlainText(StringBuffer buffer, {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {
@@ -57,20 +121,16 @@ class SubWidgetSpan extends WidgetSpan implements StyleSpan {
   }
 }
 
-class SupWidgetSpan extends WidgetSpan implements StyleSpan {
+class SupWidgetSpan extends StyleWidgetSpan {
   SupWidgetSpan({
     @required this.textSpan,
-    @required this.width,
-    @required this.height,
+    @required double width,
+    @required double height,
     TextBaseline baseline,
     TextStyle style,
-  }): super(child: Text.rich(textSpan, textScaleFactor: 0), alignment: ui.PlaceholderAlignment.top, baseline: baseline, style: style);
+  }) : super(child: Text.rich(textSpan, textScaleFactor: 0), width: width, height: height, alignment: ui.PlaceholderAlignment.top, baseline: baseline, style: style);
 
   final TextSpan textSpan;
-  @override
-  final double width;
-  @override
-  final double height;
 
   @override
   void computeToPlainText(StringBuffer buffer, {bool includeSemanticsLabels = true, bool includePlaceholders = true}) {

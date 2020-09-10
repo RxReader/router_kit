@@ -22,24 +22,16 @@ class ReaderLayout {
     List<PageBlock> pages = <PageBlock>[];
     Size canvas = typeset.resolveCanvas(padding.deflateSize(window));
     assert(!canvas.isEmpty);
-    final TextStyle textStyle = typeset.resolveTextStyle(locale);
     final TextPainter textPainter = typeset.resolveTextPainter(locale);
-    InlineSpan text = TextSpan(
-      children: <InlineSpan>[
-        article,
-      ],
-      style: textStyle,
-    );
+    InlineSpan text = StyleWidgetSpan.swap(article);// 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
     while (true) {
       textPainter.text = text;
-      // TODO 等价替换 StyleSpan - StylePlaceholderSpan
       List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
       textPainter.text.visitChildren((InlineSpan span) {
         if (span is PlaceholderSpan) {
-          if (span is StyleSpan) {
-            StyleSpan styleSpan = span as StyleSpan;
+          if (span is StyleWidgetSpan) {
             placeholderDimensions.add(PlaceholderDimensions(
-              size: Size(styleSpan.width, styleSpan.height),
+              size: Size(span.width, span.height),
               alignment: span.alignment,
               baseline: span.baseline,
               baselineOffset: null,
