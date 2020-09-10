@@ -3,6 +3,7 @@ import 'dart:ui' as ui;
 import 'package:example/pages/reader/html/span/style_span.dart';
 import 'package:example/pages/reader/layout/text_block.dart';
 import 'package:example/pages/reader/layout/typeset.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
@@ -122,8 +123,10 @@ class ReaderLayout {
     return pages;
   }
 
-  static InlineSpan _subSpan(InlineSpan span, TextPosition position) {
+  static InlineSpan _subSpan(InlineSpan span, TextRange composing) {
     assert(span.visitChildren((InlineSpan span) => span is TextSpan));
+    final Accumulator offset = Accumulator();
+    span.visitChildren((InlineSpan span) => false);
     return span;
   }
 
