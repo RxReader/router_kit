@@ -14,14 +14,17 @@ import 'package:flutter/painting.dart';
 class PageBlock {
   const PageBlock({
     @required this.composing,
+    @required this.paragraphTextRangeMap,
     @required this.paragraphCaretOffsetMap,
   });
 
   final TextRange composing;
+  final Map<int, TextRange> paragraphTextRangeMap;
   final Map<int, Offset> paragraphCaretOffsetMap;
 
   static const PageBlock dummy = PageBlock(
     composing: TextRange.empty,
+    paragraphTextRangeMap: <int, TextRange>{},
     paragraphCaretOffsetMap: <int, Offset>{},
   );
 }
