@@ -33,6 +33,7 @@ class ReaderLayout {
       style: textStyle,
     );
     // 分页
+    // TODO 按段落拆
     textPainter.text = text;
     textPainter.layout(maxWidth: canvas.width);
     int wordCursor = 0;
@@ -100,16 +101,10 @@ class ReaderLayout {
         pageReferHeight = lineReferHeight;
       }
       pages.add(PageBlock(
-        range: TextRange(start: startWordCursor, end: endWordCursor),
+        composing: TextRange(start: startWordCursor, end: endWordCursor),
         paragraphCaretOffsetMap: paragraphCaretOffsetMap,
       ));
     }
-
-//    pages.clear();
-//    pages.addAll(<PageBlock>[
-//      PageBlock.dummy,
-//      PageBlock.dummy,
-//    ]);
     return pages;
   }
 

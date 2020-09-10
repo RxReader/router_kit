@@ -13,15 +13,15 @@ import 'package:flutter/painting.dart';
 
 class PageBlock {
   const PageBlock({
-    @required this.range,
+    @required this.composing,
     @required this.paragraphCaretOffsetMap,
   });
 
-  final TextRange range;
+  final TextRange composing;
   final Map<int, Offset> paragraphCaretOffsetMap;
 
   static const PageBlock dummy = PageBlock(
-    range: TextRange.empty,
+    composing: TextRange.empty,
     paragraphCaretOffsetMap: <int, Offset>{},
   );
 }
