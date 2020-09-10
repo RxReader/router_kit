@@ -43,6 +43,8 @@ class ReaderLayout {
     List<ui.LineMetrics> computeLineMetrics = textPainter.computeLineMetrics();
     for (int i = 0; i < computeLineMetrics.length; i++) {
       int startWordCursor = wordCursor;
+      int endWordCursor = wordCursor;
+      Map<int, TextRange> paragraphTextRanges = <int, TextRange>{};
       Map<int, Offset> paragraphCaretOffsetMap = <int, Offset>{};
       // primiary
       ui.LineMetrics primiaryLineMetrics = computeLineMetrics[i];
@@ -59,6 +61,7 @@ class ReaderLayout {
         // 超/满一页
         pageReferHeight = lineReferHeight;
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - primiaryLineMetrics.height / 2));
+        endWordCursor = position.offset;
         wordCursor = textPainter.getOffsetAfter(position.offset);
       } else {
         i++;
@@ -71,6 +74,7 @@ class ReaderLayout {
             // tertiary -> primiary/latest secondary
             ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
             TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
+            endWordCursor = position.offset;
             wordCursor = textPainter.getOffsetAfter(position.offset);
             break;
           } else {
@@ -87,6 +91,7 @@ class ReaderLayout {
             if (shouldBreak) {
               // 满一页
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - secondaryLineMetrics.height / 2));
+              endWordCursor = position.offset;
               wordCursor = textPainter.getOffsetAfter(position.offset);
               break;
             }
@@ -95,9 +100,7 @@ class ReaderLayout {
         pageReferHeight = lineReferHeight;
       }
       pages.add(PageBlock(
-        startWordCursor: startWordCursor,
-        endWordCursor: wordCursor,
-        paragraphBlocks: null,
+        range: TextRange(start: startWordCursor, end: endWordCursor),
         paragraphCaretOffsetMap: paragraphCaretOffsetMap,
       ));
     }
@@ -111,6 +114,7 @@ class ReaderLayout {
   }
 
   static InlineSpan _subSpan(InlineSpan span, TextPosition position) {
+    assert(span.visitChildren((InlineSpan span) => span is TextSpan));
     return span;
   }
 
