@@ -33,22 +33,26 @@ class ReaderLayout {
       style: textStyle,
     );
     // 分页
-    List<TextRange> paragraphRanges = <TextRange>[];
     textPainter.text = text;
     textPainter.layout(maxWidth: canvas.width);
     int wordCursor = 0;
+    int paragraphCursor = 0;
     int paragraphWordCursor = 0;
     double lineReferHeight = 0.0;
     double pageReferHeight = 0;
     List<ui.LineMetrics> computeLineMetrics = textPainter.computeLineMetrics();
     for (int i = 0; i < computeLineMetrics.length; i++) {
+      int startWordCursor = wordCursor;
+      Map<int, Offset> paragraphCaretOffsetMap = <int, Offset>{};
       // primiary
       ui.LineMetrics primiaryLineMetrics = computeLineMetrics[i];
       if (primiaryLineMetrics.hardBreak) {
         // '\n'换行
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + primiaryLineMetrics.height / 2));
-        paragraphRanges.add(TextRange(start: paragraphWordCursor, end: position.offset));
+        Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + primiaryLineMetrics.height));
+        paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
         paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
+        paragraphCursor ++;
       }
       lineReferHeight += primiaryLineMetrics.height;
       if (lineReferHeight >= pageReferHeight + canvas.height) {
@@ -74,8 +78,10 @@ class ReaderLayout {
             if (secondaryLineMetrics.hardBreak) {
               // '\n'换行
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + secondaryLineMetrics.height / 2));
-              paragraphRanges.add(TextRange(start: paragraphWordCursor, end: position.offset));
+              Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + secondaryLineMetrics.height));
+              paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
               paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
+              paragraphCursor ++;
             }
             lineReferHeight += secondaryLineMetrics.height;
             if (shouldBreak) {
@@ -89,10 +95,10 @@ class ReaderLayout {
         pageReferHeight = lineReferHeight;
       }
       pages.add(PageBlock(
-        startWordCursor: null,
-        endWordCursor: null,
+        startWordCursor: startWordCursor,
+        endWordCursor: wordCursor,
         paragraphBlocks: null,
-        paragraphCaretOffsetMap: null,
+        paragraphCaretOffsetMap: paragraphCaretOffsetMap,
       ));
     }
 
