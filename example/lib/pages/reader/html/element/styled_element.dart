@@ -133,10 +133,46 @@ class StyledElement {
           break;
       }
     }
-    if (spans.isNotEmpty && attributes.display == Display.BLOCK) {
+    if (spans.isNotEmpty && (attributes?.display == Display.BLOCK || attributes?.display == Display.LIST_ITEM)) {
       // 换行
-      StyledElement previous;
-      StyledElement next;
+      if (parent != null) {
+        bool isHtml = false;
+        bool isBodyTag = false;
+        if (node is dom.Element) {
+          dom.Element element = node as dom.Element;
+          if (element.localName == 'html') {
+            isHtml = true;
+          } else if (element.localName == 'body') {
+            isBodyTag = true;
+          }
+        }
+        if (isHtml) {
+          // 忽略
+        } else if (isBodyTag) {
+          int index = parent.children.indexOf(this);
+          StyledElement previous = index > 0 ? parent.children[index - 1] : null;
+          if (previous != null) {
+            InlineSpan previousSpan = await previous.apply(canvas: canvas, style: style, sourceUrl: sourceUrl, callbacks: callbacks, reduce: reduce);
+            if (previousSpan != null) {
+              spans.insert(0, TextSpan(text: '\n'));
+            }
+          }
+        } else {
+          int index = parent.children.indexOf(this);
+          StyledElement previous = index > 0 ? parent.children[index - 1] : null;
+          if (previous != null) {
+            if (previous.attributes?.display != Display.BLOCK && previous.attributes?.display != Display.LIST_ITEM) {
+              spans.insert(0, TextSpan(text: '\n'));
+            }
+          } else {
+            if (parent.attributes?.display != Display.BLOCK) {
+              spans.insert(0, TextSpan(text: '\n'));
+            }
+          }
+//          StyledElement next = index < parent.children.length - 1 ? parent.children[index + 1] : null;
+          spans.add(TextSpan(text: '\n'));
+        }
+      }
     }
     TextSpan result = TextSpan(
       children: spans,
