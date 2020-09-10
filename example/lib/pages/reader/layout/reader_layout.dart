@@ -22,10 +22,17 @@ class ReaderLayout {
     List<PageBlock> pages = <PageBlock>[];
     Size canvas = typeset.resolveCanvas(padding.deflateSize(window));
     assert(!canvas.isEmpty);
+    final TextStyle textStyle = typeset.resolveTextStyle(locale);
     final TextPainter textPainter = typeset.resolveTextPainter(locale);
-    InlineSpan text = StyleWidgetSpan.swap(article);// 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
+    InlineSpan text = TextSpan(
+      children: <InlineSpan>[
+        StyleWidgetSpan.swap(article),
+      ],
+      style: textStyle,
+    );// 等价替换 StyleWidgetSpan -> StyleSwapperTextSpan
     while (true) {
       textPainter.text = text;
+      /*
       List<PlaceholderDimensions> placeholderDimensions = <PlaceholderDimensions>[];
       textPainter.text.visitChildren((InlineSpan span) {
         if (span is PlaceholderSpan) {
@@ -43,6 +50,7 @@ class ReaderLayout {
         return true;
       });
       textPainter.setPlaceholderDimensions(placeholderDimensions);
+       */
       textPainter.layout(maxWidth: canvas.width);
       if (textPainter.height > canvas.height) {
         // 超过一页

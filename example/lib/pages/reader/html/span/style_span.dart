@@ -8,7 +8,7 @@ class StyleSwapperTextSpan extends TextSpan {
     @required this.wrapped,
   }) : super(
           text: TextSymbol.zeroWidthSpace,
-          style: TextStyle(
+          style: wrapped.style.copyWith(
             fontSize: _generateFontSize(TextSymbol.zeroWidthSpace, wrapped.height),
             letterSpacing: wrapped.width,
           ),
@@ -17,7 +17,9 @@ class StyleSwapperTextSpan extends TextSpan {
   final StyleWidgetSpan wrapped;
 
   static double _generateFontSize(String text, double height) {
-    TextPainter painter = TextPainter();
+    TextPainter painter = TextPainter(
+      textDirection: TextDirection.ltr
+    );
     painter.text = TextSpan(
       text: text,
       style: TextStyle(
@@ -36,7 +38,7 @@ abstract class StyleWidgetSpan extends WidgetSpan {
     @required this.height,
     ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
     TextBaseline baseline,
-    TextStyle style,
+    @required TextStyle style,
   }) : super(child: child, alignment: alignment, baseline: baseline, style: style);
 
   final double width;
@@ -53,7 +55,7 @@ abstract class StyleWidgetSpan extends WidgetSpan {
     if (span is TextSpan) {
       return TextSpan(
         text: span.text,
-        children: span.children.map((InlineSpan child) => swap(child)).toList(),
+        children: span.children?.map((InlineSpan child) => swap(child))?.toList(),
         style: span.style,
         recognizer: span.recognizer,
         semanticsLabel: span.semanticsLabel,
@@ -87,7 +89,7 @@ class GenericStyleWidgetSpan extends StyleWidgetSpan {
     @required double height,
     ui.PlaceholderAlignment alignment = ui.PlaceholderAlignment.bottom,
     TextBaseline baseline,
-    TextStyle style,
+    @required TextStyle style,
   }) : super(child: child, width: width, height: height, alignment: alignment, baseline: baseline, style: style);
 
   final String placeholder;
@@ -107,7 +109,7 @@ class SubWidgetSpan extends StyleWidgetSpan {
     @required double width,
     @required double height,
     TextBaseline baseline,
-    TextStyle style,
+    @required TextStyle style,
   }) : super(child: Text.rich(textSpan, textScaleFactor: 0), width: width, height: height, alignment: ui.PlaceholderAlignment.bottom, baseline: baseline, style: style);
 
   final TextSpan textSpan;
@@ -127,7 +129,7 @@ class SupWidgetSpan extends StyleWidgetSpan {
     @required double width,
     @required double height,
     TextBaseline baseline,
-    TextStyle style,
+    @required TextStyle style,
   }) : super(child: Text.rich(textSpan, textScaleFactor: 0), width: width, height: height, alignment: ui.PlaceholderAlignment.top, baseline: baseline, style: style);
 
   final TextSpan textSpan;

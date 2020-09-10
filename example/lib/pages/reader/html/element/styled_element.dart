@@ -64,7 +64,12 @@ class StyledElement {
           textPainter.setPlaceholderDimensions(placeholderDimensions);
           textPainter.layout(maxWidth: canvas.width);
           spans.clear();
-          spans.add(SubWidgetSpan(textSpan: textSpan, width: textPainter.width, height: textPainter.height));
+          spans.add(SubWidgetSpan(
+            textSpan: textSpan,
+            width: textPainter.width,
+            height: textPainter.height,
+            style: mergeStyle,
+          ));
           break;
         case 'sup':
           TextSpan textSpan = TextSpan(
@@ -93,21 +98,26 @@ class StyledElement {
           textPainter.setPlaceholderDimensions(placeholderDimensions);
           textPainter.layout(maxWidth: canvas.width);
           spans.clear();
-          spans.add(SupWidgetSpan(textSpan: textSpan, width: textPainter.width, height: textPainter.height));
+          spans.add(SupWidgetSpan(
+            textSpan: textSpan,
+            width: textPainter.width,
+            height: textPainter.height,
+            style: mergeStyle,
+          ));
           break;
 
         // BLOCK ELEMENTS
         case 'hr':
+          spans.clear();
           spans.add(GenericStyleWidgetSpan(
             child: Container(
               width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(width: 1))
-              ),
+              decoration: BoxDecoration(border: Border(bottom: BorderSide(width: 1))),
             ),
             placeholder: '',
             width: canvas.width,
-            height: 1,
+            height: 555,
+            style: mergeStyle,
           ));
           break;
         case 'li':
@@ -121,9 +131,14 @@ class StyledElement {
           break;
       }
     }
-    return TextSpan(
+    TextSpan result = TextSpan(
       children: spans,
-      style: node.parent == null && mergeStyle != style ? mergeStyle : null,
+      style: mergeStyle != style ? mergeStyle : null,
     );
+    if (result.style == null && result.children.length == 1) {
+      // 削减嵌套
+      return result.children.first;
+    }
+    return result;
   }
 }
