@@ -118,7 +118,7 @@ class StyledElement {
             ),
             placeholder: '',
             width: canvas.width,
-            height: 555,// TODO - replace test to prod
+            height: 1,
             style: mergeStyle,
           ));
           break;
