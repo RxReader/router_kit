@@ -41,23 +41,25 @@ class ReaderLayout {
         List<ui.LineMetrics> lineMetrics = textPainter.computeLineMetrics();
         ui.LineMetrics latestLineMetrics;
         for (ui.LineMetrics lineMetric in lineMetrics) {
-          if (lineMetric.hardBreak) {
-            // '\n' 换行
-          }
           calculateLineHeight += lineMetric.height;
           if (calculateLineHeight > canvas.height) {
             calculateLineHeight -= lineMetric.height;
             break;
-          } else if (calculateLineHeight == canvas.height) {
+          } else {
             latestLineMetrics = lineMetric;
-            break;
+            if (lineMetric.hardBreak) {
+              // '\n' 换行
+              TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
+              Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
+            }
+            if (calculateLineHeight == canvas.height) {
+              break;
+            }
           }
-          latestLineMetrics = lineMetric;
         }
         // 可见区域范围内的文字，可能文字只会显示半行，故而不能直接使用，需要借助 LineMetrics
         // 不能直接用最后一行的高度，这可能会导致定位到后面显示的半行
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, calculateLineHeight - latestLineMetrics.height / 2));
-        Offset offsetForCaret = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0.0, 0.0, canvas.width, calculateLineHeight));
         textPainter.text.getSpanForPosition(position);
         break;
       } else {
