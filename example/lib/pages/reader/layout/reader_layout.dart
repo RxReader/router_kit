@@ -46,19 +46,27 @@ class ReaderLayout {
     for (int i = 0; i < computeLineMetrics.length; i++) {
       final int startWordCursor = wordCursor;
       int endWordCursor = wordCursor;
-      Map<int, TextRange> paragraphTextRangeMap = <int, TextRange>{};
-      Map<int, Offset> paragraphCaretOffsetMap = <int, Offset>{};
+      List<ParagraphBlock> paragraphBlocks = <ParagraphBlock>[];
+      List<ParagraphCaretOffset> paragraphCaretOffsets = <ParagraphCaretOffset>[];
       // primiary
       ui.LineMetrics primiaryLineMetrics = computeLineMetrics[i];
       if (primiaryLineMetrics.hardBreak) {
         // '\n'换行
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + primiaryLineMetrics.height / 2));
         Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + primiaryLineMetrics.height));
-        paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
-        paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
+        TextRange composing = TextRange(start: wordCursor, end: position.offset);
+        paragraphBlocks.add(ParagraphBlock(
+          composing: composing,
+          paragraph: _reverseSwapSpan(_subSpan(swap, composing)),
+          paragraphCursor: paragraphCursor,
+        ));
+        paragraphCaretOffsets.add(ParagraphCaretOffset(
+          offset: offset.translate(0, -pageReferHeight),
+          paragraphCursor: paragraphCursor,
+        ));
         paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
         wordCursor = paragraphWordCursor;
-        paragraphCursor ++;
+        paragraphCursor++;
       }
       lineReferHeight += primiaryLineMetrics.height;
       if (lineReferHeight >= pageReferHeight + canvas.height) {
@@ -66,7 +74,12 @@ class ReaderLayout {
         pageReferHeight = lineReferHeight;
         TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - primiaryLineMetrics.height / 2));
         if (!primiaryLineMetrics.hardBreak) {
-          paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
+          TextRange composing = TextRange(start: wordCursor, end: position.offset);
+          paragraphBlocks.add(ParagraphBlock(
+            composing: composing,
+            paragraph: _reverseSwapSpan(_subSpan(swap, composing)),
+            paragraphCursor: paragraphCursor,
+          ));
           wordCursor = textPainter.getOffsetAfter(position.offset);
         }
         endWordCursor = position.offset;
@@ -82,7 +95,12 @@ class ReaderLayout {
             ui.LineMetrics tertiaryLineMetrics = computeLineMetrics[i];
             TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - tertiaryLineMetrics.height / 2));
             if (!tertiaryLineMetrics.hardBreak) {
-              paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
+              TextRange composing = TextRange(start: wordCursor, end: position.offset);
+              paragraphBlocks.add(ParagraphBlock(
+                composing: composing,
+                paragraph: _reverseSwapSpan(_subSpan(swap, composing)),
+                paragraphCursor: paragraphCursor,
+              ));
               wordCursor = textPainter.getOffsetAfter(position.offset);
             }
             endWordCursor = position.offset;
@@ -93,18 +111,31 @@ class ReaderLayout {
               // '\n'换行
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight + secondaryLineMetrics.height / 2));
               Offset offset = textPainter.getOffsetForCaret(position, Rect.fromLTRB(0, 0, canvas.width, lineReferHeight + secondaryLineMetrics.height));
-              paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
-              paragraphCaretOffsetMap[paragraphCursor] = offset.translate(0, -pageReferHeight);
+              TextRange composing = TextRange(start: wordCursor, end: position.offset);
+              paragraphBlocks.add(ParagraphBlock(
+                composing: composing,
+                paragraph: _reverseSwapSpan(_subSpan(swap, composing)),
+                paragraphCursor: paragraphCursor,
+              ));
+              paragraphCaretOffsets.add(ParagraphCaretOffset(
+                offset: offset.translate(0, -pageReferHeight),
+                paragraphCursor: paragraphCursor,
+              ));
               paragraphWordCursor = textPainter.getOffsetAfter(position.offset);
               wordCursor = paragraphWordCursor;
-              paragraphCursor ++;
+              paragraphCursor++;
             }
             lineReferHeight += secondaryLineMetrics.height;
             if (shouldBreak) {
               // 满一页
               TextPosition position = textPainter.getPositionForOffset(Offset(canvas.width, lineReferHeight - secondaryLineMetrics.height / 2));
               if (!secondaryLineMetrics.hardBreak) {
-                paragraphTextRangeMap[paragraphCursor] = TextRange(start: wordCursor, end: position.offset);
+                TextRange composing = TextRange(start: wordCursor, end: position.offset);
+                paragraphBlocks.add(ParagraphBlock(
+                  composing: composing,
+                  paragraph: _reverseSwapSpan(_subSpan(swap, composing)),
+                  paragraphCursor: paragraphCursor,
+                ));
                 wordCursor = textPainter.getOffsetAfter(position.offset);
               }
               endWordCursor = position.offset;
@@ -116,8 +147,8 @@ class ReaderLayout {
       }
       pages.add(PageBlock(
         composing: TextRange(start: startWordCursor, end: endWordCursor),
-        paragraphTextRangeMap: paragraphTextRangeMap,
-        paragraphCaretOffsetMap: paragraphCaretOffsetMap,
+        paragraphBlocks: paragraphBlocks,
+        paragraphCaretOffsets: paragraphCaretOffsets,
       ));
     }
     return pages;
