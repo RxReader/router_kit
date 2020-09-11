@@ -155,10 +155,33 @@ class ReaderLayout {
   }
 
   static InlineSpan _subSpan(InlineSpan span, TextRange composing) {
-    assert(span.visitChildren((InlineSpan span) => span is TextSpan));
-    final Accumulator offset = Accumulator();
-    span.visitChildren((InlineSpan span) => false);
-    return span;
+    assert(composing.isValid && composing.isNormalized);
+    if (span is TextSpan) {
+      if (composing.isCollapsed) {
+        return TextSpan(
+          text: '',
+          style: span.style,
+        );
+      } else {
+        if (span is StylePlaceholderTextSpan) {
+          return span;
+        }
+        if (span.text != null && span.text.length >= composing.start) {
+          //
+        } else {
+          return TextSpan(
+            text: span.text,
+            children: null,
+            style: span.style,
+            recognizer: span.recognizer,
+            semanticsLabel: span.semanticsLabel,
+          );
+        }
+      }
+      TextSelection(baseOffset: null, extentOffset: null)
+    } else {
+      throw AssertionError();
+    }
   }
 
   static InlineSpan _reverseSwapSpan(InlineSpan span) {
