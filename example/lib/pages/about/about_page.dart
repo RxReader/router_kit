@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_annotation/router_annotation.dart' as router;
+import 'package:router_annotation/router_annotation.dart' as rca;
 
 part 'about_page.g.dart';
 
-@router.Page(
+@rca.Page(
+  name: '关于',
   routeName: '/about',
 )
 class AboutPage extends StatefulWidget {

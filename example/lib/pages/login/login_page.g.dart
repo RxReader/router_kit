@@ -9,6 +9,7 @@ part of 'login_page.dart';
 class LoginPageProvider {
   const LoginPageProvider._();
 
+  static const String name = '登录';
   static const String routeName = '/login';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {

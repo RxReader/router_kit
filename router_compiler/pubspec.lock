@@ -261,7 +261,7 @@ packages:
     source: hosted
     version: "2.4.0"
   logging:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: logging
       url: "https://pub.flutter-io.cn"

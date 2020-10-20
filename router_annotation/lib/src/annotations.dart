@@ -4,6 +4,7 @@ typedef NameFormatter = String Function(String fieldName);
 
 class Page {
   const Page({
+    @required this.name,
     @required this.routeName,
     this.ignoreKey = true,
     this.autowired = true,
@@ -11,6 +12,7 @@ class Page {
     this.nameFormatter,
   }) : assert(routeName != null);
 
+  final String name;
   final String routeName;
   final bool ignoreKey;
   final bool autowired;

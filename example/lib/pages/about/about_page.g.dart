@@ -9,6 +9,7 @@ part of 'about_page.dart';
 class AboutPageProvider {
   const AboutPageProvider._();
 
+  static const String name = '关于';
   static const String routeName = '/about';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {

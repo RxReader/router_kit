@@ -41,8 +41,8 @@ dev_dependencies:
   router_compiler: ^0.1.4
 
 dependency_overrides:
-#  router_annotation:
-#    path: ../router_annotation
+  router_annotation:
+    path: ../router_annotation
   router_compiler:
     path: ../router_compiler
 #  router_api:

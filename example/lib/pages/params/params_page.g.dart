@@ -9,6 +9,7 @@ part of 'params_page.dart';
 class ParamsPageProvider {
   const ParamsPageProvider._();
 
+  static const String name = '参数';
   static const String routeName = '/params';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {

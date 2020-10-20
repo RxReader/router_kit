@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart' as router;
+import 'package:router_annotation/router_annotation.dart' as rca;
 
 part 'payment_page.g.dart';
 
-@router.Page(
+@rca.Page(
+  name: '购买',
   routeName: '/payment',
 )
 class PaymentPage extends StatefulWidget {

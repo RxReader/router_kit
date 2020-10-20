@@ -7,6 +7,7 @@ class PageInfo {
   PageInfo({
     @required this.uri,
     @required this.displayName,
+    @required this.name,
     @required this.routeName,
     @required this.fieldInfos,
     @required this.ctorParameters,
@@ -16,6 +17,7 @@ class PageInfo {
 
   final Uri uri;
   final String displayName;
+  final String name;
   final String routeName;
   final Map<String, FieldInfo> fieldInfos;
   final List<ParameterElement> ctorParameters;

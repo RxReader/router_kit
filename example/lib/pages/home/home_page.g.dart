@@ -9,6 +9,7 @@ part of 'home_page.dart';
 class HomePageProvider {
   const HomePageProvider._();
 
+  static const String name = '首页';
   static const String routeName = '/';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {

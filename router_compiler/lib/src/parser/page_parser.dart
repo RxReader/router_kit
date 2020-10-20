@@ -13,12 +13,13 @@ class PageParser {
   static PageInfo parse(
       ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     if (!element.allSupertypes
-        .map((InterfaceType supertype) => supertype.displayName)
+        .map((InterfaceType supertype) => supertype.getDisplayString())
         .contains('Widget')) {
       throw RouterCompilerException(
           'Page annotation can only be defined on a Widget class.');
     }
 
+    String name = annotation.peek('name').stringValue;
     String routeName = annotation.peek('routeName').stringValue;
     bool ignoreKey = annotation.peek('ignoreKey').boolValue;
     bool autowired = annotation.peek('autowired').boolValue;
@@ -40,6 +41,7 @@ class PageParser {
     return PageInfo(
       uri: buildStep.inputId.uri,
       displayName: element.displayName,
+      name: name,
       routeName: routeName,
       fieldInfos: fieldInfos,
       ctorParameters: ctorParameters,

@@ -6,10 +6,9 @@ import 'package:example/pages/login/login_page.dart';
 import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
-import 'package:example/pages/reader/reader_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_api/router_api.dart';
+import 'package:router_api/router_api.dart' as ra;
 
 class AppRouter {
   AppRouter._();
@@ -20,7 +19,6 @@ class AppRouter {
     ParamsPageProvider.routeName: ParamsPageProvider.routeBuilder,
     LoginPageProvider.routeName: LoginPageProvider.routeBuilder,
     PaymentPageProvider.routeName: PaymentPageProvider.routeBuilder,
-    ReaderPageProvider.routeName: ReaderPageProvider.routeBuilder,
     AboutPageProvider.routeName: AboutPageProvider.routeBuilder,
   };
 
@@ -29,20 +27,20 @@ class AppRouter {
   ];
 
   static FutureOr<dynamic> _routerLogger(
-    Router router,
+    ra.Router router,
     String routeName,
     Object arguments,
-    NextDispatcher next,
+    ra.NextDispatcher next,
   ) {
     print('Router -> routeName: $routeName');
     return next(router, routeName, arguments);
   }
 
   static FutureOr<dynamic> _shouldLogin(
-    Router router,
+    ra.Router router,
     String routeName,
     Object arguments,
-    NextDispatcher next,
+    ra.NextDispatcher next,
   ) async {
     if (_shouldLoginRoute.contains(routeName)) {
       dynamic resp = await router.pushNamed(LoginPageProvider.routeName);
@@ -54,10 +52,10 @@ class AppRouter {
     return next(router, routeName, arguments);
   }
 
-  static Router defaultRouter(BuildContext context) {
-    return Router(
+  static ra.Router defaultRouter(BuildContext context) {
+    return ra.Router(
       context,
-      interceptors: <Interceptor>[
+      interceptors: <ra.Interceptor>[
         _routerLogger,
         _shouldLogin,
       ],

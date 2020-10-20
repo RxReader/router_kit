@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart' as router;
+import 'package:router_annotation/router_annotation.dart' as rca;
 
 part 'login_page.g.dart';
 
-@router.Page(
+@rca.Page(
+  name: '登录',
   routeName: '/login',
 )
 class LoginPage extends StatefulWidget {

@@ -18,6 +18,8 @@ class PageWriter {
     // blank
     _buffer.writeln('');
 
+    _buffer.writeln('static const String name = \'${info.name}\';');
+
     _buffer.writeln('static const String routeName = \'${info.routeName}\';');
 
     // blank
@@ -30,14 +32,14 @@ class PageWriter {
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
       ctor1.writeln(
-          '${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorParameter.type.displayName}' : 'null'},');
+          '${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorParameter.type.getDisplayString()}' : 'null'},');
     }
     for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
       // ignore: deprecated_member_use
       if (ctorNamedParameter.hasRequired || !fieldInfo.ignore) {
         ctor1.writeln(
-            '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.displayName}' : 'null'},');
+            '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.getDisplayString()}' : 'null'},');
       }
     }
     if (ctor1.toString().isNotEmpty) {
@@ -57,7 +59,7 @@ class PageWriter {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
           ctor2.writeln(
-              '${ctorParameter.type.displayName} ${ctorParameter.displayName},');
+              '${ctorParameter.type.getDisplayString()} ${ctorParameter.displayName},');
         }
       }
       bool hasOptionalParameters = false;

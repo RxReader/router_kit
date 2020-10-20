@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:router_annotation/router_annotation.dart' as router;
+import 'package:router_annotation/router_annotation.dart' as rca;
 
 part 'params_page.g.dart';
 
 typedef Callback = String Function(String info);
 
-@router.Page(
+@rca.Page(
+  name: '参数',
   routeName: '/params',
 )
 // ignore: must_be_immutable
@@ -23,13 +24,13 @@ class ParamsPage extends StatefulWidget {
 
   final String paramB;
 
-  @router.Alias('paramD')
+  @rca.Alias('paramD')
   final String paramC;
 
-  @router.Ignore()
+  @rca.Ignore()
   String paramD;
 
-  @router.Ignore()
+  @rca.Ignore()
   String paramE;
 
   final String paramF = '';
