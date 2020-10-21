@@ -18,8 +18,7 @@ class ParamsPageProvider {
     return ParamsPage(
       arguments['param_a'] as String,
       paramB: arguments['param_b'] as String,
-      paramC: arguments['param_c'] as String,
-      paramE: arguments['param_e'] as String,
+      paramC: arguments['param_d'] as String,
       callback: arguments['callback'] as String Function(String),
     );
   };
@@ -28,14 +27,12 @@ class ParamsPageProvider {
     String paramA, {
     @required String paramB,
     String paramC,
-    String paramE,
     String Function(String) callback,
   }) {
     Map<String, dynamic> arguments = <String, dynamic>{};
     arguments['param_a'] = paramA;
     arguments['param_b'] = paramB;
-    arguments['param_c'] = paramC;
-    arguments['param_e'] = paramE;
+    arguments['param_d'] = paramC;
     arguments['callback'] = callback;
     return arguments;
   }
