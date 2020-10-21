@@ -3,7 +3,7 @@ builders:
   router_compiler:
     import: 'package:router_compiler/builder.dart'
     builder_factories: ['routerCompiler']
-    build_extensions: { '.dart': ['.rc.g.part'] }
+    build_extensions: { '.dart': ['.router_compiler.g.part'] }
     auto_apply: dependents
     build_to: cache
     applies_builders: ['source_gen|combining_builder', '|router_cleanup']
@@ -11,4 +11,4 @@ post_process_builders:
   router_cleanup:
     import: 'package:router_compiler/builder.dart'
     builder_factory: 'routerCleanup'
-    input_extensions: ['.rc.g.part']
+    input_extensions: ['.router_compiler.g.part']

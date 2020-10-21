@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:logging/logging.dart';
@@ -39,7 +41,7 @@ Builder routerCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilde
       <Generator>[
         RouterCompilerGenerator(),
       ],
-      'rc',
+      'router_compiler',
     );
 
 class RouterCleanupBuilder implements PostProcessBuilder {
@@ -47,14 +49,15 @@ class RouterCleanupBuilder implements PostProcessBuilder {
 
   @override
   void build(PostProcessBuildStep buildStep) {
-    _log.info('------ xxxxxx ------');
+    _log.info('clean ${buildStep.inputId.uri}');
+    _log.info('clean ${File(buildStep.inputId.path).absolute}');
     buildStep.deletePrimaryInput();
   }
 
   @override
   Iterable<String> get inputExtensions => <String>[
-        '.rc.g.part',
+        '.router_compiler.g.part',
       ];
 }
 
-PostProcessBuilder routerCleanupBuilder({Map<String, dynamic> config}) => const RouterCleanupBuilder();
+PostProcessBuilder routerCleanupBuilder({Map<String, dynamic> config}) => const FileDeletingBuilder(<String>['.router_compiler.g.part']);
