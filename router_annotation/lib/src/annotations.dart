@@ -2,6 +2,10 @@ import 'package:meta/meta.dart';
 
 typedef NameFormatter = String Function(String fieldName);
 
+class Manifest {
+  const Manifest();
+}
+
 class Page {
   const Page({
     @required this.name,
