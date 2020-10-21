@@ -5,7 +5,7 @@ builders:
     builder_factories: ['pageCompiler']
     build_extensions: { '.dart': ['.page_compiler.g.part'] }
     auto_apply: dependents
-    runs_before: ['|manifestCompiler']
+    runs_before: ['|manifest_compiler']
     build_to: cache
     applies_builders: ['source_gen|combining_builder']
 
