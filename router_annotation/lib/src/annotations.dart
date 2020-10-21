@@ -24,7 +24,7 @@ class Page {
   final NameFormatter nameFormatter;
 }
 
-abstract class Field {
+class Field {
   const Field({
     this.alias,
     this.nullable,
@@ -34,15 +34,4 @@ abstract class Field {
   final String alias;
   final bool nullable;
   final bool ignore;
-}
-
-class Alias extends Field {
-  const Alias(
-    String alias, {
-    bool nullable,
-  }) : super(alias: alias, nullable: nullable, ignore: false);
-}
-
-class Ignore extends Field {
-  const Ignore() : super(alias: null, nullable: null, ignore: true);
 }
