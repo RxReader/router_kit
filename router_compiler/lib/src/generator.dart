@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:analyzer/dart/element/element.dart';
 import 'package:build/build.dart';
 import 'package:logging/logging.dart';
@@ -23,7 +21,7 @@ class RouterCompilerGenerator extends GeneratorForAnnotation<Page> {
 
     try {
       PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
-      _log.info('${info.name}-${info.routeName}-${info.displayName};');
+      _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
 
       PageWriter writer = PageWriter(info);
 
@@ -43,21 +41,3 @@ Builder routerCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilde
       ],
       'router_compiler',
     );
-
-class RouterCleanupBuilder implements PostProcessBuilder {
-  const RouterCleanupBuilder();
-
-  @override
-  void build(PostProcessBuildStep buildStep) {
-    _log.info('clean ${buildStep.inputId.uri}');
-    _log.info('clean ${File(buildStep.inputId.path).absolute}');
-    buildStep.deletePrimaryInput();
-  }
-
-  @override
-  Iterable<String> get inputExtensions => <String>[
-        '.router_compiler.g.part',
-      ];
-}
-
-PostProcessBuilder routerCleanupBuilder({Map<String, dynamic> config}) => const FileDeletingBuilder(<String>['.router_compiler.g.part']);
