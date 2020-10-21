@@ -1,14 +1,18 @@
 # Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
 builders:
-  router_compiler:
+  page_compiler:
     import: 'package:router_compiler/builder.dart'
-    builder_factories: ['routerCompiler']
-    build_extensions: { '.dart': ['.router_compiler.g.part'] }
+    builder_factories: ['pageCompiler']
+    build_extensions: { '.dart': ['.page_compiler.g.part'] }
+    auto_apply: dependents
+    runs_before: ['|manifestCompiler']
+    build_to: cache
+    applies_builders: ['source_gen|combining_builder']
+
+  manifest_compiler:
+    import: 'package:router_compiler/builder.dart'
+    builder_factories: ['manifestCompiler']
+    build_extensions: { '.dart': ['.manifest_compiler.g.part'] }
     auto_apply: dependents
     build_to: cache
-    applies_builders: ['source_gen|combining_builder', '|router_cleanup']
-post_process_builders:
-  router_cleanup:
-    import: 'package:router_compiler/builder.dart'
-    builder_factory: 'routerCleanup'
-    input_extensions: ['.router_compiler.g.part']
+    applies_builders: ['source_gen|combining_builder']

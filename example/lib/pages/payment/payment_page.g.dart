@@ -3,7 +3,7 @@
 part of 'payment_page.dart';
 
 // **************************************************************************
-// RouterCompilerGenerator
+// PageCompilerGenerator
 // **************************************************************************
 
 class PaymentPageProvider {

@@ -8,8 +8,12 @@ import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:router_annotation/router_annotation.dart' as rca;
 import 'package:router_api/router_api.dart' as ra;
 
+part 'app_router.g.dart';
+
+@rca.Manifest()
 class AppRouter {
   AppRouter._();
 

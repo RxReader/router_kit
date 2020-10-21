@@ -470,7 +470,7 @@ packages:
       path: "../router_compiler"
       relative: true
     source: path
-    version: "0.1.4"
+    version: "0.1.5"
   screen:
     dependency: transitive
     description:

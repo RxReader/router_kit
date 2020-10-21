@@ -3,7 +3,7 @@
 part of 'not_found_page.dart';
 
 // **************************************************************************
-// RouterCompilerGenerator
+// PageCompilerGenerator
 // **************************************************************************
 
 class NotFoundPageProvider {
