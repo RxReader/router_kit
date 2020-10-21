@@ -22,8 +22,6 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
       throw RouterCompilerException('Page annotation can only be defined on a class.');
     }
 
-    _log.info('--- ${_log.name} ---');
-
     try {
       PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
       infoMap[info.routeName] = info;
@@ -37,8 +35,6 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
       _log.severe(e);
       _log.severe(s);
       return '// $e \n\n';
-    } finally {
-      _log.info('--- ${_log.name} ---');
     }
   }
 }
@@ -62,7 +58,14 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
       throw RouterCompilerException('Manifest annotation can only be defined once.');
     }
 
-    _log.info('--- ${_log.name} ---');
+    _log.info('\n'
+        '******************** ${_log.name} ********************\n'
+        'Manifest Compiler 暂不支持增量更新\n'
+        '如果需要添加/删除/更新路由信息，请先执行清除命令：\n'
+        'flutter pub run build_runner clean\n'
+        '然后执行下列命令重新生成相应文件：\n'
+        'flutter pub run build_runner build --delete-conflicting-outputs\n'
+        '******************** ${_log.name} ********************');
 
     try {
       ManifestWriter writer = ManifestWriter(element as ClassElement, infoMap);
@@ -73,8 +76,6 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
       _log.severe(e);
       _log.severe(s);
       return '// $e \n\n';
-    } finally {
-      _log.info('--- ${_log.name} ---');
     }
   }
 }
