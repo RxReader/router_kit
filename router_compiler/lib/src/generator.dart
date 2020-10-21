@@ -58,6 +58,8 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
       throw RouterCompilerException('Manifest annotation can only be defined once.');
     }
 
+    _count++;
+
     _log.info('\n'
         '******************** ${_log.name} ********************\n'
         'Manifest Compiler 暂不支持增量更新\n'
@@ -89,9 +91,7 @@ Builder pageCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       'page_compiler',
     );
 
-Builder manifestCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
-      <Generator>[
-        ManifestCompilerGenerator(infoMap),
-      ],
-      'manifest_compiler',
+Builder manifestCompilerBuilder({Map<String, dynamic> config}) => LibraryBuilder(
+      ManifestCompilerGenerator(infoMap),
+      generatedExtension: '.manifest.g.dart',
     );

@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'app_router.dart';
-
 // **************************************************************************
 // ManifestCompilerGenerator
 // **************************************************************************
@@ -14,8 +12,8 @@ import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
 
-class AppRouterProvider {
-  const AppRouterProvider._();
+class AppManifest {
+  const AppManifest._();
 
   static final Map<String, String> names = <String, String>{
     HomePageProvider.routeName: HomePageProvider.name,

@@ -25,7 +25,7 @@ class ManifestWriter {
     // blank
     _buffer.writeln('');
 
-    String providerDisplayName = '${element.displayName}Provider';
+    String providerDisplayName = '${element.displayName}Manifest';
     // begin
     _buffer.writeln('class $providerDisplayName {');
 

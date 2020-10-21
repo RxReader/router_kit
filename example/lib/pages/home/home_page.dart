@@ -1,7 +1,7 @@
 import 'package:example/pages/about/about_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
-import 'package:example/router/app_router.dart';
+import 'package:example/app/app_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
