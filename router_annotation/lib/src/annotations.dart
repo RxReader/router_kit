@@ -14,7 +14,8 @@ class Page {
     this.autowired = true,
     this.nullableFields = true,
     this.nameFormatter,
-  }) : assert(routeName != null);
+  })  : assert(name != null),
+        assert(routeName != null);
 
   final String name;
   final String routeName;
