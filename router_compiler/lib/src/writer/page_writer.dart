@@ -80,8 +80,7 @@ class PageWriter {
       }
       _buffer.writeln(
           'static Map<String, dynamic> routeArgument(\n${ctor2.toString()}){');
-      _buffer
-          .writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
+      _buffer.writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
       for (ParameterElement ctorParameter in info.ctorParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
@@ -102,9 +101,9 @@ class PageWriter {
       // blank
       _buffer.writeln('');
 
-      _buffer.writeln('static Future<dynamic> pushNamed(\nBuildContext context,\n${ctor2.toString()}){');
-      _buffer
-          .writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
+      _buffer.writeln(
+          'static Future<dynamic> pushNamed(\nBuildContext context,\n${ctor2.toString()}){');
+      _buffer.writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
       for (ParameterElement ctorParameter in info.ctorParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
@@ -119,10 +118,12 @@ class PageWriter {
               'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
         }
       }
-      _buffer.writeln('return Navigator.of(context).pushNamed(routeName, arguments: arguments);');
+      _buffer.writeln(
+          'return Navigator.of(context).pushNamed(routeName, arguments: arguments);');
       _buffer.writeln('}');
     } else {
-      _buffer.writeln('static Future<dynamic> pushNamed(BuildContext context){');
+      _buffer
+          .writeln('static Future<dynamic> pushNamed(BuildContext context){');
       _buffer.writeln('return Navigator.of(context).pushNamed(routeName);');
       _buffer.writeln('}');
     }

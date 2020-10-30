@@ -35,8 +35,8 @@ class ManifestWriter {
     // blank
     _buffer.writeln('');
 
-    _buffer.writeln(
-        'static final Map<String, String> names = <String, String>{');
+    _buffer
+        .writeln('static final Map<String, String> names = <String, String>{');
     for (PageInfo info in infos) {
       _buffer.writeln(
           '${info.providerDisplayName}.routeName: ${info.providerDisplayName}.name,');

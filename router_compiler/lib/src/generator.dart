@@ -17,15 +17,19 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   final Logger _log = Logger('PageCompiler');
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('Page annotation can only be defined on a class.');
+      throw RouterCompilerException(
+          'Page annotation can only be defined on a class.');
     }
 
     try {
-      PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
+      PageInfo info =
+          PageParser.parse(element as ClassElement, annotation, buildStep);
       infoMap[info.routeName] = info;
-      _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
+      _log.info(
+          '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
 
       PageWriter writer = PageWriter(info);
 
@@ -49,13 +53,16 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   int _count = 0;
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('Manifest annotation can only be defined on a class.');
+      throw RouterCompilerException(
+          'Manifest annotation can only be defined on a class.');
     }
 
     if (_count > 0) {
-      throw RouterCompilerException('Manifest annotation can only be defined once.');
+      throw RouterCompilerException(
+          'Manifest annotation can only be defined once.');
     }
 
     _count++;
@@ -91,7 +98,8 @@ Builder pageCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       'page_compiler',
     );
 
-Builder manifestCompilerBuilder({Map<String, dynamic> config}) => LibraryBuilder(
+Builder manifestCompilerBuilder({Map<String, dynamic> config}) =>
+    LibraryBuilder(
       ManifestCompilerGenerator(infoMap),
       generatedExtension: '.manifest.g.dart',
     );
