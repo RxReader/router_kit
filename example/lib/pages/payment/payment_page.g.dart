@@ -15,4 +15,8 @@ class PaymentPageProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return PaymentPage();
   };
+
+  static Future<dynamic> pushNamed(BuildContext context) {
+    return Navigator.of(context).pushNamed(routeName);
+  }
 }

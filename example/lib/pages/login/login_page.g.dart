@@ -15,4 +15,8 @@ class LoginPageProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return LoginPage();
   };
+
+  static Future<dynamic> pushNamed(BuildContext context) {
+    return Navigator.of(context).pushNamed(routeName);
+  }
 }

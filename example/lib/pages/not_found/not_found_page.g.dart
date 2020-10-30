@@ -15,4 +15,8 @@ class NotFoundPageProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return NotFoundPage();
   };
+
+  static Future<dynamic> pushNamed(BuildContext context) {
+    return Navigator.of(context).pushNamed(routeName);
+  }
 }

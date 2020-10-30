@@ -15,4 +15,8 @@ class HomePageProvider {
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return HomePage();
   };
+
+  static Future<dynamic> pushNamed(BuildContext context) {
+    return Navigator.of(context).pushNamed(routeName);
+  }
 }

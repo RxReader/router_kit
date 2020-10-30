@@ -36,4 +36,19 @@ class ParamsPageProvider {
     arguments['callback'] = callback;
     return arguments;
   }
+
+  static Future<dynamic> pushNamed(
+    BuildContext context,
+    String paramA, {
+    @required String paramB,
+    String paramC,
+    String Function(String) callback,
+  }) {
+    Map<String, dynamic> arguments = <String, dynamic>{};
+    arguments['param_a'] = paramA;
+    arguments['param_b'] = paramB;
+    arguments['param_d'] = paramC;
+    arguments['callback'] = callback;
+    return Navigator.of(context).pushNamed(routeName, arguments: arguments);
+  }
 }

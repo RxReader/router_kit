@@ -98,6 +98,33 @@ class PageWriter {
       }
       _buffer.writeln('return arguments;');
       _buffer.writeln('}');
+
+      // blank
+      _buffer.writeln('');
+
+      _buffer.writeln('static Future<dynamic> pushNamed(\nBuildContext context,\n${ctor2.toString()}){');
+      _buffer
+          .writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
+      for (ParameterElement ctorParameter in info.ctorParameters) {
+        FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
+        if (!fieldInfo.ignore) {
+          _buffer.write(
+              'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorParameter.displayName};');
+        }
+      }
+      for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
+        FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
+        if (!fieldInfo.ignore) {
+          _buffer.write(
+              'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] = ${ctorNamedParameter.displayName};');
+        }
+      }
+      _buffer.writeln('return Navigator.of(context).pushNamed(routeName, arguments: arguments);');
+      _buffer.writeln('}');
+    } else {
+      _buffer.writeln('static Future<dynamic> pushNamed(BuildContext context){');
+      _buffer.writeln('return Navigator.of(context).pushNamed(routeName);');
+      _buffer.writeln('}');
     }
 
     // end

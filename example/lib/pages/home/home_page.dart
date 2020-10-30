@@ -1,7 +1,6 @@
 import 'package:example/pages/about/about_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
-import 'package:example/app/app_router.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,26 +31,25 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             title: const Text('Payment'),
             onTap: () {
-              AppRouter.defaultRouter(context)
-                  .pushNamed(PaymentPageProvider.routeName)
-                  .then((dynamic resp) => print('resp: $resp'));
+              // Navigator.of(context).pushNamed(PaymentPageProvider.routeName);
+              PaymentPageProvider.pushNamed(context);
             },
           ),
           ListTile(
             title: const Text('Params'),
             onTap: () {
-              AppRouter.defaultRouter(context).pushNamed(
-                ParamsPageProvider.routeName,
-                arguments:
-                    ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
-              );
+              // Navigator.of(context).pushNamed(
+              //   ParamsPageProvider.routeName,
+              //   arguments: ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
+              // );
+              ParamsPageProvider.pushNamed(context, 'aaa', paramB: 'bbb');
             },
           ),
           ListTile(
             title: const Text('About'),
             onTap: () {
-              AppRouter.defaultRouter(context)
-                  .pushNamed(AboutPageProvider.routeName);
+              // Navigator.of(context).pushNamed(AboutPageProvider.routeName);
+              AboutPageProvider.pushNamed(context);
             },
           ),
         ],
