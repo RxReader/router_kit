@@ -42,11 +42,11 @@ class PageWriter {
             '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.getDisplayString()}' : 'null'},');
       }
     }
-    if (ctor1.toString().isNotEmpty) {
+    if (ctor1.isNotEmpty) {
       _buffer.writeln(
           'Map<String, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;');
     }
-    _buffer.writeln('return ${info.displayName}(\n${ctor1.toString()});');
+    _buffer.writeln('return ${info.displayName}(\n$ctor1);');
     _buffer.writeln('};');
 
     // blank
@@ -79,7 +79,7 @@ class PageWriter {
         ctor2.writeln('}');
       }
       _buffer.writeln(
-          'static Map<String, dynamic> routeArgument(\n${ctor2.toString()}){');
+          'static Map<String, dynamic> routeArgument(\n$ctor2){');
       _buffer.writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
       for (ParameterElement ctorParameter in info.ctorParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
@@ -102,7 +102,7 @@ class PageWriter {
       _buffer.writeln('');
 
       _buffer.writeln(
-          'static Future<dynamic> pushNamed(\nBuildContext context,\n${ctor2.toString()}){');
+          'static Future<T> pushByNamed<T extends Object>(\nBuildContext context,\n$ctor2){');
       _buffer.writeln('Map<String, dynamic> arguments = <String, dynamic>{};');
       for (ParameterElement ctorParameter in info.ctorParameters) {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
@@ -119,11 +119,11 @@ class PageWriter {
         }
       }
       _buffer.writeln(
-          'return Navigator.of(context).pushNamed(routeName, arguments: arguments);');
+          'return Navigator.of(context).pushNamed(routeName, arguments: arguments,);');
       _buffer.writeln('}');
     } else {
       _buffer
-          .writeln('static Future<dynamic> pushNamed(BuildContext context){');
+          .writeln('static Future<T> pushByNamed<T extends Object>(BuildContext context){');
       _buffer.writeln('return Navigator.of(context).pushNamed(routeName);');
       _buffer.writeln('}');
     }

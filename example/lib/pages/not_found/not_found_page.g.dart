@@ -16,7 +16,7 @@ class NotFoundPageProvider {
     return NotFoundPage();
   };
 
-  static Future<dynamic> pushNamed(BuildContext context) {
+  static Future<T> pushByNamed<T extends Object>(BuildContext context) {
     return Navigator.of(context).pushNamed(routeName);
   }
 }
