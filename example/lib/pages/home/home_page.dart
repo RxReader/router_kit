@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
             title: const Text('Payment'),
             onTap: () {
               // Navigator.of(context).pushNamed(PaymentPageProvider.routeName);
-              PaymentPageProvider.pushNamed(context);
+              PaymentPageProvider.pushByNamed(context);
             },
           ),
           ListTile(
@@ -42,14 +42,14 @@ class _HomePageState extends State<HomePage> {
               //   ParamsPageProvider.routeName,
               //   arguments: ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
               // );
-              ParamsPageProvider.pushNamed(context, 'aaa', paramB: 'bbb');
+              ParamsPageProvider.pushByNamed(context, 'aaa', paramB: 'bbb');
             },
           ),
           ListTile(
             title: const Text('About'),
             onTap: () {
               // Navigator.of(context).pushNamed(AboutPageProvider.routeName);
-              AboutPageProvider.pushNamed(context);
+              AboutPageProvider.pushByNamed(context);
             },
           ),
         ],

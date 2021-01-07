@@ -37,7 +37,7 @@ class ParamsPageProvider {
     return arguments;
   }
 
-  static Future<dynamic> pushNamed(
+  static Future<T> pushByNamed<T extends Object>(
     BuildContext context,
     String paramA, {
     @required String paramB,
@@ -49,6 +49,9 @@ class ParamsPageProvider {
     arguments['param_b'] = paramB;
     arguments['param_d'] = paramC;
     arguments['callback'] = callback;
-    return Navigator.of(context).pushNamed(routeName, arguments: arguments);
+    return Navigator.of(context).pushNamed(
+      routeName,
+      arguments: arguments,
+    );
   }
 }
