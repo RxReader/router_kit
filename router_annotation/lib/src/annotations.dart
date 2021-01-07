@@ -1,28 +1,16 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
 
 typedef NameFormatter = String Function(String fieldName);
+typedef RouteInterceptor = FutureOr<dynamic> Function(dynamic /* BuildContext */ context, String routeName);
 
-class Manifest {
-  const Manifest();
-}
+class Global {
+  const Global({
+    this.interceptor,
+  });
 
-class Page {
-  const Page({
-    @required this.name,
-    @required this.routeName,
-    this.ignoreKey = true,
-    this.autowired = true,
-    this.nullableFields = true,
-    this.nameFormatter,
-  })  : assert(name != null),
-        assert(routeName != null);
-
-  final String name;
-  final String routeName;
-  final bool ignoreKey;
-  final bool autowired;
-  final bool nullableFields;
-  final NameFormatter nameFormatter;
+  final RouteInterceptor interceptor;
 }
 
 class Field {
@@ -35,4 +23,29 @@ class Field {
   final String alias;
   final bool nullable;
   final bool ignore;
+}
+
+class Page {
+  const Page({
+    @required this.name,
+    @required this.routeName,
+    this.interceptor,
+    this.ignoreKey = true,
+    this.autowired = true,
+    this.nullableFields = true,
+    this.nameFormatter,
+  })  : assert(name != null),
+        assert(routeName != null);
+
+  final String name;
+  final String routeName;
+  final RouteInterceptor interceptor;
+  final bool ignoreKey;
+  final bool autowired;
+  final bool nullableFields;
+  final NameFormatter nameFormatter;
+}
+
+class Manifest {
+  const Manifest();
 }
