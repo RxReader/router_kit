@@ -7,10 +7,10 @@ typedef RouteInterceptor = FutureOr<dynamic> Function(dynamic /* BuildContext */
 
 class Global {
   const Global({
-    this.interceptor,
+    this.interceptors,
   });
 
-  final RouteInterceptor interceptor;
+  final List<RouteInterceptor> interceptors;
 }
 
 class Field {
@@ -29,7 +29,7 @@ class Page {
   const Page({
     @required this.name,
     @required this.routeName,
-    this.interceptor,
+    this.interceptors,
     this.ignoreKey = true,
     this.autowired = true,
     this.nullableFields = true,
@@ -39,7 +39,7 @@ class Page {
 
   final String name;
   final String routeName;
-  final RouteInterceptor interceptor;
+  final List<RouteInterceptor> interceptors;
   final bool ignoreKey;
   final bool autowired;
   final bool nullableFields;
