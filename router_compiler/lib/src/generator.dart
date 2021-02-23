@@ -92,7 +92,7 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   }
 }
 
-const Map<String, PageInfo> infoMap = <String, PageInfo>{};
+final Map<String, PageInfo> infoMap = <String, PageInfo>{};
 
 Builder pageCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       <Generator>[

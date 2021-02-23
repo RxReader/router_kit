@@ -2,7 +2,6 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
-import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
@@ -12,8 +11,8 @@ class PageParser {
   const PageParser._();
 
   static PageInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
-    if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString()).contains('$Widget')) {
-      throw RouterCompilerException('Page annotation can only be defined on a $Widget class.');
+    if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString(withNullability: false)).contains('Widget')) {
+      throw RouterCompilerException('Page annotation can only be defined on a Widget class.');
     }
 
     String name = annotation.peek('name').stringValue;
@@ -82,7 +81,7 @@ class PageParser {
             (ElementAnnotation annotation) => const TypeChecker.fromRuntime(Field).isAssignableFromType(annotation.computeConstantValue().type),
             orElse: () => null,
           )
-          ?.constantValue;
+          ?.computeConstantValue();
 
       if (annotation != null) {
         alias = annotation.getField('alias')?.toStringValue() ?? alias;
