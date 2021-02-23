@@ -1,5 +1,8 @@
 # Read about `build.yaml` at https://pub.dartlang.org/packages/build_config
 builders:
+#  define_compiler:
+#    import: 'package:router_compiler/builder.dart'
+
   page_compiler:
     import: 'package:router_compiler/builder.dart'
     builder_factories: ['pageCompiler']

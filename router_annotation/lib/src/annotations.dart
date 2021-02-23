@@ -4,8 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 typedef NameFormatter = String Function(String fieldName);
-typedef RouteInterceptor = FutureOr<dynamic> Function(
-    BuildContext context, String routeName);
+typedef RouteInterceptor = FutureOr<void> Function(
+    BuildContext context, String routeName, VoidCallback next);
 
 class Field {
   const Field({

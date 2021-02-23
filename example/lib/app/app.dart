@@ -1,9 +1,19 @@
+import 'dart:async';
+
 import 'package:example/app/app.manifest.g.dart';
 import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart' as rca;
 
-@rca.Manifest()
+FutureOr<void> _global(BuildContext context, String routeName, VoidCallback next) {
+  next?.call();
+}
+
+@rca.Manifest(
+  interceptors: <rca.RouteInterceptor>[
+    _global,
+  ],
+)
 class App extends StatefulWidget {
   const App({Key key}) : super(key: key);
 

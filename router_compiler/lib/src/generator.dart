@@ -3,6 +3,7 @@ import 'package:build/build.dart';
 import 'package:logging/logging.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
+import 'package:router_compiler/src/parser/manifest_parser.dart';
 import 'package:router_compiler/src/parser/page_parser.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:router_compiler/src/writer/manifest_writer.dart';
@@ -77,6 +78,8 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
         '******************** ${_log.name} ********************');
 
     try {
+      ManifestParser.parse(element as ClassElement, annotation, buildStep);
+
       ManifestWriter writer = ManifestWriter(element as ClassElement, infoMap);
 
       writer.generate();
@@ -89,7 +92,7 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   }
 }
 
-final Map<String, PageInfo> infoMap = <String, PageInfo>{};
+const Map<String, PageInfo> infoMap = <String, PageInfo>{};
 
 Builder pageCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       <Generator>[

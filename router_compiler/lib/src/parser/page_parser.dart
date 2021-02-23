@@ -2,21 +2,18 @@ import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:build/build.dart';
+import 'package:flutter/widgets.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:source_gen/source_gen.dart';
 
 class PageParser {
-  PageParser._();
+  const PageParser._();
 
-  static PageInfo parse(
-      ClassElement element, ConstantReader annotation, BuildStep buildStep) {
-    if (!element.allSupertypes
-        .map((InterfaceType supertype) => supertype.getDisplayString())
-        .contains('Widget')) {
-      throw RouterCompilerException(
-          'Page annotation can only be defined on a Widget class.');
+  static PageInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
+    if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString()).contains('$Widget')) {
+      throw RouterCompilerException('Page annotation can only be defined on a $Widget class.');
     }
 
     String name = annotation.peek('name').stringValue;
@@ -35,8 +32,7 @@ class PageParser {
     final List<ParameterElement> ctorNamedParameters = <ParameterElement>[];
     _makeCtor(element, ctorParameters, ctorNamedParameters);
 
-    NameFormatter nameFormatter =
-        _parseFieldFormatter(annotation.peek('nameFormatter')) ?? toSnakeCase;
+    NameFormatter nameFormatter = _parseFieldFormatter(annotation.peek('nameFormatter')) ?? toSnakeCase;
 
     return PageInfo(
       uri: buildStep.inputId.uri,
@@ -83,9 +79,7 @@ class PageParser {
 
       DartObject annotation = field.metadata
           .firstWhere(
-            (ElementAnnotation annotation) =>
-                const TypeChecker.fromRuntime(Field).isAssignableFromType(
-                    annotation.computeConstantValue().type),
+            (ElementAnnotation annotation) => const TypeChecker.fromRuntime(Field).isAssignableFromType(annotation.computeConstantValue().type),
             orElse: () => null,
           )
           ?.constantValue;
@@ -116,8 +110,7 @@ class PageParser {
   ) {
     ConstructorElement ctor = element.unnamedConstructor;
     if (ctor == null) {
-      throw RouterCompilerException(
-          'Model does not have a default constructor!');
+      throw RouterCompilerException('Model does not have a default constructor!');
     }
     for (ParameterElement parameter in ctor.parameters) {
       if (parameter.isNotOptional) {
@@ -135,8 +128,7 @@ class PageParser {
     NameFormatter nameFormatter;
     Uri uri = annotation.revive().source;
     String accessor = annotation.revive().accessor;
-    if (uri.pathSegments.isNotEmpty ||
-        uri.pathSegments.first == 'router_annotation') {
+    if (uri.pathSegments.isNotEmpty || uri.pathSegments.first == 'router_annotation') {
       switch (accessor) {
         case 'toCamelCase':
           nameFormatter = toCamelCase;

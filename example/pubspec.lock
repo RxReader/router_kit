@@ -456,14 +456,14 @@ packages:
       path: "../router_annotation"
       relative: true
     source: path
-    version: "0.1.1"
+    version: "0.2.0"
   router_compiler:
     dependency: "direct dev"
     description:
       path: "../router_compiler"
       relative: true
     source: path
-    version: "0.1.6"
+    version: "0.2.0"
   screen:
     dependency: transitive
     description:
