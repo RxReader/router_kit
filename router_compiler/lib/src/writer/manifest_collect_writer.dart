@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:router_compiler/src/info/info.dart';
 
-class ManifestWriter {
-  ManifestWriter(this.element, this.infoMap);
+class ManifestCollectWriter {
+  ManifestCollectWriter(this.element, this.infoMap);
 
   final ClassElement element;
   final Map<String, PageInfo> infoMap;
