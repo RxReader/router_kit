@@ -2,7 +2,7 @@
 
 [![Pub Package](https://img.shields.io/pub/v/router_compiler.svg)](https://pub.dev/packages/router_compiler)
 
-The builders generate code when they find members annotated with classes defined in [package:json_annotation](https://pub.dev/packages/router_annotation).
+The builders generate code when they find members annotated with classes defined in [package:router_annotation](https://pub.dev/packages/router_annotation).
 
 See the [example](https://github.com/rxreader/flutter_router/example) to understand how to configure your package.
 
