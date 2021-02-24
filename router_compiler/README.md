@@ -1,7 +1,10 @@
-A library for Dart developers.
+# router_compiler
 
-Created from templates made available by Stagehand under a BSD-style
-[license](https://github.com/dart-lang/stagehand/blob/master/LICENSE).
+[![Pub Package](https://img.shields.io/pub/v/router_compiler.svg)](https://pub.dev/packages/router_compiler)
+
+The builders generate code when they find members annotated with classes defined in [package:json_annotation](https://pub.dev/packages/router_annotation).
+
+See the [example](https://github.com/rxreader/flutter_router/example) to understand how to configure your package.
 
 ## Usage
 

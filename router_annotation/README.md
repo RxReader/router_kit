@@ -1,14 +1,10 @@
 # router_annotation
 
-A library for Flutter developers.
+[![Pub Package](https://img.shields.io/pub/v/router_annotation.svg)](https://pub.dev/packages/router_annotation)
 
-## Usage
+Defines the annotations used by [router_compiler](https://pub.dev/packages/router_compiler) to create code for Flutter Route.
 
-A simple usage example:
-
-```dart
-import 'package:router_annotation/router_annotation.dart';
-```
+See the [example](https://github.com/rxreader/flutter_router/example) to understand how to configure your package.
 
 ## Getting Started
 
