@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 typedef NameFormatter = String Function(String fieldName);
-typedef RouteInterceptor = FutureOr<void> Function(dynamic context, String routeName, void Function() next);
+typedef RouteInterceptor = FutureOr<void> Function(dynamic /* BuildContext */ context, String routeName, void Function() next);
 
 class Field {
   const Field({
