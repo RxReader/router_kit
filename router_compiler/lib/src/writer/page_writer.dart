@@ -32,14 +32,14 @@ class PageWriter {
     for (ParameterElement ctorParameter in info.ctorParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
       ctor1.writeln(
-          '${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorParameter.type.getDisplayString()}' : 'null'},');
+          '${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorParameter.type.getDisplayString(withNullability: false)}' : 'null'},');
     }
     for (ParameterElement ctorNamedParameter in info.ctorNamedParameters) {
       FieldInfo fieldInfo = info.fieldInfos[ctorNamedParameter.displayName];
       // ignore: deprecated_member_use
       if (ctorNamedParameter.hasRequired || !fieldInfo.ignore) {
         ctor1.writeln(
-            '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.getDisplayString()}' : 'null'},');
+            '${ctorNamedParameter.displayName}: ${!fieldInfo.ignore ? 'arguments[\'${info.nameFormatter(fieldInfo.alias)}\'] as ${ctorNamedParameter.type.getDisplayString(withNullability: false)}' : 'null'},');
       }
     }
     if (ctor1.isNotEmpty) {
@@ -59,7 +59,7 @@ class PageWriter {
         FieldInfo fieldInfo = info.fieldInfos[ctorParameter.displayName];
         if (!fieldInfo.ignore) {
           ctor2.writeln(
-              '${ctorParameter.type.getDisplayString()} ${ctorParameter.displayName},');
+              '${ctorParameter.type.getDisplayString(withNullability: false)} ${ctorParameter.displayName},');
         }
       }
       bool hasOptionalParameters = false;
