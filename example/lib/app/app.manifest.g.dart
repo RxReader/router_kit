@@ -1,7 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
 // **************************************************************************
-// ManifestCompilerGenerator
+// ManifestCollectCompilerGenerator
 // **************************************************************************
 
 import 'package:flutter/widgets.dart';

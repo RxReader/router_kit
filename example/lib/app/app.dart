@@ -5,17 +5,26 @@ import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart' as rca;
 
-FutureOr<void> _global(BuildContext context, String routeName, VoidCallback next) {
+part 'app.g.dart';
+
+FutureOr<void> _globalA(dynamic context, String routeName, VoidCallback next) {
+  assert(context is BuildContext);
   next?.call();
 }
 
 @rca.Manifest(
   interceptors: <rca.RouteInterceptor>[
-    _global,
+    _globalA,
+    App._globalB,
   ],
 )
 class App extends StatefulWidget {
   const App({Key key}) : super(key: key);
+
+  static FutureOr<void> _globalB(dynamic context, String routeName, VoidCallback next) {
+    assert(context is BuildContext);
+    next?.call();
+  }
 
   @override
   State<StatefulWidget> createState() {

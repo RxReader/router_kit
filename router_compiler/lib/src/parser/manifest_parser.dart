@@ -8,12 +8,12 @@ class ManifestParser {
 
   static void parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     ConstantReader interceptors = annotation.peek('interceptors');
-    print('interceptors: ${interceptors?.listValue?.map((DartObject element) {
-      ExecutableElement executableElement = element.toFunctionValue();
-      return <String>[
-        executableElement.enclosingElement.displayName,
-        executableElement.displayName,
-      ].where((String element) => element?.isNotEmpty ?? false).join('.');
-    })?.join(',')}');
+    // print('interceptors: ${interceptors?.listValue?.map((DartObject element) {
+    //   ExecutableElement executableElement = element.toFunctionValue();
+    //   return <String>[
+    //     executableElement.enclosingElement.displayName,
+    //     executableElement.displayName,
+    //   ].where((String element) => element?.isNotEmpty ?? false).join('.');
+    // })?.join(',')}');
   }
 }
