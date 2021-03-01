@@ -3,18 +3,16 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 typedef NameFormatter = String Function(String fieldName);
-typedef RouteInterceptor = FutureOr<void> Function(dynamic /* BuildContext */ context, String routeName, void Function() next);
+typedef RouteInterceptor = Future<dynamic> Function(
+    dynamic /* BuildContext */ context, String routeName,
+    {Object arguments, Future<dynamic> Function() next});
 
-class Field {
-  const Field({
-    this.alias,
-    this.nullable,
-    this.ignore,
+class Manifest {
+  const Manifest({
+    this.interceptors,
   });
 
-  final String alias;
-  final bool nullable;
-  final bool ignore;
+  final List<RouteInterceptor> interceptors;
 }
 
 class Page {
@@ -22,8 +20,7 @@ class Page {
     @required this.name,
     @required this.routeName,
     this.ignoreKey = true,
-    this.autowired = true,
-    this.nullableFields = true,
+    this.nullable = true,
     this.nameFormatter,
     this.interceptors,
   })  : assert(name != null),
@@ -32,16 +29,19 @@ class Page {
   final String name;
   final String routeName;
   final bool ignoreKey;
-  final bool autowired;
-  final bool nullableFields;
+  final bool nullable;
   final NameFormatter nameFormatter;
   final List<RouteInterceptor> interceptors;
 }
 
-class Manifest {
-  const Manifest({
-    this.interceptors,
+class Field {
+  const Field({
+    this.name,
+    this.nullable,
+    this.ignore,
   });
 
-  final List<RouteInterceptor> interceptors;
+  final String name;
+  final bool nullable;
+  final bool ignore;
 }
