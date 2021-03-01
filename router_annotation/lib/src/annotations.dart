@@ -2,7 +2,13 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-typedef NameFormatter = String Function(String fieldName);
+enum FieldRename {
+  none,
+  kebab,
+  snake,
+  pascal,
+}
+
 typedef RouteInterceptor = Future<dynamic> Function(
     dynamic /* BuildContext */ context, String routeName,
     {Object arguments, Future<dynamic> Function() next});
@@ -21,7 +27,7 @@ class Page {
     @required this.routeName,
     this.ignoreKey = true,
     this.nullable = true,
-    this.nameFormatter,
+    this.fieldRename,
     this.interceptors,
   })  : assert(name != null),
         assert(routeName != null);
@@ -30,7 +36,7 @@ class Page {
   final String routeName;
   final bool ignoreKey;
   final bool nullable;
-  final NameFormatter nameFormatter;
+  final FieldRename fieldRename;
   final List<RouteInterceptor> interceptors;
 }
 
