@@ -3,8 +3,22 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
 import 'package:router_annotation/router_annotation.dart';
 
+class ManifestInfo {
+  const ManifestInfo({
+    @required this.uri,
+    @required this.displayName,
+    @required this.interceptors,
+  });
+
+  final Uri uri;
+  final String displayName;
+  final List<ExecutableElement> interceptors;
+
+  String get providerDisplayName => '${displayName}Provider';
+}
+
 class PageInfo {
-  PageInfo({
+  const PageInfo({
     @required this.uri,
     @required this.displayName,
     @required this.name,
@@ -13,6 +27,7 @@ class PageInfo {
     @required this.ctorParameters,
     @required this.ctorNamedParameters,
     @required this.nameFormatter,
+    @required this.interceptors,
   });
 
   final Uri uri;
@@ -23,12 +38,13 @@ class PageInfo {
   final List<ParameterElement> ctorParameters;
   final List<ParameterElement> ctorNamedParameters;
   final NameFormatter nameFormatter;
+  final List<ExecutableElement> interceptors;
 
   String get providerDisplayName => '${displayName}Provider';
 }
 
 class FieldInfo {
-  FieldInfo({
+  const FieldInfo({
     @required this.name,
     @required this.type,
     @required this.alias,

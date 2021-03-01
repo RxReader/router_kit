@@ -2,44 +2,53 @@ import 'package:analyzer/dart/element/element.dart';
 import 'package:router_compiler/src/info/info.dart';
 
 class ManifestCollectWriter {
-  ManifestCollectWriter(this.element, this.infoMap);
+  ManifestCollectWriter(this.element, this.manifestInfo, this.pageInfoMap);
 
   final ClassElement element;
-  final Map<String, PageInfo> infoMap;
+  final ManifestInfo manifestInfo;
+  final Map<String, PageInfo> pageInfoMap;
 
   final StringBuffer _buffer = StringBuffer();
 
   void generate() {
-    List<PageInfo> infos = <PageInfo>[];
-    infos.addAll(infoMap.values);
-    infos.sort((PageInfo a, PageInfo b) {
+    List<PageInfo> pageInfos = <PageInfo>[];
+    pageInfos.addAll(pageInfoMap.values);
+    pageInfos.sort((PageInfo a, PageInfo b) {
       return a.routeName.compareTo(b.routeName);
     });
-
-    // import
-    _buffer.writeln('import \'package:flutter/widgets.dart\';');
-    for (PageInfo info in infos) {
-      _buffer.writeln('import \'${info.uri}\';');
-    }
-
+    _generateImport(pageInfos);
     // blank
     _buffer.writeln('');
+    _generateManifest(pageInfos);
+    // blank
+    _buffer.writeln('');
+    _generateRouter();
+  }
 
-    String providerDisplayName = '${element.displayName}Manifest';
+  void _generateImport(List<PageInfo> pageInfos) {
+    // import
+    _buffer.writeln('import \'package:flutter/widgets.dart\';');
+    for (PageInfo info in pageInfos) {
+      _buffer.writeln('import \'${info.uri}\';');
+    }
+  }
+
+  void _generateManifest(List<PageInfo> pageInfos) {
+    String displayName = '${element.displayName}Manifest';
     // begin
-    _buffer.writeln('class $providerDisplayName {');
+    _buffer.writeln('class $displayName {');
 
     // constructor
-    _buffer.writeln('const $providerDisplayName._();');
+    _buffer.writeln('const $displayName._();');
 
     // blank
     _buffer.writeln('');
 
     _buffer
         .writeln('static final Map<String, String> names = <String, String>{');
-    for (PageInfo info in infos) {
+    for (PageInfo pageInfo in pageInfos) {
       _buffer.writeln(
-          '${info.providerDisplayName}.routeName: ${info.providerDisplayName}.name,');
+          '${pageInfo.providerDisplayName}.routeName: ${pageInfo.providerDisplayName}.name,');
     }
     _buffer.writeln('};');
 
@@ -48,11 +57,28 @@ class ManifestCollectWriter {
 
     _buffer.writeln(
         'static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{');
-    for (PageInfo info in infos) {
+    for (PageInfo pageInfo in pageInfos) {
       _buffer.writeln(
-          '${info.providerDisplayName}.routeName: ${info.providerDisplayName}.routeBuilder,');
+          '${pageInfo.providerDisplayName}.routeName: ${pageInfo.providerDisplayName}.routeBuilder,');
     }
     _buffer.writeln('};');
+
+    // end
+    _buffer.writeln('}');
+  }
+
+  void _generateRouter() {
+    String displayName = '${element.displayName}Router';
+    // begin
+    _buffer.writeln('class $displayName {');
+
+    // constructor
+    _buffer.writeln('const $displayName._();');
+
+    // blank
+    _buffer.writeln('');
+
+    //
 
     // end
     _buffer.writeln('}');

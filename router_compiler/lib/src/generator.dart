@@ -7,6 +7,7 @@ import 'package:router_compiler/src/parser/manifest_parser.dart';
 import 'package:router_compiler/src/parser/page_parser.dart';
 import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:router_compiler/src/writer/manifest_collect_writer.dart';
+import 'package:router_compiler/src/writer/manifest_writer.dart';
 import 'package:router_compiler/src/writer/page_writer.dart';
 import 'package:source_gen/source_gen.dart';
 
@@ -28,14 +29,12 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
     _count++;
 
     try {
-    } catch (e) {
-      //
-    }
+      ManifestInfo info = ManifestParser.parse(element as ClassElement, annotation, buildStep);
 
-    try {
-      ManifestParser.parse(element as ClassElement, annotation, buildStep);
+      ManifestWriter writer = ManifestWriter(info);
 
-      return '// 占位';
+      writer.generate();
+      return writer.toString();
     } on Exception catch (e, s) {
       _log.severe(e);
       _log.severe(s);
@@ -45,9 +44,9 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
 }
 
 class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
-  PageCompilerGenerator(this.infoMap);
+  PageCompilerGenerator(this.pageInfoMap);
 
-  final Map<String, PageInfo> infoMap;
+  final Map<String, PageInfo> pageInfoMap;
 
   final Logger _log = Logger('PageCompiler');
 
@@ -59,7 +58,10 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
 
     try {
       PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
-      infoMap[info.routeName] = info;
+      if (pageInfoMap.containsKey(info.routeName)) {
+        throw RouterCompilerException('$Page routeName(${info.routeName}) is exists');
+      }
+      pageInfoMap[info.routeName] = info;
       _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
 
       PageWriter writer = PageWriter(info);
@@ -75,9 +77,9 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
 }
 
 class ManifestCollectCompilerGenerator extends GeneratorForAnnotation<Manifest> {
-  ManifestCollectCompilerGenerator(this.infoMap);
+  ManifestCollectCompilerGenerator(this.pageInfoMap);
 
-  final Map<String, PageInfo> infoMap;
+  final Map<String, PageInfo> pageInfoMap;
 
   final Logger _log = Logger('ManifestCollectCompiler');
 
@@ -105,7 +107,8 @@ class ManifestCollectCompilerGenerator extends GeneratorForAnnotation<Manifest> 
         '******************** ${_log.name} ********************');
 
     try {
-      ManifestCollectWriter writer = ManifestCollectWriter(element as ClassElement, infoMap);
+      ManifestInfo manifestInfo = ManifestParser.parse(element as ClassElement, annotation, buildStep);
+      ManifestCollectWriter writer = ManifestCollectWriter(element as ClassElement, manifestInfo, pageInfoMap);
 
       writer.generate();
       return writer.toString();
@@ -117,7 +120,7 @@ class ManifestCollectCompilerGenerator extends GeneratorForAnnotation<Manifest> 
   }
 }
 
-final Map<String, PageInfo> infoMap = <String, PageInfo>{};
+final Map<String, PageInfo> pageInfoMap = <String, PageInfo>{};
 
 Builder manifestCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       <Generator>[
@@ -128,12 +131,12 @@ Builder manifestCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuil
 
 Builder pageCompilerBuilder({Map<String, dynamic> config}) => SharedPartBuilder(
       <Generator>[
-        PageCompilerGenerator(infoMap),
+        PageCompilerGenerator(pageInfoMap),
       ],
       'page_compiler',
     );
 
 Builder manifestCollectCompilerBuilder({Map<String, dynamic> config}) => LibraryBuilder(
-      ManifestCollectCompilerGenerator(infoMap),
+      ManifestCollectCompilerGenerator(pageInfoMap),
       generatedExtension: '.manifest.g.dart',
     );

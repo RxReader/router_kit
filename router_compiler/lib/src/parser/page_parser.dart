@@ -33,6 +33,8 @@ class PageParser {
 
     NameFormatter nameFormatter = _parseFieldFormatter(annotation.peek('nameFormatter')) ?? toSnakeCase;
 
+    ConstantReader interceptors = annotation.peek('interceptors');
+
     return PageInfo(
       uri: buildStep.inputId.uri,
       displayName: element.displayName,
@@ -42,6 +44,9 @@ class PageParser {
       ctorParameters: ctorParameters,
       ctorNamedParameters: ctorNamedParameters,
       nameFormatter: nameFormatter,
+      interceptors: interceptors?.listValue?.map((DartObject element) {
+        return element.toFunctionValue();
+      })?.toList(),
     );
   }
 

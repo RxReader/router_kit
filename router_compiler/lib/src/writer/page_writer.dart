@@ -20,7 +20,23 @@ class PageWriter {
 
     _buffer.writeln('static const String name = \'${info.name}\';');
 
+    // blank
+    _buffer.writeln('');
+
     _buffer.writeln('static const String routeName = \'${info.routeName}\';');
+
+    // blank
+    _buffer.writeln('');
+
+    if (info.interceptors?.isNotEmpty ?? false) {
+      String routeInterceptorType = info.interceptors.first.type.getDisplayString(withNullability: false);
+      _buffer.writeln('static const List<$routeInterceptorType> interceptors = <$routeInterceptorType>[${info.interceptors.map((ExecutableElement element) {
+        return <String>[
+          element.enclosingElement.displayName,
+          element.displayName,
+        ].where((String element) => element?.isNotEmpty ?? false).join('.');
+      }).join(',')}];');
+    }
 
     // blank
     _buffer.writeln('');
