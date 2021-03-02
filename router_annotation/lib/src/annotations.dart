@@ -9,9 +9,9 @@ enum FieldRename {
   pascal,
 }
 
-typedef RouteInterceptor<T extends Object> = Future<T> Function(
+typedef RouteInterceptor = Future<dynamic> Function(
     dynamic /* BuildContext */ context, String routeName,
-    {Object arguments, Future<T> Function() next});
+    {Object arguments, Future<dynamic> Function() next});
 
 class Manifest {
   const Manifest({

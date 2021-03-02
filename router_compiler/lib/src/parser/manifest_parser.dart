@@ -10,6 +10,7 @@ class ManifestParser {
   static ManifestInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     ConstantReader interceptors = annotation.peek('interceptors');
     return ManifestInfo(
+      uri: buildStep.inputId.uri,
       displayName: element.displayName,
       interceptors: interceptors?.listValue?.map((DartObject element) {
         return element.toFunctionValue();

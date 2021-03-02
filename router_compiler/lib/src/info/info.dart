@@ -4,10 +4,12 @@ import 'package:router_annotation/router_annotation.dart';
 
 class ManifestInfo {
   const ManifestInfo({
+    @required this.uri,
     @required this.displayName,
     @required this.interceptors,
   });
 
+  final Uri uri;
   final String displayName;
   final List<ExecutableElement> interceptors;
 
@@ -15,7 +17,7 @@ class ManifestInfo {
 
   String get providerDisplayName => '${displayName}Provider';
 
-  String get routerDisplayName => '${displayName}Router';
+  String get navigatorDisplayName => '${displayName}Navigator';
 }
 
 class PageInfo {
@@ -39,5 +41,5 @@ class PageInfo {
 
   String get providerDisplayName => '${displayName}Provider';
 
-  String get routerDisplayName => '${displayName}Router';
+  String get navigatorDisplayName => '${displayName}Navigator';
 }

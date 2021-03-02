@@ -5,6 +5,7 @@
 // **************************************************************************
 
 import 'package:flutter/widgets.dart';
+import 'package:example/app/app.dart';
 import 'package:example/pages/home/home_page.dart';
 import 'package:example/pages/about/about_page.dart';
 import 'package:example/pages/login/login_page.dart';
@@ -34,11 +35,10 @@ class AppManifest {
   };
 }
 
-class AppRouter {
-  const AppRouter._();
+class AppNavigator {
+  const AppNavigator._();
 
-  static Future<T> pushNamed<T extends Object>(
-      BuildContext context, String routeName,
+  static Future<dynamic> pushNamed(BuildContext context, String routeName,
       {Object arguments,
       List<
               Future<dynamic> Function(dynamic, String,
@@ -66,4 +66,28 @@ class AppRouter {
     }
     return dispatchers.last.call();
   }
+}
+
+class HomePageNavigator {
+  const HomePageNavigator._();
+}
+
+class AboutPageNavigator {
+  const AboutPageNavigator._();
+}
+
+class LoginPageNavigator {
+  const LoginPageNavigator._();
+}
+
+class NotFoundPageNavigator {
+  const NotFoundPageNavigator._();
+}
+
+class ParamsPageNavigator {
+  const ParamsPageNavigator._();
+}
+
+class PaymentPageNavigator {
+  const PaymentPageNavigator._();
 }

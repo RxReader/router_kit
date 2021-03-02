@@ -10,6 +10,7 @@ part 'app.g.dart';
 
 Future<dynamic> _globalA(dynamic /* BuildContext */ context, String routeName, {Object arguments, Future<dynamic> Function() next}) {
   assert(context is BuildContext);
+  print('routeName: $routeName');
   return next?.call();
 }
 
@@ -34,40 +35,6 @@ class App extends StatefulWidget {
       return next?.call();
     }
     return null;
-  }
-
-  // static Future<T> pushByNamed<T extends Object>(BuildContext context, String routeName,
-  //     {Object arguments, List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> interceptors}) {
-  //   List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> allInterceptors =
-  //       <Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})>[
-  //     if (interceptors?.isNotEmpty ?? false) ...interceptors,
-  //     if (AppProvider.interceptors?.isNotEmpty ?? false) ...AppProvider.interceptors,
-  //   ];
-  //
-  //   List<Future<dynamic> Function()> dispatchers = <Future<dynamic> Function()>[
-  //     () => Navigator.of(context).pushNamed(routeName, arguments: arguments),
-  //   ];
-  //   for (Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next}) interceptor in allInterceptors.reversed) {
-  //     Future<dynamic> Function() next = dispatchers.last;
-  //     dispatchers.add(() => interceptor.call(context, routeName, arguments: arguments, next: next));
-  //   }
-  // }
-
-  static Future<T> pushNamed<T extends Object>(BuildContext context, String routeName,
-      {Object arguments, List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> interceptors}) {
-    List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> allInterceptors =
-        <Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})>[
-      if (interceptors?.isNotEmpty ?? false) ...interceptors,
-      if (AppProvider.interceptors?.isNotEmpty ?? false) ...AppProvider.interceptors,
-    ];
-    List<Future<dynamic> Function()> dispatchers = <Future<dynamic> Function()>[
-      () => Navigator.of(context).pushNamed(routeName, arguments: arguments),
-    ];
-    for (Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next}) interceptor in allInterceptors.reversed) {
-      Future<dynamic> Function() next = dispatchers.last;
-      dispatchers.add(() => interceptor.call(context, routeName, arguments: arguments, next: next));
-    }
-    return dispatchers.last.call();
   }
 
   @override

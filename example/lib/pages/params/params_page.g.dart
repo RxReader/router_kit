@@ -14,6 +14,6 @@ class ParamsPageProvider {
   static const String routeName = '/params';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return ParamsPage();
+    return ParamsPage(null, paramB: null);
   };
 }

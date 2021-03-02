@@ -21,17 +21,18 @@ class ManifestCollectWriter {
     _generateManifest(pageInfos);
     // blank
     _buffer.writeln();
-    _generateAppRouter(pageInfos);
+    _generateAppNavigator(pageInfos);
     // blank
     _buffer.writeln();
-    _generatePageRouters(pageInfos);
+    _generatePageNavigators(pageInfos);
   }
 
   void _generateImport(List<PageInfo> pageInfos) {
     // import
     _buffer.writeln('import \'package:flutter/widgets.dart\';');
-    for (PageInfo info in pageInfos) {
-      _buffer.writeln('import \'${info.uri}\';');
+    _buffer.writeln('import \'${manifestInfo.uri}\';');
+    for (PageInfo pageInfo in pageInfos) {
+      _buffer.writeln('import \'${pageInfo.uri}\';');
     }
   }
 
@@ -64,12 +65,12 @@ class ManifestCollectWriter {
     _buffer.writeln('}');
   }
 
-  void _generateAppRouter(List<PageInfo> pageInfos) {
+  void _generateAppNavigator(List<PageInfo> pageInfos) {
     // begin
-    _buffer.writeln('class ${manifestInfo.routerDisplayName} {');
+    _buffer.writeln('class ${manifestInfo.navigatorDisplayName} {');
 
     // constructor
-    _buffer.writeln('const ${manifestInfo.routerDisplayName}._();');
+    _buffer.writeln('const ${manifestInfo.navigatorDisplayName}._();');
 
     // blank
     _buffer.writeln();
@@ -93,7 +94,7 @@ class ManifestCollectWriter {
       'Object arguments',
       if (interceptors?.isNotEmpty ?? false) 'List<${interceptors.first.type.getDisplayString(withNullability: false)}> interceptors',
     ];
-    _buffer.writeln('static Future<T> pushNamed<T extends Object>(${params.join(', ')}, {${optionParams.join(', ')}}) {');
+    _buffer.writeln('static Future<dynamic> pushNamed(${params.join(', ')}, {${optionParams.join(', ')}}) {');
     if (interceptors?.isNotEmpty ?? false) {
       _buffer
         ..writeln('List<${interceptors.first.type.getDisplayString(withNullability: false)}> allInterceptors = <${interceptors.first.type.getDisplayString(withNullability: false)}>[')
@@ -125,8 +126,20 @@ class ManifestCollectWriter {
     _buffer.writeln('}');
   }
 
-  void _generatePageRouters(List<PageInfo> pageInfos) {
-    //
+  void _generatePageNavigators(List<PageInfo> pageInfos) {
+    for (PageInfo pageInfo in pageInfos) {
+      // begin
+      _buffer.writeln('class ${pageInfo.navigatorDisplayName} {');
+
+      // constructor
+      _buffer.writeln('const ${pageInfo.navigatorDisplayName}._();');
+
+      // blank
+      _buffer.writeln();
+
+      // end
+      _buffer.writeln('}');
+    }
   }
 
   @override
