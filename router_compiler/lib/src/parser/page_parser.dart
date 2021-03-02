@@ -16,7 +16,13 @@ class PageParser {
     }
 
     String name = annotation.peek('name').stringValue;
+    if (name?.isEmpty ?? true) {
+      throw InvalidGenerationSourceError('`@$Page` name can not be null or empty.', element: element);
+    }
     String routeName = annotation.peek('routeName').stringValue;
+    if (routeName?.isEmpty ?? true) {
+      throw InvalidGenerationSourceError('`@$Page` routeName can not be null or empty.', element: element);
+    }
     bool nullable = annotation.peek('nullable')?.boolValue ?? true;
     FieldRename _fromDartObject(ConstantReader reader) {
       return reader.isNull
@@ -28,7 +34,7 @@ class PageParser {
             );
     }
 
-    FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename'));
+    FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
     ConstantReader interceptors = annotation.peek('interceptors');
 
     return PageInfo(
