@@ -17,3 +17,7 @@ class NotFoundPageProvider {
     return NotFoundPage();
   };
 }
+
+class NotFoundPageNavigator {
+  const NotFoundPageNavigator._();
+}

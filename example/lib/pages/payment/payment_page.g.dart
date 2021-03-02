@@ -28,6 +28,10 @@ class PaymentPageProvider {
       arguments['paramB'] as String,
     );
   };
+}
+
+class PaymentPageNavigator {
+  const PaymentPageNavigator._();
 
   static Map<String, dynamic> routeArgument(String paramA,
       [Key key, String paramB]) {

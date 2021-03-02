@@ -17,3 +17,7 @@ class HomePageProvider {
     return HomePage();
   };
 }
+
+class HomePageNavigator {
+  const HomePageNavigator._();
+}

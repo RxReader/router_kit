@@ -24,6 +24,10 @@ class ParamsPageProvider {
       callback: arguments['callback'] as String Function(String),
     );
   };
+}
+
+class ParamsPageNavigator {
+  const ParamsPageNavigator._();
 
   static Map<String, dynamic> routeArgument(String paramA,
       {Key key,

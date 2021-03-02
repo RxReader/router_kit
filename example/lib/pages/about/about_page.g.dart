@@ -17,3 +17,7 @@ class AboutPageProvider {
     return AboutPage();
   };
 }
+
+class AboutPageNavigator {
+  const AboutPageNavigator._();
+}

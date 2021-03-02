@@ -17,3 +17,7 @@ class LoginPageProvider {
     return LoginPage();
   };
 }
+
+class LoginPageNavigator {
+  const LoginPageNavigator._();
+}
