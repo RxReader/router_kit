@@ -12,6 +12,12 @@ part 'payment_page.g.dart';
   ],
 )
 class PaymentPage extends StatefulWidget {
+  const PaymentPage(this.paramA, [Key key, this.paramB]) : super(key: key);
+
+  final String paramA;
+
+  final String paramB;
+
   @override
   State<StatefulWidget> createState() {
     return _PaymentPageState();

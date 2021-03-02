@@ -20,6 +20,21 @@ class PaymentPageProvider {
           {Object arguments, Future<dynamic> Function() next})>[App.globalAuth];
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return PaymentPage();
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    return PaymentPage(
+      arguments['paramA'] as String,
+      arguments['key'] as Key,
+      arguments['paramB'] as String,
+    );
   };
+
+  static Map<String, dynamic> routeArgument(String paramA,
+      [Key key, String paramB]) {
+    return <String, dynamic>{
+      'paramA': paramA,
+      'key': key,
+      'paramB': paramB,
+    };
+  }
 }

@@ -23,7 +23,9 @@ class PageParser {
     if (routeName?.isEmpty ?? true) {
       throw InvalidGenerationSourceError('`@$Page` routeName can not be null or empty.', element: element);
     }
-    bool nullable = annotation.peek('nullable')?.boolValue ?? true;
+    Map<String, String> fieldMap = annotation.peek('fieldMap')?.mapValue?.map<String, String>((DartObject key, DartObject value) {
+      return MapEntry<String, String>(key.toStringValue(), value.toStringValue());
+    });
     FieldRename _fromDartObject(ConstantReader reader) {
       return reader.isNull
           ? null
@@ -37,73 +39,22 @@ class PageParser {
     FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
     ConstantReader interceptors = annotation.peek('interceptors');
 
+    ConstructorElement constructor = element.unnamedConstructor;
+    if (constructor == null) {
+      throw InvalidGenerationSourceError('`@$Page` does not have a default constructor!', element: element);
+    }
+
     return PageInfo(
       uri: buildStep.inputId.uri,
       displayName: element.displayName,
       name: name,
       routeName: routeName,
-      nullable: nullable,
+      fieldMap: fieldMap,
       fieldRename: fieldRename,
       interceptors: interceptors?.listValue?.map((DartObject element) {
         return element.toFunctionValue();
       })?.toList(),
+      constructor: constructor,
     );
   }
-
-// static void _parseModelType(
-//   ClassElement element,
-//   bool ignoreKey,
-//   bool autowired,
-//   bool nullableFields,
-//   Map<String, FieldInfo> fieldInfos,
-// ) {
-//   bool isNotStaticOrPrivate(FieldElement e) => !e.isStatic && !e.isPrivate;
-//   List<FieldElement> fields = <FieldElement>[];
-//   fields.addAll(element.fields.where(isNotStaticOrPrivate));
-//   for (InterfaceType supertype in element.allSupertypes) {
-//     fields.addAll(supertype.element.fields.where(isNotStaticOrPrivate));
-//   }
-//   for (FieldElement field in fields) {
-//     String name = field.displayName;
-//     if (name == 'hashCode') {
-//       continue;
-//     }
-//     if (name == 'runtimeType') {
-//       continue;
-//     }
-//     if (fieldInfos.containsKey(name)) {
-//       continue;
-//     }
-//
-//     DartType type = field.type;
-//     String alias = name;
-//     bool nullable = nullableFields;
-//     bool ignore = ignoreKey && name == 'key';
-//     bool isFinal = field.isFinal;
-//
-//     DartObject annotation = field.metadata
-//         .firstWhere(
-//           (ElementAnnotation annotation) => const TypeChecker.fromRuntime(Field).isAssignableFromType(annotation.computeConstantValue().type),
-//           orElse: () => null,
-//         )
-//         ?.computeConstantValue();
-//
-//     if (annotation != null) {
-//       alias = annotation.getField('alias')?.toStringValue() ?? alias;
-//       nullable = annotation.getField('nullable')?.toBoolValue() ?? nullable;
-//       ignore = annotation.getField('ignore')?.toBoolValue() ?? ignore;
-//     }
-//
-//     if (autowired || annotation != null) {
-//       fieldInfos[name] = FieldInfo(
-//         name: name,
-//         type: type,
-//         alias: alias,
-//         nullable: nullable,
-//         ignore: ignore,
-//         isFinal: isFinal,
-//       );
-//     }
-//   }
-// }
 }

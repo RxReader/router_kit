@@ -26,20 +26,30 @@ class PageInfo {
     @required this.displayName,
     @required this.name,
     @required this.routeName,
-    @required this.nullable,
+    @required this.fieldMap,
     @required this.fieldRename,
     @required this.interceptors,
+    @required this.constructor,
   });
 
   final Uri uri;
   final String displayName;
   final String name;
   final String routeName;
-  final bool nullable;
+  final Map<String, String> fieldMap;
   final FieldRename fieldRename;
   final List<ExecutableElement> interceptors;
+  final ConstructorElement constructor;
 
   String get providerDisplayName => '${displayName}Provider';
 
   String get navigatorDisplayName => '${displayName}Navigator';
+
+  String convertField(String name) {
+    if (fieldMap?.containsKey(name) ?? false) {
+      return fieldMap[name];
+    }
+    // FIXME
+    return name;
+  }
 }

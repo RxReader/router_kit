@@ -41,14 +41,14 @@ class AppNavigator {
   static Future<dynamic> pushNamed(BuildContext context, String routeName,
       {Object arguments,
       List<
-              Future<dynamic> Function(dynamic, String,
+              Future<dynamic> Function(dynamic context, String routeName,
                   {Object arguments, Future<dynamic> Function() next})>
           interceptors}) {
     List<
-        Future<dynamic> Function(dynamic, String,
+        Future<dynamic> Function(dynamic context, String routeName,
             {Object arguments,
             Future<dynamic> Function() next})> allInterceptors = <
-        Future<dynamic> Function(dynamic, String,
+        Future<dynamic> Function(dynamic context, String routeName,
             {Object arguments, Future<dynamic> Function() next})>[
       if (interceptors?.isNotEmpty ?? false) ...interceptors,
       if (AppProvider.interceptors?.isNotEmpty ?? false)
@@ -66,28 +66,4 @@ class AppNavigator {
     }
     return dispatchers.last.call();
   }
-}
-
-class HomePageNavigator {
-  const HomePageNavigator._();
-}
-
-class AboutPageNavigator {
-  const AboutPageNavigator._();
-}
-
-class LoginPageNavigator {
-  const LoginPageNavigator._();
-}
-
-class NotFoundPageNavigator {
-  const NotFoundPageNavigator._();
-}
-
-class ParamsPageNavigator {
-  const ParamsPageNavigator._();
-}
-
-class PaymentPageNavigator {
-  const PaymentPageNavigator._();
 }

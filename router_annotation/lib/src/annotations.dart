@@ -25,7 +25,7 @@ class Page {
   const Page({
     @required this.name,
     @required this.routeName,
-    this.nullable = true,
+    this.fieldMap,
     this.fieldRename = FieldRename.snake,
     this.interceptors,
   })  : assert(name != null),
@@ -33,19 +33,7 @@ class Page {
 
   final String name;
   final String routeName;
-  final bool nullable;
+  final Map<String, String> fieldMap;
   final FieldRename fieldRename;
   final List<RouteInterceptor> interceptors;
-}
-
-class Field {
-  const Field({
-    this.name,
-    this.nullable,
-    this.ignore,
-  });
-
-  final String name;
-  final bool nullable;
-  final bool ignore;
 }

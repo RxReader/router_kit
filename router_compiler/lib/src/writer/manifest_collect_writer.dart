@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/element/element.dart';
 import 'package:router_compiler/src/info/info.dart';
+import 'package:router_compiler/src/util/utils.dart';
 
 class ManifestCollectWriter {
   ManifestCollectWriter(this.manifestInfo, this.pageInfoMap);
@@ -22,9 +23,6 @@ class ManifestCollectWriter {
     // blank
     _buffer.writeln();
     _generateAppNavigator(pageInfos);
-    // blank
-    _buffer.writeln();
-    _generatePageNavigators(pageInfos);
   }
 
   void _generateImport(List<PageInfo> pageInfos) {
@@ -92,12 +90,12 @@ class ManifestCollectWriter {
     ];
     List<String> optionParams = <String>[
       'Object arguments',
-      if (interceptors?.isNotEmpty ?? false) 'List<${interceptors.first.type.getDisplayString(withNullability: false)}> interceptors',
+      if (interceptors?.isNotEmpty ?? false) 'List<${formatPrettyDisplay(interceptors.first.type)}> interceptors', // 待优化
     ];
     _buffer.writeln('static Future<dynamic> pushNamed(${params.join(', ')}, {${optionParams.join(', ')}}) {');
     if (interceptors?.isNotEmpty ?? false) {
       _buffer
-        ..writeln('List<${interceptors.first.type.getDisplayString(withNullability: false)}> allInterceptors = <${interceptors.first.type.getDisplayString(withNullability: false)}>[')
+        ..writeln('List<${formatPrettyDisplay(interceptors.first.type)}> allInterceptors = <${formatPrettyDisplay(interceptors.first.type)}>[')
         ..writeln('if (interceptors?.isNotEmpty ?? false) ...interceptors,')
         ..writeln('if (${manifestInfo.providerDisplayName}.interceptors?.isNotEmpty ?? false) ...${manifestInfo.providerDisplayName}.interceptors,')
         ..writeln('];');
@@ -124,22 +122,6 @@ class ManifestCollectWriter {
 
     // end
     _buffer.writeln('}');
-  }
-
-  void _generatePageNavigators(List<PageInfo> pageInfos) {
-    for (PageInfo pageInfo in pageInfos) {
-      // begin
-      _buffer.writeln('class ${pageInfo.navigatorDisplayName} {');
-
-      // constructor
-      _buffer.writeln('const ${pageInfo.navigatorDisplayName}._();');
-
-      // blank
-      _buffer.writeln();
-
-      // end
-      _buffer.writeln('}');
-    }
   }
 
   @override

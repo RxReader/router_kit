@@ -8,6 +8,9 @@ typedef Callback = String Function(String info);
 @rca.Page(
   name: '参数',
   routeName: '/params',
+  fieldMap: <String, String>{
+    'paramC': 'param_d',
+  },
 )
 // ignore: must_be_immutable
 class ParamsPage extends StatefulWidget {
@@ -16,7 +19,6 @@ class ParamsPage extends StatefulWidget {
     Key key,
     @required this.paramB,
     this.paramC,
-    this.paramE,
     this.callback,
   }) : super(key: key);
 
@@ -24,18 +26,11 @@ class ParamsPage extends StatefulWidget {
 
   final String paramB;
 
-  @rca.Field(name: 'paramD')
   final String paramC;
 
-  @rca.Field(ignore: true)
-  String paramD;
+  final String paramD = '';
 
-  @rca.Field(ignore: true)
-  String paramE;
-
-  final String paramF = '';
-
-  String paramG = '';
+  String paramE = '';
 
   Callback callback;
 
