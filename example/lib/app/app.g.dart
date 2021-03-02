@@ -6,4 +6,13 @@ part of 'app.dart';
 // ManifestCompilerGenerator
 // **************************************************************************
 
-// 占位
+class AppProvider {
+  const AppProvider._();
+
+  static const List<
+      Future<dynamic> Function(dynamic, String,
+          {Object arguments, Future<dynamic> Function() next})> interceptors = <
+      Future<dynamic> Function(dynamic, String,
+          {Object arguments,
+          Future<dynamic> Function() next})>[_globalA, App._globalB];
+}

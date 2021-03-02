@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:example/app/app.manifest.g.dart';
 import 'package:example/pages/not_found/not_found_page.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart' as rca;
 
 part 'app.g.dart';
 
-FutureOr<void> _globalA(dynamic context, String routeName, VoidCallback next) {
+Future<dynamic> _globalA(dynamic /* BuildContext */ context, String routeName, {Object arguments, Future<dynamic> Function() next}) {
   assert(context is BuildContext);
-  next?.call();
+  return next?.call();
 }
 
 @rca.Manifest(
@@ -21,9 +22,52 @@ FutureOr<void> _globalA(dynamic context, String routeName, VoidCallback next) {
 class App extends StatefulWidget {
   const App({Key key}) : super(key: key);
 
-  static FutureOr<void> _globalB(dynamic context, String routeName, VoidCallback next) {
+  static Future<dynamic> _globalB(dynamic /* BuildContext */ context, String routeName, {Object arguments, Future<dynamic> Function() next}) {
     assert(context is BuildContext);
-    next?.call();
+    return next?.call();
+  }
+
+  static Future<dynamic> globalAuth(dynamic /* BuildContext */ context, String routeName, {Object arguments, Future<dynamic> Function() next}) async {
+    assert(context is BuildContext);
+    dynamic isLoggedin = false;
+    if (isLoggedin != null && isLoggedin is bool && isLoggedin) {
+      return next?.call();
+    }
+    return null;
+  }
+
+  // static Future<T> pushByNamed<T extends Object>(BuildContext context, String routeName,
+  //     {Object arguments, List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> interceptors}) {
+  //   List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> allInterceptors =
+  //       <Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})>[
+  //     if (interceptors?.isNotEmpty ?? false) ...interceptors,
+  //     if (AppProvider.interceptors?.isNotEmpty ?? false) ...AppProvider.interceptors,
+  //   ];
+  //
+  //   List<Future<dynamic> Function()> dispatchers = <Future<dynamic> Function()>[
+  //     () => Navigator.of(context).pushNamed(routeName, arguments: arguments),
+  //   ];
+  //   for (Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next}) interceptor in allInterceptors.reversed) {
+  //     Future<dynamic> Function() next = dispatchers.last;
+  //     dispatchers.add(() => interceptor.call(context, routeName, arguments: arguments, next: next));
+  //   }
+  // }
+
+  static Future<T> pushNamed<T extends Object>(BuildContext context, String routeName,
+      {Object arguments, List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> interceptors}) {
+    List<Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})> allInterceptors =
+        <Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next})>[
+      if (interceptors?.isNotEmpty ?? false) ...interceptors,
+      if (AppProvider.interceptors?.isNotEmpty ?? false) ...AppProvider.interceptors,
+    ];
+    List<Future<dynamic> Function()> dispatchers = <Future<dynamic> Function()>[
+      () => Navigator.of(context).pushNamed(routeName, arguments: arguments),
+    ];
+    for (Future<dynamic> Function(dynamic, String, {Object arguments, Future<dynamic> Function() next}) interceptor in allInterceptors.reversed) {
+      Future<dynamic> Function() next = dispatchers.last;
+      dispatchers.add(() => interceptor.call(context, routeName, arguments: arguments, next: next));
+    }
+    return dispatchers.last.call();
   }
 
   @override

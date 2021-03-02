@@ -10,13 +10,10 @@ class LoginPageProvider {
   const LoginPageProvider._();
 
   static const String name = '登录';
+
   static const String routeName = '/login';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return LoginPage();
   };
-
-  static Future<T> pushByNamed<T extends Object>(BuildContext context) {
-    return Navigator.of(context).pushNamed(routeName);
-  }
 }

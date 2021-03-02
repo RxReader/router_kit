@@ -10,13 +10,10 @@ class NotFoundPageProvider {
   const NotFoundPageProvider._();
 
   static const String name = '404';
+
   static const String routeName = '/not_found';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return NotFoundPage();
   };
-
-  static Future<T> pushByNamed<T extends Object>(BuildContext context) {
-    return Navigator.of(context).pushNamed(routeName);
-  }
 }

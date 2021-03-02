@@ -10,13 +10,16 @@ class PaymentPageProvider {
   const PaymentPageProvider._();
 
   static const String name = '购买';
+
   static const String routeName = '/payment';
+
+  static const List<
+      Future<dynamic> Function(dynamic, String,
+          {Object arguments, Future<dynamic> Function() next})> interceptors = <
+      Future<dynamic> Function(dynamic, String,
+          {Object arguments, Future<dynamic> Function() next})>[App.globalAuth];
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return PaymentPage();
   };
-
-  static Future<T> pushByNamed<T extends Object>(BuildContext context) {
-    return Navigator.of(context).pushNamed(routeName);
-  }
 }

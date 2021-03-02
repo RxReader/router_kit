@@ -10,13 +10,10 @@ class AboutPageProvider {
   const AboutPageProvider._();
 
   static const String name = '关于';
+
   static const String routeName = '/about';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return AboutPage();
   };
-
-  static Future<T> pushByNamed<T extends Object>(BuildContext context) {
-    return Navigator.of(context).pushNamed(routeName);
-  }
 }

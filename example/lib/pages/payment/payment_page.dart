@@ -1,3 +1,4 @@
+import 'package:example/app/app.dart';
 import 'package:flutter/material.dart';
 import 'package:router_annotation/router_annotation.dart' as rca;
 
@@ -6,6 +7,9 @@ part 'payment_page.g.dart';
 @rca.Page(
   name: '购买',
   routeName: '/payment',
+  interceptors: <rca.RouteInterceptor>[
+    App.globalAuth,
+  ],
 )
 class PaymentPage extends StatefulWidget {
   @override

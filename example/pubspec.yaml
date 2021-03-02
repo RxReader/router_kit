@@ -24,20 +24,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
 
+  json_annotation: ^3.1.1
   router_annotation: ^0.2.0
-  http:
-
-  provider: ^4.0.4
-  after_layout: ^1.0.7+2
-
-  flutter_html: ^1.0.2
-  extended_text: ^4.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
   build_runner:
+  json_serializable: ^3.5.1
   router_compiler: ^0.2.0
 
 dependency_overrides:

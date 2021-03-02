@@ -10,13 +10,10 @@ class HomePageProvider {
   const HomePageProvider._();
 
   static const String name = '首页';
+
   static const String routeName = '/';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
     return HomePage();
   };
-
-  static Future<T> pushByNamed<T extends Object>(BuildContext context) {
-    return Navigator.of(context).pushNamed(routeName);
-  }
 }

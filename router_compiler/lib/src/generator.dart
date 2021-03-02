@@ -5,7 +5,6 @@ import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/parser/manifest_parser.dart';
 import 'package:router_compiler/src/parser/page_parser.dart';
-import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:router_compiler/src/writer/manifest_collect_writer.dart';
 import 'package:router_compiler/src/writer/manifest_writer.dart';
 import 'package:router_compiler/src/writer/page_writer.dart';
@@ -19,11 +18,11 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   @override
   dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('$Manifest annotation can only be defined on a class.');
+      throw InvalidGenerationSourceError('`@$Manifest` can only be used on classes.', element: element);
     }
 
     if (_count > 0) {
-      throw RouterCompilerException('$Manifest annotation can only be defined once.');
+      throw InvalidGenerationSourceError('`@$Manifest` can only be defined once.', element: element);
     }
 
     _count++;
@@ -53,13 +52,13 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   @override
   dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('$Page annotation can only be defined on a class.');
+      throw InvalidGenerationSourceError('`@$Page` can only be used on classes.', element: element);
     }
 
     try {
       PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
       if (pageInfoMap.containsKey(info.routeName)) {
-        throw RouterCompilerException('$Page routeName(${info.routeName}) is exists');
+        throw InvalidGenerationSourceError('`@$Page` routeName(${info.routeName}) is exists', element: element);
       }
       pageInfoMap[info.routeName] = info;
       _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
@@ -88,11 +87,11 @@ class ManifestCollectCompilerGenerator extends GeneratorForAnnotation<Manifest> 
   @override
   dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('$Manifest annotation can only be defined on a class.');
+      throw InvalidGenerationSourceError('`@$Manifest` can only be used on classes.', element: element);
     }
 
     if (_count > 0) {
-      throw RouterCompilerException('$Manifest annotation can only be defined once.');
+      throw InvalidGenerationSourceError('`@$Manifest` can only be defined once.', element: element);
     }
 
     _count++;
@@ -108,7 +107,7 @@ class ManifestCollectCompilerGenerator extends GeneratorForAnnotation<Manifest> 
 
     try {
       ManifestInfo manifestInfo = ManifestParser.parse(element as ClassElement, annotation, buildStep);
-      ManifestCollectWriter writer = ManifestCollectWriter(element as ClassElement, manifestInfo, pageInfoMap);
+      ManifestCollectWriter writer = ManifestCollectWriter(manifestInfo, pageInfoMap);
 
       writer.generate();
       return writer.toString();

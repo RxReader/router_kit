@@ -24,7 +24,7 @@ class ParamsPage extends StatefulWidget {
 
   final String paramB;
 
-  @rca.Field(alias: 'paramD')
+  @rca.Field(name: 'paramD')
   final String paramC;
 
   @rca.Field(ignore: true)
