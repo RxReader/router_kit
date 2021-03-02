@@ -26,7 +26,7 @@ class Page {
     @required this.name,
     @required this.routeName,
     this.nullable = true,
-    this.fieldRename,
+    this.fieldRename = FieldRename.snake,
     this.interceptors,
   })  : assert(name != null),
         assert(routeName != null);
