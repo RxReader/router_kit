@@ -104,8 +104,6 @@ class PageWriter {
       _buffer.writeln();
     }
 
-    _buffer..writeln()..writeln();
-
     // end
     _buffer.writeln('}');
 
