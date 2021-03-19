@@ -19,7 +19,7 @@ class ManifestWriter {
     _buffer.writeln('');
 
     if (info.interceptors?.isNotEmpty ?? false) {
-      String routeInterceptorType = info.interceptors.first.type.getDisplayString(withNullability: false);
+      final String routeInterceptorType = info.interceptors.first.type.getDisplayString(withNullability: false);
       _buffer.writeln('static const List<$routeInterceptorType> interceptors = <$routeInterceptorType>[${info.interceptors.map((ExecutableElement element) {
         return <String>[
           element.enclosingElement.displayName,

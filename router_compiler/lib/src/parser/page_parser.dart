@@ -15,17 +15,14 @@ class PageParser {
       throw InvalidGenerationSourceError('`@$Page` can only be used on Widget classes.', element: element);
     }
 
-    String name = annotation.peek('name').stringValue;
+    final String name = annotation.peek('name').stringValue;
     if (name?.isEmpty ?? true) {
       throw InvalidGenerationSourceError('`@$Page` name can not be null or empty.', element: element);
     }
-    String routeName = annotation.peek('routeName').stringValue;
+    final String routeName = annotation.peek('routeName').stringValue;
     if (routeName?.isEmpty ?? true) {
       throw InvalidGenerationSourceError('`@$Page` routeName can not be null or empty.', element: element);
     }
-    Map<String, String> fieldMap = annotation.peek('fieldMap')?.mapValue?.map<String, String>((DartObject key, DartObject value) {
-      return MapEntry<String, String>(key.toStringValue(), value.toStringValue());
-    });
     FieldRename _fromDartObject(ConstantReader reader) {
       return reader.isNull
           ? null
@@ -36,10 +33,10 @@ class PageParser {
             );
     }
 
-    FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
-    ConstantReader interceptors = annotation.peek('interceptors');
+    final FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
+    final ConstantReader interceptors = annotation.peek('interceptors');
 
-    ConstructorElement constructor = element.unnamedConstructor;
+    final ConstructorElement constructor = element.unnamedConstructor;
     if (constructor == null) {
       throw InvalidGenerationSourceError('`@$Page` does not have a default constructor!', element: element);
     }
@@ -49,7 +46,6 @@ class PageParser {
       displayName: element.displayName,
       name: name,
       routeName: routeName,
-      fieldMap: fieldMap,
       fieldRename: fieldRename,
       interceptors: interceptors?.listValue?.map((DartObject element) {
         return element.toFunctionValue();

@@ -12,7 +12,7 @@ T enumValueForDartObject<T>(
 
 String formatPrettyDisplay(DartType type) {
   if (type is FunctionType) {
-    StringBuffer display = StringBuffer()
+    final StringBuffer display = StringBuffer()
       ..write(type.returnType.getDisplayString(withNullability: false))..write(' Function(')..write(<String>[
         if (type.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
           type.parameters

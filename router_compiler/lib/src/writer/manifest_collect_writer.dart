@@ -11,7 +11,7 @@ class ManifestCollectWriter {
   final StringBuffer _buffer = StringBuffer();
 
   void generate() {
-    List<PageInfo> pageInfos = <PageInfo>[];
+    final List<PageInfo> pageInfos = <PageInfo>[];
     pageInfos.addAll(pageInfoMap.values);
     pageInfos.sort((PageInfo a, PageInfo b) {
       return a.routeName.compareTo(b.routeName);
@@ -29,7 +29,7 @@ class ManifestCollectWriter {
     // import
     _buffer.writeln('import \'package:flutter/widgets.dart\';');
     _buffer.writeln('import \'${manifestInfo.uri}\';');
-    for (PageInfo pageInfo in pageInfos) {
+    for (final PageInfo pageInfo in pageInfos) {
       _buffer.writeln('import \'${pageInfo.uri}\';');
     }
   }
@@ -45,7 +45,7 @@ class ManifestCollectWriter {
     _buffer.writeln();
 
     _buffer.writeln('static final Map<String, String> names = <String, String>{');
-    for (PageInfo pageInfo in pageInfos) {
+    for (final PageInfo pageInfo in pageInfos) {
       _buffer.writeln('${pageInfo.providerDisplayName}.routeName: ${pageInfo.providerDisplayName}.name,');
     }
     _buffer.writeln('};');
@@ -54,7 +54,7 @@ class ManifestCollectWriter {
     _buffer.writeln();
 
     _buffer.writeln('static final Map<String, WidgetBuilder> routes = <String, WidgetBuilder>{');
-    for (PageInfo pageInfo in pageInfos) {
+    for (final PageInfo pageInfo in pageInfos) {
       _buffer.writeln('${pageInfo.providerDisplayName}.routeName: ${pageInfo.providerDisplayName}.routeBuilder,');
     }
     _buffer.writeln('};');
@@ -73,7 +73,7 @@ class ManifestCollectWriter {
     // blank
     _buffer.writeln();
 
-    List<ExecutableElement> interceptors = <ExecutableElement>[
+    final List<ExecutableElement> interceptors = <ExecutableElement>[
       if (manifestInfo.interceptors?.isNotEmpty ?? false) ...manifestInfo.interceptors,
       ...pageInfos.map((PageInfo element) {
         return element.interceptors;
@@ -84,11 +84,11 @@ class ManifestCollectWriter {
         ];
       }),
     ];
-    List<String> params = <String>[
+    final List<String> params = <String>[
       'BuildContext context',
       'String routeName',
     ];
-    List<String> optionParams = <String>[
+    final List<String> optionParams = <String>[
       'Object arguments',
       if (interceptors?.isNotEmpty ?? false) 'List<${formatPrettyDisplay(interceptors.first.type)}> interceptors', // 待优化
     ];

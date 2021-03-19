@@ -35,7 +35,7 @@ class PageWriter {
     _buffer.writeln();
 
     if (info.interceptors?.isNotEmpty ?? false) {
-      String routeInterceptorType = info.interceptors.first.type.getDisplayString(withNullability: false);
+      final String routeInterceptorType = info.interceptors.first.type.getDisplayString(withNullability: false);
       _buffer.writeln('static const List<$routeInterceptorType> interceptors = <$routeInterceptorType>[${info.interceptors.map((ExecutableElement element) {
         return <String>[
           element.enclosingElement.displayName,
@@ -51,7 +51,7 @@ class PageWriter {
     _buffer.writeln('static WidgetBuilder routeBuilder = (BuildContext context) {');
     if (info.constructor.parameters.isNotEmpty) {
       _buffer.writeln('Map<String, dynamic> arguments = ModalRoute.of(context).settings.arguments as Map<String, dynamic>;');
-      StringBuffer arguments = StringBuffer()
+      final StringBuffer arguments = StringBuffer()
         ..writeln(<String>[
           if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed))
             info.constructor.parameters

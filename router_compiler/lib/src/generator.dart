@@ -28,9 +28,9 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
     _count++;
 
     try {
-      ManifestInfo info = ManifestParser.parse(element as ClassElement, annotation, buildStep);
+      final ManifestInfo info = ManifestParser.parse(element as ClassElement, annotation, buildStep);
 
-      ManifestWriter writer = ManifestWriter(info);
+      final ManifestWriter writer = ManifestWriter(info);
 
       writer.generate();
       return writer.toString();
@@ -56,14 +56,14 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
     }
 
     try {
-      PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
+      final PageInfo info = PageParser.parse(element as ClassElement, annotation, buildStep);
       if (pageInfoMap.containsKey(info.routeName)) {
         throw InvalidGenerationSourceError('`@$Page` routeName(${info.routeName}) is exists', element: element);
       }
       pageInfoMap[info.routeName] = info;
       _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
 
-      PageWriter writer = PageWriter(info);
+      final PageWriter writer = PageWriter(info);
 
       writer.generate();
       return writer.toString();
@@ -106,8 +106,8 @@ class ManifestCollectCompilerGenerator extends GeneratorForAnnotation<Manifest> 
         '******************** ${_log.name} ********************');
 
     try {
-      ManifestInfo manifestInfo = ManifestParser.parse(element as ClassElement, annotation, buildStep);
-      ManifestCollectWriter writer = ManifestCollectWriter(manifestInfo, pageInfoMap);
+      final ManifestInfo manifestInfo = ManifestParser.parse(element as ClassElement, annotation, buildStep);
+      final ManifestCollectWriter writer = ManifestCollectWriter(manifestInfo, pageInfoMap);
 
       writer.generate();
       return writer.toString();

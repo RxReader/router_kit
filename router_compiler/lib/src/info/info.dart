@@ -26,7 +26,6 @@ class PageInfo {
     @required this.displayName,
     @required this.name,
     @required this.routeName,
-    @required this.fieldMap,
     @required this.fieldRename,
     @required this.interceptors,
     @required this.constructor,
@@ -36,7 +35,6 @@ class PageInfo {
   final String displayName;
   final String name;
   final String routeName;
-  final Map<String, String> fieldMap;
   final FieldRename fieldRename;
   final List<ExecutableElement> interceptors;
   final ConstructorElement constructor;
@@ -46,9 +44,6 @@ class PageInfo {
   String get navigatorDisplayName => '${displayName}Navigator';
 
   String convertField(String name) {
-    if (fieldMap?.containsKey(name) ?? false) {
-      return fieldMap[name];
-    }
     // TODO
     return name;
   }
