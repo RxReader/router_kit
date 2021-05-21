@@ -14,10 +14,22 @@ class NotFoundPageProvider {
   static const String routeName = '/not_found';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return NotFoundPage();
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    return NotFoundPage(
+      key: arguments['key'] as Key,
+    );
   };
 }
 
 class NotFoundPageNavigator {
   const NotFoundPageNavigator._();
+
+  static Map<String, dynamic> routeArgument({
+    Key key,
+  }) {
+    return <String, dynamic>{
+      'key': key,
+    };
+  }
 }

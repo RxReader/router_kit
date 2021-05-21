@@ -13,12 +13,6 @@ class PaymentPageProvider {
 
   static const String routeName = '/payment';
 
-  static const List<
-      Future<dynamic> Function(dynamic, String,
-          {Object arguments, Future<dynamic> Function() next})> interceptors = <
-      Future<dynamic> Function(dynamic, String,
-          {Object arguments, Future<dynamic> Function() next})>[App.globalAuth];
-
   static WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic> arguments =
         ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
@@ -33,8 +27,11 @@ class PaymentPageProvider {
 class PaymentPageNavigator {
   const PaymentPageNavigator._();
 
-  static Map<String, dynamic> routeArgument(String paramA,
-      [Key key, String paramB]) {
+  static Map<String, dynamic> routeArgument(
+    String paramA, [
+    Key key,
+    String paramB,
+  ]) {
     return <String, dynamic>{
       'paramA': paramA,
       'key': key,

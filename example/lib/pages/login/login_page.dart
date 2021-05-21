@@ -8,6 +8,8 @@ part 'login_page.g.dart';
   routeName: '/login',
 )
 class LoginPage extends StatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return _LoginPageState();

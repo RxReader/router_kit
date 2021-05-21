@@ -20,7 +20,7 @@ class ParamsPageProvider {
       arguments['paramA'] as String,
       key: arguments['key'] as Key,
       paramB: arguments['paramB'] as String,
-      paramC: arguments['param_d'] as String,
+      paramC: arguments['paramC'] as String,
       callback: arguments['callback'] as String Function(String),
     );
   };
@@ -29,16 +29,18 @@ class ParamsPageProvider {
 class ParamsPageNavigator {
   const ParamsPageNavigator._();
 
-  static Map<String, dynamic> routeArgument(String paramA,
-      {Key key,
-      String paramB,
-      String paramC,
-      String Function(String info) callback}) {
+  static Map<String, dynamic> routeArgument(
+    String paramA, {
+    Key key,
+    String paramB,
+    String paramC,
+    String Function(String info) callback,
+  }) {
     return <String, dynamic>{
       'paramA': paramA,
       'key': key,
       'paramB': paramB,
-      'param_d': paramC,
+      'paramC': paramC,
       'callback': callback,
     };
   }

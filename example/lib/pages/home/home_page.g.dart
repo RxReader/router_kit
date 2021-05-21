@@ -14,10 +14,22 @@ class HomePageProvider {
   static const String routeName = '/';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return HomePage();
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    return HomePage(
+      key: arguments['key'] as Key,
+    );
   };
 }
 
 class HomePageNavigator {
   const HomePageNavigator._();
+
+  static Map<String, dynamic> routeArgument({
+    Key key,
+  }) {
+    return <String, dynamic>{
+      'key': key,
+    };
+  }
 }

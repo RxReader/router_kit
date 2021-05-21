@@ -7,16 +7,17 @@ part 'payment_page.g.dart';
 @rca.Page(
   name: '购买',
   routeName: '/payment',
-  interceptors: <rca.RouteInterceptor>[
-    App.globalAuth,
-  ],
 )
 class PaymentPage extends StatefulWidget {
-  const PaymentPage(this.paramA, [Key key, this.paramB]) : super(key: key);
+  const PaymentPage(
+    this.paramA, [
+    Key? key,
+    this.paramB,
+  ]) : super(key: key);
 
   final String paramA;
 
-  final String paramB;
+  final String? paramB;
 
   @override
   State<StatefulWidget> createState() {

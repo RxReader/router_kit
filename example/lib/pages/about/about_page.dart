@@ -9,6 +9,7 @@ part 'about_page.g.dart';
   routeName: '/about',
 )
 class AboutPage extends StatefulWidget {
+  const AboutPage({Key? key}) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _AboutPageState();

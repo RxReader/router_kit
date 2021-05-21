@@ -14,10 +14,22 @@ class AboutPageProvider {
   static const String routeName = '/about';
 
   static WidgetBuilder routeBuilder = (BuildContext context) {
-    return AboutPage();
+    Map<String, dynamic> arguments =
+        ModalRoute.of(context).settings.arguments as Map<String, dynamic>;
+    return AboutPage(
+      key: arguments['key'] as Key,
+    );
   };
 }
 
 class AboutPageNavigator {
   const AboutPageNavigator._();
+
+  static Map<String, dynamic> routeArgument({
+    Key key,
+  }) {
+    return <String, dynamic>{
+      'key': key,
+    };
+  }
 }

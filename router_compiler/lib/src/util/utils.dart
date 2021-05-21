@@ -5,9 +5,8 @@ import 'package:analyzer/dart/element/type.dart';
 T enumValueForDartObject<T>(
   DartObject source,
   List<T> items,
-  String Function(T) name,
 ) {
-  return items.singleWhere((T element) => source.getField(name(element)) != null);
+  return items.singleWhere((T element) => source.getField(element.toString().split('.')[1]) != null);
 }
 
 String formatPrettyDisplay(DartType type) {

@@ -15,28 +15,21 @@ class PageParser {
       throw InvalidGenerationSourceError('`@$Page` can only be used on Widget classes.', element: element);
     }
 
-    final String name = annotation.peek('name').stringValue;
+    final String? name = annotation.peek('name')?.stringValue;
     if (name?.isEmpty ?? true) {
       throw InvalidGenerationSourceError('`@$Page` name can not be null or empty.', element: element);
     }
-    final String routeName = annotation.peek('routeName').stringValue;
+    final String? routeName = annotation.peek('routeName')?.stringValue;
     if (routeName?.isEmpty ?? true) {
       throw InvalidGenerationSourceError('`@$Page` routeName can not be null or empty.', element: element);
     }
-    FieldRename _fromDartObject(ConstantReader reader) {
-      return reader.isNull
-          ? null
-          : enumValueForDartObject(
-              reader.objectValue,
-              FieldRename.values,
-              (FieldRename element) => element.toString().split('.')[1],
-            );
+    FieldRename? _fromDartObject(ConstantReader reader) {
+      return reader.isNull ? null : enumValueForDartObject(reader.objectValue, FieldRename.values);
     }
 
     final FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
-    final ConstantReader interceptors = annotation.peek('interceptors');
 
-    final ConstructorElement constructor = element.unnamedConstructor;
+    final ConstructorElement? constructor = element.unnamedConstructor;
     if (constructor == null) {
       throw InvalidGenerationSourceError('`@$Page` does not have a default constructor!', element: element);
     }
@@ -44,12 +37,9 @@ class PageParser {
     return PageInfo(
       uri: buildStep.inputId.uri,
       displayName: element.displayName,
-      name: name,
-      routeName: routeName,
+      name: name!,
+      routeName: routeName!,
       fieldRename: fieldRename,
-      interceptors: interceptors?.listValue?.map((DartObject element) {
-        return element.toFunctionValue();
-      })?.toList(),
       constructor: constructor,
     );
   }
