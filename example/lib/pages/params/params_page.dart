@@ -3,7 +3,7 @@ import 'package:router_annotation/router_annotation.dart' as rca;
 
 part 'params_page.g.dart';
 
-typedef Callback = String Function(String info);
+typedef Callback = String? Function(String? info);
 
 @rca.Page(
   name: '参数',
@@ -16,6 +16,8 @@ class ParamsPage extends StatefulWidget {
     Key? key,
     required this.paramB,
     this.paramC,
+    this.paramF = 'xyz',
+    this.paramG = 'xxx',
     this.callback,
   }) : super(key: key);
 
@@ -28,6 +30,8 @@ class ParamsPage extends StatefulWidget {
   final String paramD = '';
 
   String paramE = '';
+  final String? paramF;
+  final String paramG;
 
   Callback? callback;
 

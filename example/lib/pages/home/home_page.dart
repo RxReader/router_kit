@@ -1,5 +1,3 @@
-import 'package:example/app/app.manifest.g.dart';
-import 'package:example/pages/about/about_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -48,7 +46,6 @@ class _HomePageState extends State<HomePage> {
             title: const Text('About'),
             onTap: () {
               // Navigator.of(context).pushNamed(AboutPageProvider.routeName);
-              AppNavigator.pushNamed(context, AboutPageProvider.routeName);
             },
           ),
         ],

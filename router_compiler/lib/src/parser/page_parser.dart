@@ -11,7 +11,7 @@ class PageParser {
   const PageParser._();
 
   static PageInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
-    if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString(withNullability: false)).contains('Widget')) {
+    if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString(withNullability: true)).contains('Widget')) {
       throw InvalidGenerationSourceError('`@$Page` can only be used on Widget classes.', element: element);
     }
 

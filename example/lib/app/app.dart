@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:example/app/app.manifest.g.dart';
+import 'package:example/app/manifest.dart';
 import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +54,9 @@ class _AppState extends State<App> {
   }
 
   Route<dynamic>? _onGenerateRoute(RouteSettings settings) {
-    if (AppManifest.routes.containsKey(settings.name)) {
+    if (Manifest.routes.containsKey(settings.name)) {
       return MaterialPageRoute<dynamic>(
-        builder: AppManifest.routes[settings.name]!,
+        builder: Manifest.routes[settings.name]!,
         settings: settings,
       );
     }
@@ -65,7 +65,7 @@ class _AppState extends State<App> {
 
   Route<dynamic>? _onUnknownRoute(RouteSettings settings) {
     return MaterialPageRoute<dynamic>(
-      builder: AppManifest.routes[NotFoundPageProvider.routeName]!,
+      builder: Manifest.routes[NotFoundPageProvider.routeName]!,
       settings: settings,
     );
   }
