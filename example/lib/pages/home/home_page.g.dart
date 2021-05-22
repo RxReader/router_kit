@@ -6,19 +6,25 @@ part of 'home_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class HomePageController {
-  const HomePageController._();
+class HomePageProvider {
+  const HomePageProvider._();
 
   static const String name = '首页';
 
   static const String routeName = '/';
 
-  static WidgetBuilder routeBuilder = (BuildContext context) {
+  static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return HomePage(
       key: arguments?['key'] as Key?,
     );
+  };
+
+  static final Map<String, dynamic> controller = <String, dynamic>{
+    'name': name,
+    'routeName': routeName,
+    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument({

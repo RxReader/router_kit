@@ -10,7 +10,7 @@ part 'payment_page.g.dart';
 class PaymentPage extends StatefulWidget {
   const PaymentPage(
     this.paramA,
-    this.paramAA,[
+    this.paramAA, [
     Key? key,
     this.paramB,
     this.paramC = 'abc',

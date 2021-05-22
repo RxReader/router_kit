@@ -6,14 +6,14 @@ part of 'params_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class ParamsPageController {
-  const ParamsPageController._();
+class ParamsPageProvider {
+  const ParamsPageProvider._();
 
   static const String name = '参数';
 
   static const String routeName = '/params';
 
-  static WidgetBuilder routeBuilder = (BuildContext context) {
+  static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return ParamsPage(
@@ -25,6 +25,12 @@ class ParamsPageController {
       paramG: arguments?['paramG'] as String,
       callback: arguments?['callback'] as String? Function(String?)?,
     );
+  };
+
+  static final Map<String, dynamic> controller = <String, dynamic>{
+    'name': name,
+    'routeName': routeName,
+    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument(

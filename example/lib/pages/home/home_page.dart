@@ -1,5 +1,7 @@
+import 'package:example/app/app_router.dart';
 import 'package:example/pages/about/about_page.dart';
 import 'package:example/pages/params/params_page.dart';
+import 'package:example/pages/payment/payment_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -32,22 +34,27 @@ class _HomePageState extends State<HomePage> {
           ListTile(
             title: const Text('Payment'),
             onTap: () {
-              // Navigator.of(context).pushNamed(PaymentPageProvider.routeName);
+              AppRouter.instance.pushNamed(
+                context,
+                PaymentPageProvider.routeName,
+                arguments: PaymentPageProvider.routeArgument('a', null),
+              );
             },
           ),
           ListTile(
             title: const Text('Params'),
             onTap: () {
-              Navigator.of(context).pushNamed(
-                ParamsPageController.routeName,
-                arguments: ParamsPageController.routeArgument('aaa', paramB: 'bbb'),
+              AppRouter.instance.pushNamed(
+                context,
+                ParamsPageProvider.routeName,
+                arguments: ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
               );
             },
           ),
           ListTile(
             title: const Text('About'),
             onTap: () {
-              Navigator.of(context).pushNamed(AboutPageController.routeName);
+              AppRouter.instance.pushNamed(context, AboutPageProvider.routeName);
             },
           ),
         ],

@@ -65,7 +65,7 @@ class _AppState extends State<App> {
 
   Route<dynamic>? _onUnknownRoute(RouteSettings settings) {
     return MaterialPageRoute<dynamic>(
-      builder: AppRouter.instance.routes[NotFoundPageController.routeName]!,
+      builder: AppRouter.instance.routes[NotFoundPageProvider.routeName]!,
       settings: settings,
     );
   }

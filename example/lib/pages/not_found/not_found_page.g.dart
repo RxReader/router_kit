@@ -6,19 +6,25 @@ part of 'not_found_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class NotFoundPageController {
-  const NotFoundPageController._();
+class NotFoundPageProvider {
+  const NotFoundPageProvider._();
 
   static const String name = '404';
 
   static const String routeName = '/not_found';
 
-  static WidgetBuilder routeBuilder = (BuildContext context) {
+  static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return NotFoundPage(
       key: arguments?['key'] as Key?,
     );
+  };
+
+  static final Map<String, dynamic> controller = <String, dynamic>{
+    'name': name,
+    'routeName': routeName,
+    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument({

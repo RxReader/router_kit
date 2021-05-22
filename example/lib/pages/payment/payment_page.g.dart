@@ -6,14 +6,14 @@ part of 'payment_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class PaymentPageController {
-  const PaymentPageController._();
+class PaymentPageProvider {
+  const PaymentPageProvider._();
 
   static const String name = '购买';
 
   static const String routeName = '/payment';
 
-  static WidgetBuilder routeBuilder = (BuildContext context) {
+  static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return PaymentPage(
@@ -24,6 +24,12 @@ class PaymentPageController {
       arguments?['paramC'] as String,
       arguments?['paramD'] as String?,
     );
+  };
+
+  static final Map<String, dynamic> controller = <String, dynamic>{
+    'name': name,
+    'routeName': routeName,
+    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument(

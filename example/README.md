@@ -9,6 +9,10 @@ flutter pub run build_runner clean
 flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
+```shell
+find . -name "*.dart" -not -name "*.g.dart" -exec flutter format --line-length 200 {} +
+```
+
 ## Getting Started
 
 This project is a starting point for a Flutter application.
