@@ -39,15 +39,15 @@ class _HomePageState extends State<HomePage> {
             title: const Text('Params'),
             onTap: () {
               Navigator.of(context).pushNamed(
-                ParamsPageProvider.routeName,
-                arguments: ParamsPageNavigator.routeArgument('aaa', paramB: 'bbb'),
+                ParamsPageController.routeName,
+                arguments: ParamsPageController.routeArgument('aaa', paramB: 'bbb'),
               );
             },
           ),
           ListTile(
             title: const Text('About'),
             onTap: () {
-              Navigator.of(context).pushNamed(AboutPageProvider.routeName);
+              Navigator.of(context).pushNamed(AboutPageController.routeName);
             },
           ),
         ],

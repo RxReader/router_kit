@@ -28,6 +28,8 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
 
+  router_api: ^0.2.0
+
   json_annotation:
   router_annotation: ^0.2.0
 
@@ -40,6 +42,8 @@ dev_dependencies:
   router_compiler: ^0.2.0
 
 dependency_overrides:
+  router_api:
+    path: ../router_api
   router_annotation:
     path: ../router_annotation
   router_compiler:

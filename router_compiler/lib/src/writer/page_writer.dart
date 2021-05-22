@@ -10,16 +10,13 @@ class PageWriter {
   final StringBuffer _buffer = StringBuffer();
 
   void generate() {
-    _generateProvider();
-    _generateNavigator();
-  }
+    // TODO: extends rcs.Controller
 
-  void _generateProvider() {
     // begin
-    _buffer.writeln('class ${info.providerDisplayName} {');
+    _buffer.writeln('class ${info.controllerDisplayName} {');
 
     // constructor
-    _buffer.writeln('const ${info.providerDisplayName}._();');
+    _buffer.writeln('const ${info.controllerDisplayName}._();');
 
     // blank
     _buffer.writeln();
@@ -62,21 +59,10 @@ class PageWriter {
     }
     _buffer.writeln('};');
 
-    // end
-    _buffer.writeln('}');
-  }
-
-  void _generateNavigator() {
-    // begin
-    _buffer.writeln('class ${info.navigatorDisplayName} {');
-
-    // constructor
-    _buffer.writeln('const ${info.navigatorDisplayName}._();');
-
-    // blank
-    _buffer.writeln();
-
     if (info.constructor.parameters.isNotEmpty) {
+      // blank
+      _buffer.writeln();
+
       _buffer
         ..writeln('static Map<String, dynamic> routeArgument(${<String>[
           if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
@@ -91,9 +77,6 @@ class PageWriter {
         ].join(', ')}) {')
         ..writeln('return <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => '\'${info.convertField(element.name)}\': ${element.name},').join('\n')}};')
         ..writeln('}');
-
-      // blank
-      _buffer.writeln();
     }
 
     // end

@@ -6,8 +6,8 @@ part of 'payment_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class PaymentPageProvider {
-  const PaymentPageProvider._();
+class PaymentPageController {
+  const PaymentPageController._();
 
   static const String name = '购买';
 
@@ -25,10 +25,6 @@ class PaymentPageProvider {
       arguments?['paramD'] as String?,
     );
   };
-}
-
-class PaymentPageNavigator {
-  const PaymentPageNavigator._();
 
   static Map<String, dynamic> routeArgument(
     String paramA,

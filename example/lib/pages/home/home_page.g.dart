@@ -6,8 +6,8 @@ part of 'home_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class HomePageProvider {
-  const HomePageProvider._();
+class HomePageController {
+  const HomePageController._();
 
   static const String name = '首页';
 
@@ -20,10 +20,6 @@ class HomePageProvider {
       key: arguments?['key'] as Key?,
     );
   };
-}
-
-class HomePageNavigator {
-  const HomePageNavigator._();
 
   static Map<String, dynamic> routeArgument({
     Key? key,

@@ -6,8 +6,8 @@ part of 'params_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class ParamsPageProvider {
-  const ParamsPageProvider._();
+class ParamsPageController {
+  const ParamsPageController._();
 
   static const String name = '参数';
 
@@ -26,10 +26,6 @@ class ParamsPageProvider {
       callback: arguments?['callback'] as String? Function(String?)?,
     );
   };
-}
-
-class ParamsPageNavigator {
-  const ParamsPageNavigator._();
 
   static Map<String, dynamic> routeArgument(
     String paramA, {

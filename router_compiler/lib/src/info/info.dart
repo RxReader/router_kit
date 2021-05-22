@@ -18,9 +18,7 @@ class PageInfo {
   final FieldRename fieldRename;
   final ConstructorElement constructor;
 
-  String get providerDisplayName => '${displayName}Provider';
-
-  String get navigatorDisplayName => '${displayName}Navigator';
+  String get controllerDisplayName => '${displayName}Controller';
 
   String convertField(String name) {
     // TODO

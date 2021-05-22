@@ -6,8 +6,8 @@ part of 'not_found_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class NotFoundPageProvider {
-  const NotFoundPageProvider._();
+class NotFoundPageController {
+  const NotFoundPageController._();
 
   static const String name = '404';
 
@@ -20,10 +20,6 @@ class NotFoundPageProvider {
       key: arguments?['key'] as Key?,
     );
   };
-}
-
-class NotFoundPageNavigator {
-  const NotFoundPageNavigator._();
 
   static Map<String, dynamic> routeArgument({
     Key? key,

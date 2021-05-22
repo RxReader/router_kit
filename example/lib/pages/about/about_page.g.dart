@@ -6,8 +6,8 @@ part of 'about_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class AboutPageProvider {
-  const AboutPageProvider._();
+class AboutPageController {
+  const AboutPageController._();
 
   static const String name = '关于';
 
@@ -20,10 +20,6 @@ class AboutPageProvider {
       key: arguments?['key'] as Key?,
     );
   };
-}
-
-class AboutPageNavigator {
-  const AboutPageNavigator._();
 
   static Map<String, dynamic> routeArgument({
     Key? key,

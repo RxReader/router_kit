@@ -6,8 +6,8 @@ part of 'login_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
-class LoginPageProvider {
-  const LoginPageProvider._();
+class LoginPageController {
+  const LoginPageController._();
 
   static const String name = '登录';
 
@@ -20,10 +20,6 @@ class LoginPageProvider {
       key: arguments?['key'] as Key?,
     );
   };
-}
-
-class LoginPageNavigator {
-  const LoginPageNavigator._();
 
   static Map<String, dynamic> routeArgument({
     Key? key,

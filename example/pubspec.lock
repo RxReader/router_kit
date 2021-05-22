@@ -340,6 +340,13 @@ packages:
       relative: true
     source: path
     version: "0.2.0"
+  router_api:
+    dependency: "direct main"
+    description:
+      path: "../router_api"
+      relative: true
+    source: path
+    version: "0.2.0"
   router_compiler:
     dependency: "direct dev"
     description:
