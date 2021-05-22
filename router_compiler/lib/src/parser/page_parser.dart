@@ -1,7 +1,5 @@
-import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:build/build.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/util/utils.dart';
@@ -10,10 +8,15 @@ import 'package:source_gen/source_gen.dart';
 class PageParser {
   const PageParser._();
 
-  static PageInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
+  static PageInfo parse(TypeChecker typeChecker, ClassElement element, ConstantReader annotation) {
     if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString(withNullability: true)).contains('Widget')) {
       throw InvalidGenerationSourceError('`@$Page` can only be used on Widget classes.', element: element);
     }
+
+    // // 替换其他获取前缀方式
+    // final ElementAnnotation ea = element.metadata.firstWhere((ElementAnnotation element) => typeChecker.isAssignableFromType(element.computeConstantValue()!.type!));
+    // final ElementAnnotationImpl eai = ea as ElementAnnotationImpl;
+    // final String? prefix = eai.annotationAst.atSign.next?.toString();
 
     final String? name = annotation.peek('name')?.stringValue;
     if (name?.isEmpty ?? true) {
@@ -35,7 +38,6 @@ class PageParser {
     }
 
     return PageInfo(
-      uri: buildStep.inputId.uri,
       displayName: element.displayName,
       name: name!,
       routeName: routeName!,

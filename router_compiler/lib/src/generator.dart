@@ -19,7 +19,7 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
     }
 
     try {
-      final PageInfo info = PageParser.parse(element, annotation, buildStep);
+      final PageInfo info = PageParser.parse(typeChecker, element, annotation);
       _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
       final PageWriter writer = PageWriter(info);
       writer.generate();

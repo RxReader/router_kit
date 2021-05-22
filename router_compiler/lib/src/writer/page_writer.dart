@@ -10,13 +10,11 @@ class PageWriter {
   final StringBuffer _buffer = StringBuffer();
 
   void generate() {
-    // TODO: extends rcs.Controller
-
     // begin
-    _buffer.writeln('class ${info.controllerDisplayName} {');
+    _buffer.writeln('class ${info.providerDisplayName} {');
 
     // constructor
-    _buffer.writeln('const ${info.controllerDisplayName}._();');
+    _buffer.writeln('const ${info.providerDisplayName}._();');
 
     // blank
     _buffer.writeln();
@@ -31,11 +29,8 @@ class PageWriter {
     // blank
     _buffer.writeln();
 
-    // blank
-    _buffer.writeln();
-
     //
-    _buffer.writeln('static WidgetBuilder routeBuilder = (BuildContext context) {');
+    _buffer.writeln('static final WidgetBuilder routeBuilder = (BuildContext context) {');
     if (info.constructor.parameters.isNotEmpty) {
       _buffer.writeln('Map<String, dynamic>? arguments = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;');
       final StringBuffer arguments = StringBuffer()
@@ -43,14 +38,12 @@ class PageWriter {
           if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed))
             info.constructor.parameters
                 .where((ParameterElement element) => !element.isNamed)
-                .map((ParameterElement element) =>
-                    'arguments?[\'${info.convertField(element.name)}\'] as ${element.type.getDisplayString(withNullability: true)},')
+                .map((ParameterElement element) => 'arguments?[\'${info.convertField(element.name)}\'] as ${element.type.getDisplayString(withNullability: true)},')
                 .join('\n'),
           if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
             info.constructor.parameters
                 .where((ParameterElement element) => element.isNamed)
-                .map((ParameterElement element) =>
-                    '${element.name}: arguments?[\'${info.convertField(element.name)}\'] as ${element.type.getDisplayString(withNullability: true)},')
+                .map((ParameterElement element) => '${element.name}: arguments?[\'${info.convertField(element.name)}\'] as ${element.type.getDisplayString(withNullability: true)},')
                 .join('\n'),
         ].join('\n'));
       _buffer.writeln('return ${info.displayName}($arguments);');
@@ -58,6 +51,15 @@ class PageWriter {
       _buffer.writeln('return ${info.displayName}();');
     }
     _buffer.writeln('};');
+
+    // blank
+    _buffer.writeln();
+    _buffer
+      ..writeln('static final Map<String, dynamic> controller = <String, dynamic>{')
+      ..writeln('\'name\': name,')
+      ..writeln('\'routeName\': routeName,')
+      ..writeln('\'routeBuilder\': routeBuilder,')
+      ..writeln('};');
 
     if (info.constructor.parameters.isNotEmpty) {
       // blank
