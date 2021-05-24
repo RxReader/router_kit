@@ -1,3 +1,7 @@
+## 0.2.1
+
+* dynamic -> Object
+
 ## 0.2.0
 
 * nullsafety
