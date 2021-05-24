@@ -33,7 +33,7 @@ class AppRouter extends ra.Router with Manifest {
       if (routeInterceptors.containsKey(routeName)) routeInterceptors[routeName]!,
     ];
     final List<ra.Next> nexts = <ra.Next>[
-      () => Navigator.of(context).pushNamed<dynamic>(routeName, arguments: arguments),
+      () => Navigator.of(context).pushNamed(routeName, arguments: arguments),
     ];
     for (final ra.Interceptor interceptor in activeInterceptors.reversed) {
       final ra.Next next = nexts.last;
@@ -48,7 +48,7 @@ class AppRouter extends ra.Router with Manifest {
       if (routeInterceptors.containsKey(routeName)) routeInterceptors[routeName]!,
     ];
     final List<ra.Next> nexts = <ra.Next>[
-      () => Navigator.of(context).pushReplacementNamed<dynamic, Object>(routeName, result: result, arguments: arguments),
+      () => Navigator.of(context).pushReplacementNamed(routeName, result: result, arguments: arguments),
     ];
     for (final ra.Interceptor interceptor in activeInterceptors.reversed) {
       final ra.Next next = nexts.last;
