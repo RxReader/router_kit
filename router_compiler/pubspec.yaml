@@ -11,10 +11,10 @@ dependencies:
   router_annotation: ^0.2.0
 #    path: ../router_annotation
 
-  analyzer:
-  logging:
-  build:
-  source_gen:
+  analyzer: ^1.5.0
+  logging: ^1.0.1
+  build: ^2.0.1
+  source_gen: ^1.0.0
 
 dev_dependencies:
   test:
