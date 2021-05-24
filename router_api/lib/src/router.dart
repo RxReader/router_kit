@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart' hide Router;
 
-typedef Next = Future<Object?> Function();
-typedef Interceptor = Future<Object?> Function(
+typedef Next = Future<dynamic> Function();
+typedef Interceptor = Future<dynamic> Function(
   BuildContext context,
   String routeName, {
   Object? arguments,
