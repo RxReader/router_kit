@@ -6,6 +6,29 @@ part of 'not_found_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
+class NotFoundPageController {
+  String get name => NotFoundPageProvider.name;
+
+  String get routeName => NotFoundPageProvider.routeName;
+
+  WidgetBuilder get routeBuilder => NotFoundPageProvider.routeBuilder;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.isGetter) {
+      switch (invocation.memberName) {
+        case #name:
+          return name;
+        case #routeName:
+          return routeName;
+        case #routeBuilder:
+          return routeBuilder;
+      }
+    }
+    return super.noSuchMethod(invocation);
+  }
+}
+
 class NotFoundPageProvider {
   const NotFoundPageProvider._();
 
@@ -19,12 +42,6 @@ class NotFoundPageProvider {
     return NotFoundPage(
       key: arguments?['key'] as Key?,
     );
-  };
-
-  static final Map<String, dynamic> controller = <String, dynamic>{
-    'name': name,
-    'routeName': routeName,
-    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument({

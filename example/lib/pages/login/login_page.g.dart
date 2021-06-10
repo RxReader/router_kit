@@ -6,6 +6,29 @@ part of 'login_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
+class LoginPageController {
+  String get name => LoginPageProvider.name;
+
+  String get routeName => LoginPageProvider.routeName;
+
+  WidgetBuilder get routeBuilder => LoginPageProvider.routeBuilder;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.isGetter) {
+      switch (invocation.memberName) {
+        case #name:
+          return name;
+        case #routeName:
+          return routeName;
+        case #routeBuilder:
+          return routeBuilder;
+      }
+    }
+    return super.noSuchMethod(invocation);
+  }
+}
+
 class LoginPageProvider {
   const LoginPageProvider._();
 
@@ -19,12 +42,6 @@ class LoginPageProvider {
     return LoginPage(
       key: arguments?['key'] as Key?,
     );
-  };
-
-  static final Map<String, dynamic> controller = <String, dynamic>{
-    'name': name,
-    'routeName': routeName,
-    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument({

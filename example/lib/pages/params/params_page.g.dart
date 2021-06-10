@@ -6,6 +6,29 @@ part of 'params_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
+class ParamsPageController {
+  String get name => ParamsPageProvider.name;
+
+  String get routeName => ParamsPageProvider.routeName;
+
+  WidgetBuilder get routeBuilder => ParamsPageProvider.routeBuilder;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.isGetter) {
+      switch (invocation.memberName) {
+        case #name:
+          return name;
+        case #routeName:
+          return routeName;
+        case #routeBuilder:
+          return routeBuilder;
+      }
+    }
+    return super.noSuchMethod(invocation);
+  }
+}
+
 class ParamsPageProvider {
   const ParamsPageProvider._();
 
@@ -25,12 +48,6 @@ class ParamsPageProvider {
       paramG: arguments?['paramG'] as String,
       callback: arguments?['callback'] as String? Function(String?)?,
     );
-  };
-
-  static final Map<String, dynamic> controller = <String, dynamic>{
-    'name': name,
-    'routeName': routeName,
-    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument(

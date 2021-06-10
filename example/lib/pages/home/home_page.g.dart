@@ -6,6 +6,29 @@ part of 'home_page.dart';
 // PageCompilerGenerator
 // **************************************************************************
 
+class HomePageController {
+  String get name => HomePageProvider.name;
+
+  String get routeName => HomePageProvider.routeName;
+
+  WidgetBuilder get routeBuilder => HomePageProvider.routeBuilder;
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) {
+    if (invocation.isGetter) {
+      switch (invocation.memberName) {
+        case #name:
+          return name;
+        case #routeName:
+          return routeName;
+        case #routeBuilder:
+          return routeBuilder;
+      }
+    }
+    return super.noSuchMethod(invocation);
+  }
+}
+
 class HomePageProvider {
   const HomePageProvider._();
 
@@ -19,12 +42,6 @@ class HomePageProvider {
     return HomePage(
       key: arguments?['key'] as Key?,
     );
-  };
-
-  static final Map<String, dynamic> controller = <String, dynamic>{
-    'name': name,
-    'routeName': routeName,
-    'routeBuilder': routeBuilder,
   };
 
   static Map<String, dynamic> routeArgument({
