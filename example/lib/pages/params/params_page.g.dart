@@ -69,4 +69,28 @@ class ParamsPageProvider {
       'callback': callback,
     };
   }
+
+  static Future<T?> pushByNamed<T extends Object?>(
+    BuildContext context,
+    String paramA, {
+    Key? key,
+    required String paramB,
+    String? paramC,
+    String? paramF = 'xyz',
+    String paramG = 'xxx',
+    String? Function(String? info)? callback,
+  }) {
+    return Navigator.of(context).pushNamed(
+      routeName,
+      arguments: <String, dynamic>{
+        'paramA': paramA,
+        'key': key,
+        'paramB': paramB,
+        'paramC': paramC,
+        'paramF': paramF,
+        'paramG': paramG,
+        'callback': callback,
+      },
+    );
+  }
 }

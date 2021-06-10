@@ -51,4 +51,16 @@ class LoginPageProvider {
       'key': key,
     };
   }
+
+  static Future<T?> pushByNamed<T extends Object?>(
+    BuildContext context, {
+    Key? key,
+  }) {
+    return Navigator.of(context).pushNamed(
+      routeName,
+      arguments: <String, dynamic>{
+        'key': key,
+      },
+    );
+  }
 }

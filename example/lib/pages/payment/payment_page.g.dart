@@ -66,4 +66,26 @@ class PaymentPageProvider {
       'paramD': paramD,
     };
   }
+
+  static Future<T?> pushByNamed<T extends Object?>(
+    BuildContext context,
+    String paramA,
+    String? paramAA, [
+    Key? key,
+    String? paramB,
+    String paramC = 'abc',
+    String? paramD = 'asd',
+  ]) {
+    return Navigator.of(context).pushNamed(
+      routeName,
+      arguments: <String, dynamic>{
+        'paramA': paramA,
+        'paramAA': paramAA,
+        'key': key,
+        'paramB': paramB,
+        'paramC': paramC,
+        'paramD': paramD,
+      },
+    );
+  }
 }

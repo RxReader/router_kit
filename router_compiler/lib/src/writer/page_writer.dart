@@ -35,20 +35,21 @@ class PageWriter {
 
     // blank
     _buffer.writeln();
-    _buffer.writeln('@override');
-    _buffer.writeln('dynamic noSuchMethod(Invocation invocation) {');
-    _buffer.writeln('if (invocation.isGetter) {');
-    _buffer.writeln('switch (invocation.memberName) {');
-    _buffer.writeln('case #name:');
-    _buffer.writeln('return name;');
-    _buffer.writeln('case #routeName:');
-    _buffer.writeln('return routeName;');
-    _buffer.writeln('case #routeBuilder:');
-    _buffer.writeln('return routeBuilder;');
-    _buffer.writeln('}');
-    _buffer.writeln('}');
-    _buffer.writeln('return super.noSuchMethod(invocation);');
-    _buffer.writeln('}');
+    _buffer
+      ..writeln('@override')
+      ..writeln('dynamic noSuchMethod(Invocation invocation) {')
+      ..writeln('if (invocation.isGetter) {')
+      ..writeln('switch (invocation.memberName) {')
+      ..writeln('case #name:')
+      ..writeln('return name;')
+      ..writeln('case #routeName:')
+      ..writeln('return routeName;')
+      ..writeln('case #routeBuilder:')
+      ..writeln('return routeBuilder;')
+      ..writeln('}')
+      ..writeln('}')
+      ..writeln('return super.noSuchMethod(invocation);')
+      ..writeln('}');
 
     // end
     _buffer.writeln('}');
@@ -116,6 +117,31 @@ class PageWriter {
         ..writeln('return <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => '\'${info.convertField(element.name)}\': ${element.name},').join('\n')}};')
         ..writeln('}');
     }
+
+    // blank
+    _buffer.writeln('');
+    _buffer
+      ..writeln('static Future<T?> pushByNamed<T extends Object?>(${<String>[
+        'BuildContext context',
+        if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
+          info.constructor.parameters
+              .where((ParameterElement element) => !element.isNamed && !element.isOptional)
+              .map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: true)} ${element.name}')
+              .join(', '),
+        if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && element.isOptional))
+          '[${info.constructor.parameters.where((ParameterElement element) => !element.isNamed && element.isOptional).map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: true)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},]',
+        if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
+          '{${info.constructor.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${element.isRequiredNamed ? 'required ' : ''}${formatPrettyDisplay(element.type, withNullability: true)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},}',
+      ].join(', ')}) {')
+      ..writeAll(<String>[
+        if (info.constructor.parameters.isNotEmpty) ...<String>[
+          'return Navigator.of(context).pushNamed(routeName, arguments: <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => '\'${info.convertField(element.name)}\': ${element.name},').join('\n')}},);',
+        ],
+        if (info.constructor.parameters.isEmpty) ...<String>[
+          'return Navigator.of(context).pushNamed(routeName);',
+        ],
+      ], '\n')
+      ..writeln('}');
 
     // end
     _buffer.writeln('}');

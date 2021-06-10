@@ -37,18 +37,10 @@ class NotFoundPageProvider {
   static const String routeName = '/not_found';
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<String, dynamic>? arguments =
-        ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
-    return NotFoundPage(
-      key: arguments?['key'] as Key?,
-    );
+    return NotFoundPage();
   };
 
-  static Map<String, dynamic> routeArgument({
-    Key? key,
-  }) {
-    return <String, dynamic>{
-      'key': key,
-    };
+  static Future<T?> pushByNamed<T extends Object?>(BuildContext context) {
+    return Navigator.of(context).pushNamed(routeName);
   }
 }

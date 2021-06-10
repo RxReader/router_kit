@@ -83,7 +83,7 @@ mixin Manifest on ra.Router, InterceptableRouter {
   @override
   void registerBuiltIn() {
     super.registerBuiltIn();
-    use(interceptor: _globalAuth);
+    // use(interceptor: _globalAuth);
     useController(controller: HomePageController());
     useController(controller: AboutPageController());
     useController(controller: LoginPageController());
