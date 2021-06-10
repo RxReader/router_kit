@@ -13,14 +13,18 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   final Logger _log = Logger('PageCompiler');
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError('`@$Page` can only be used on classes.', element: element);
+      throw InvalidGenerationSourceError(
+          '`@$Page` can only be used on classes.',
+          element: element);
     }
 
     try {
       final PageInfo info = PageParser.parse(typeChecker, element, annotation);
-      _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
+      _log.info(
+          '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
       final PageWriter writer = PageWriter(info);
       writer.generate();
       return writer.toString();
@@ -32,7 +36,8 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   }
 }
 
-Builder routerCompilerBuilder({required Map<String, dynamic> config}) => SharedPartBuilder(
+Builder routerCompilerBuilder({required Map<String, dynamic> config}) =>
+    SharedPartBuilder(
       <Generator>[
         PageCompilerGenerator(),
       ],
