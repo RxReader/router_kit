@@ -22,7 +22,7 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
     }
 
     try {
-      const bool withNullability = true;
+      final bool withNullability = element.library.isNonNullableByDefault;
       final PageInfo info = PageParser.parse(typeChecker, element, annotation, withNullability: withNullability);
       _log.info(
           '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
