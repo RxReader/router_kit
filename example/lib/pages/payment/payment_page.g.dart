@@ -40,12 +40,12 @@ class PaymentPageProvider {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return PaymentPage(
-      arguments?['paramA'] as String,
-      arguments?['paramAA'] as String?,
+      arguments?['param_a'] as String,
+      arguments?['param_a_a'] as String?,
       arguments?['key'] as Key?,
-      arguments?['paramB'] as String?,
-      arguments?['paramC'] as String,
-      arguments?['paramD'] as String?,
+      arguments?['param_b'] as String?,
+      arguments?['param_c'] as String,
+      arguments?['param_d'] as String?,
     );
   };
 
@@ -58,12 +58,12 @@ class PaymentPageProvider {
     String? paramD = 'asd',
   ]) {
     return <String, dynamic>{
-      'paramA': paramA,
-      'paramAA': paramAA,
+      'param_a': paramA,
+      'param_a_a': paramAA,
       'key': key,
-      'paramB': paramB,
-      'paramC': paramC,
-      'paramD': paramD,
+      'param_b': paramB,
+      'param_c': paramC,
+      'param_d': paramD,
     };
   }
 
@@ -79,12 +79,12 @@ class PaymentPageProvider {
     return Navigator.of(context).pushNamed(
       routeName,
       arguments: <String, dynamic>{
-        'paramA': paramA,
-        'paramAA': paramAA,
+        'param_a': paramA,
+        'param_a_a': paramAA,
         'key': key,
-        'paramB': paramB,
-        'paramC': paramC,
-        'paramD': paramD,
+        'param_b': paramB,
+        'param_c': paramC,
+        'param_d': paramD,
       },
     );
   }

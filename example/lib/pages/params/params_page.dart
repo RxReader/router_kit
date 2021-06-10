@@ -12,7 +12,7 @@ typedef Callback = String? Function(String? info);
 // ignore: must_be_immutable
 class ParamsPage extends StatefulWidget {
   ParamsPage(
-    this.paramA, {
+    this.paramA1, {
     Key? key,
     required this.paramB,
     this.paramC,
@@ -21,7 +21,7 @@ class ParamsPage extends StatefulWidget {
     this.callback,
   }) : super(key: key);
 
-  final String paramA;
+  final String paramA1;
 
   final String paramB;
 
@@ -52,7 +52,7 @@ class _ParamsPageState extends State<ParamsPage> {
         child: Column(
           children: <Widget>[
             Image.network('https://www.baidu.com/img/bd_logo1.png'),
-            Text('${widget.paramA} - ${widget.paramB} - ${widget.paramC}'),
+            Text('${widget.paramA1} - ${widget.paramB} - ${widget.paramC}'),
           ],
         ),
       ),

@@ -40,18 +40,18 @@ class ParamsPageProvider {
     Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return ParamsPage(
-      arguments?['paramA'] as String,
+      arguments?['param_a_1'] as String,
       key: arguments?['key'] as Key?,
-      paramB: arguments?['paramB'] as String,
-      paramC: arguments?['paramC'] as String?,
-      paramF: arguments?['paramF'] as String?,
-      paramG: arguments?['paramG'] as String,
+      paramB: arguments?['param_b'] as String,
+      paramC: arguments?['param_c'] as String?,
+      paramF: arguments?['param_f'] as String?,
+      paramG: arguments?['param_g'] as String,
       callback: arguments?['callback'] as String? Function(String?)?,
     );
   };
 
   static Map<String, dynamic> routeArgument(
-    String paramA, {
+    String paramA1, {
     Key? key,
     required String paramB,
     String? paramC,
@@ -60,19 +60,19 @@ class ParamsPageProvider {
     String? Function(String? info)? callback,
   }) {
     return <String, dynamic>{
-      'paramA': paramA,
+      'param_a_1': paramA1,
       'key': key,
-      'paramB': paramB,
-      'paramC': paramC,
-      'paramF': paramF,
-      'paramG': paramG,
+      'param_b': paramB,
+      'param_c': paramC,
+      'param_f': paramF,
+      'param_g': paramG,
       'callback': callback,
     };
   }
 
   static Future<T?> pushByNamed<T extends Object?>(
     BuildContext context,
-    String paramA, {
+    String paramA1, {
     Key? key,
     required String paramB,
     String? paramC,
@@ -83,12 +83,12 @@ class ParamsPageProvider {
     return Navigator.of(context).pushNamed(
       routeName,
       arguments: <String, dynamic>{
-        'paramA': paramA,
+        'param_a_1': paramA1,
         'key': key,
-        'paramB': paramB,
-        'paramC': paramC,
-        'paramF': paramF,
-        'paramG': paramG,
+        'param_b': paramB,
+        'param_c': paramC,
+        'param_f': paramF,
+        'param_g': paramG,
         'callback': callback,
       },
     );
