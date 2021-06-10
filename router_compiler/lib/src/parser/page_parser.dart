@@ -9,20 +9,15 @@ class PageParser {
   const PageParser._();
 
   static PageInfo parse(TypeChecker typeChecker, ClassElement element,
-      ConstantReader annotation) {
+      ConstantReader annotation, {required bool withNullability}) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) =>
-            supertype.getDisplayString(withNullability: true))
+            supertype.getDisplayString(withNullability: withNullability))
         .contains('Widget')) {
       throw InvalidGenerationSourceError(
           '`@$Page` can only be used on Widget classes.',
           element: element);
     }
-
-    // // 替换其他获取前缀方式
-    // final ElementAnnotation ea = element.metadata.firstWhere((ElementAnnotation element) => typeChecker.isAssignableFromType(element.computeConstantValue()!.type!));
-    // final ElementAnnotationImpl eai = ea as ElementAnnotationImpl;
-    // final String? prefix = eai.annotationAst.atSign.next?.toString();
 
     final String? name = annotation.peek('name')?.stringValue;
     if (name?.isEmpty ?? true) {

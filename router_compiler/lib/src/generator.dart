@@ -22,11 +22,12 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
     }
 
     try {
-      final PageInfo info = PageParser.parse(typeChecker, element, annotation);
+      const bool withNullability = true;
+      final PageInfo info = PageParser.parse(typeChecker, element, annotation, withNullability: withNullability);
       _log.info(
           '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
       final PageWriter writer = PageWriter(info);
-      writer.generate();
+      writer.generate(withNullability: withNullability);
       return writer.toString();
     } on Exception catch (e, s) {
       _log.severe(e);
