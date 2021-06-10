@@ -32,7 +32,8 @@ class PageInfo {
       case FieldRename.pascal:
         return _pascalCase(name);
       default:
-        throw InvalidGenerationSourceError('The provided `fieldRename` ($fieldRename) is not supported.');
+        throw InvalidGenerationSourceError(
+            'The provided `fieldRename` ($fieldRename) is not supported.');
     }
   }
 

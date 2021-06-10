@@ -8,8 +8,9 @@ import 'package:source_gen/source_gen.dart';
 class PageParser {
   const PageParser._();
 
-  static PageInfo parse(TypeChecker typeChecker, ClassElement element,
-      ConstantReader annotation, {required bool withNullability}) {
+  static PageInfo parse(
+      TypeChecker typeChecker, ClassElement element, ConstantReader annotation,
+      {required bool withNullability}) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) =>
             supertype.getDisplayString(withNullability: withNullability))
