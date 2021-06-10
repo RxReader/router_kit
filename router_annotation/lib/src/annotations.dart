@@ -16,5 +16,3 @@ class Page {
   final String routeName;
   final FieldRename fieldRename;
 }
-
-class Controller {}

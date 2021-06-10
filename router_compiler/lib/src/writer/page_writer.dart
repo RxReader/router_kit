@@ -10,6 +10,51 @@ class PageWriter {
   final StringBuffer _buffer = StringBuffer();
 
   void generate() {
+    _generateController();
+    _generateProvider();
+  }
+
+  void _generateController() {
+    // begin
+    _buffer.writeln('class ${info.controllerDisplayName} {');
+
+    // blank
+    _buffer.writeln();
+
+    _buffer.writeln('String get name => ${info.providerDisplayName}.name;');
+
+    // blank
+    _buffer.writeln();
+
+    _buffer.writeln('String get routeName => ${info.providerDisplayName}.routeName;');
+
+    // blank
+    _buffer.writeln();
+
+    _buffer.writeln('WidgetBuilder get routeBuilder => ${info.providerDisplayName}.routeBuilder;');
+
+    // blank
+    _buffer.writeln();
+    _buffer.writeln('@override');
+    _buffer.writeln('dynamic noSuchMethod(Invocation invocation) {');
+    _buffer.writeln('if (invocation.isGetter) {');
+    _buffer.writeln('switch (invocation.memberName) {');
+    _buffer.writeln('case #name:');
+    _buffer.writeln('return name;');
+    _buffer.writeln('case #routeName:');
+    _buffer.writeln('return routeName;');
+    _buffer.writeln('case #routeBuilder:');
+    _buffer.writeln('return routeBuilder;');
+    _buffer.writeln('}');
+    _buffer.writeln('}');
+    _buffer.writeln('return super.noSuchMethod(invocation);');
+    _buffer.writeln('}');
+
+    // end
+    _buffer.writeln('}');
+  }
+
+  void _generateProvider() {
     // begin
     _buffer.writeln('class ${info.providerDisplayName} {');
 
@@ -51,15 +96,6 @@ class PageWriter {
       _buffer.writeln('return ${info.displayName}();');
     }
     _buffer.writeln('};');
-
-    // blank
-    _buffer.writeln();
-    _buffer
-      ..writeln('static final Map<String, dynamic> controller = <String, dynamic>{')
-      ..writeln('\'name\': name,')
-      ..writeln('\'routeName\': routeName,')
-      ..writeln('\'routeBuilder\': routeBuilder,')
-      ..writeln('};');
 
     if (info.constructor.parameters.isNotEmpty) {
       // blank
