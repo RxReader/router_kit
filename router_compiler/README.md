@@ -4,7 +4,7 @@
 
 The builders generate code when they find members annotated with classes defined in [package:router_annotation](https://pub.dev/packages/router_annotation).
 
-See the [example](https://github.com/rxreader/router_kit/example) to understand how to configure your package.
+See the [example](../example) to understand how to configure your package.
 
 ## Usage
 
