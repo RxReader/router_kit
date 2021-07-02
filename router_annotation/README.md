@@ -4,7 +4,7 @@
 
 Defines the annotations used by [router_compiler](https://pub.dev/packages/router_compiler) to create code for Flutter Route.
 
-See the [example](https://github.com/rxreader/router_kit/example) to understand how to configure your package.
+See the [example](../example) to understand how to configure your package.
 
 ## Getting Started
 
