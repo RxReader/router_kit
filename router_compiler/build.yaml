@@ -5,5 +5,14 @@ builders:
     builder_factories: ['routerCompiler']
     build_extensions: { '.dart': ['.router_compiler.g.part'] }
     auto_apply: dependents
+    runs_before: ['|manifest_compiler']
     build_to: cache
+    applies_builders: ['source_gen|combining_builder']
+  
+  manifest_compiler:
+    import: 'package:router_compiler/builder.dart'
+    builder_factories: ['manifestCompiler']
+    build_extensions: { '.dart': ['.manifest_compiler.g.part'] }
+    auto_apply: dependents
+    build_to: source
     applies_builders: ['source_gen|combining_builder']

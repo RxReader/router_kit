@@ -8,6 +8,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:router_api/router_api.dart' as ra;
+import 'package:router_annotation/router_annotation.dart' as rca;
+import 'package:example/app/app_router.manifest.g.dart';
 
 typedef Next = Future<dynamic> Function();
 typedef Interceptor = Future<dynamic> Function(
@@ -84,12 +86,9 @@ mixin Manifest on ra.Router, InterceptableRouter {
   void registerBuiltIn() {
     super.registerBuiltIn();
     // use(interceptor: _globalAuth);
-    useController(controller: HomePageController());
-    useController(controller: AboutPageController());
-    useController(controller: LoginPageController());
-    useController(controller: NotFoundPageController());
-    useController(controller: ParamsPageController());
-    useController(controller: PaymentPageController());
+    AppManifest.controllers.where((dynamic controller) => controller.flavorName == null).forEach((dynamic controller) {
+      useController(controller: controller);
+    });
   }
 
   static Future<dynamic> _globalAuth(
@@ -107,6 +106,7 @@ mixin Manifest on ra.Router, InterceptableRouter {
   }
 }
 
+@rca.Manifest()
 class AppRouter extends ra.Router with InterceptableRouter, Manifest {
   AppRouter._() : super();
 

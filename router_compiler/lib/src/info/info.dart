@@ -4,18 +4,22 @@ import 'package:source_gen/source_gen.dart';
 
 class PageInfo {
   const PageInfo({
+    required this.uri,
     required this.displayName,
     required this.name,
     required this.routeName,
     required this.fieldRename,
     required this.constructor,
+    this.flavorName,
   });
 
+  final Uri uri;
   final String displayName;
   final String name;
   final String routeName;
   final FieldRename fieldRename;
   final ConstructorElement constructor;
+  final String? flavorName;
 
   String get controllerDisplayName => '${displayName}Controller';
 
@@ -32,8 +36,7 @@ class PageInfo {
       case FieldRename.pascal:
         return _pascalCase(name);
       default:
-        throw InvalidGenerationSourceError(
-            'The provided `fieldRename` ($fieldRename) is not supported.');
+        throw InvalidGenerationSourceError('The provided `fieldRename` ($fieldRename) is not supported.');
     }
   }
 

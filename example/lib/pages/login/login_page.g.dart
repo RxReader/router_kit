@@ -7,11 +7,17 @@ part of 'login_page.dart';
 // **************************************************************************
 
 class LoginPageController {
+  @override
   String get name => LoginPageProvider.name;
 
+  @override
   String get routeName => LoginPageProvider.routeName;
 
+  @override
   WidgetBuilder get routeBuilder => LoginPageProvider.routeBuilder;
+
+  @override
+  String? get flavorName => LoginPageProvider.flavorName;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -23,6 +29,8 @@ class LoginPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
+        case #flavorName:
+          return flavorName;
       }
     }
     return super.noSuchMethod(invocation);
@@ -35,6 +43,8 @@ class LoginPageProvider {
   static const String name = '登录';
 
   static const String routeName = '/login';
+
+  static const String? flavorName = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

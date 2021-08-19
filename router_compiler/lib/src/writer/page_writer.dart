@@ -16,24 +16,33 @@ class PageWriter {
 
   void _generateController({required bool withNullability}) {
     // begin
+
+    _buffer.writeln();
+
     _buffer.writeln('class ${info.controllerDisplayName} {');
 
     // blank
     _buffer.writeln();
 
+    _buffer.writeln('@override');
     _buffer.writeln('String get name => ${info.providerDisplayName}.name;');
 
     // blank
     _buffer.writeln();
 
-    _buffer.writeln(
-        'String get routeName => ${info.providerDisplayName}.routeName;');
+    _buffer.writeln('@override');
+    _buffer.writeln('String get routeName => ${info.providerDisplayName}.routeName;');
 
     // blank
     _buffer.writeln();
 
-    _buffer.writeln(
-        'WidgetBuilder get routeBuilder => ${info.providerDisplayName}.routeBuilder;');
+    _buffer.writeln('@override');
+    _buffer.writeln('WidgetBuilder get routeBuilder => ${info.providerDisplayName}.routeBuilder;');
+
+    _buffer.writeln();
+
+    _buffer.writeln('@override');
+    _buffer.writeln('String? get flavorName => ${info.providerDisplayName}.flavorName;');
 
     // blank
     _buffer.writeln();
@@ -48,6 +57,8 @@ class PageWriter {
       ..writeln('return routeName;')
       ..writeln('case #routeBuilder:')
       ..writeln('return routeBuilder;')
+      ..writeln('case #flavorName:')
+      ..writeln('return flavorName;')
       ..writeln('}')
       ..writeln('}')
       ..writeln('return super.noSuchMethod(invocation);')
@@ -74,26 +85,27 @@ class PageWriter {
 
     _buffer.writeln('static const String routeName = \'${info.routeName}\';');
 
+    _buffer.writeln();
+
+    _buffer.writeln('static const String? flavorName = ${info.flavorName != null ? '\'${info.flavorName}\'' : null};');
+
     // blank
     _buffer.writeln();
 
     //
-    _buffer.writeln(
-        'static final WidgetBuilder routeBuilder = (BuildContext context) {');
+    _buffer.writeln('static final WidgetBuilder routeBuilder = (BuildContext context) {');
     if (info.constructor.parameters.isNotEmpty) {
       _buffer.writeln(
           'Map<String, dynamic>${withNullability ? '?' : ''} arguments = ModalRoute.of(context)${withNullability ? '!' : ''}.settings.arguments as Map<String, dynamic>${withNullability ? '?' : ' ?? <String, dynamic>{}'};');
       final StringBuffer arguments = StringBuffer()
         ..writeln(<String>[
-          if (info.constructor.parameters
-              .any((ParameterElement element) => !element.isNamed))
+          if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed))
             info.constructor.parameters
                 .where((ParameterElement element) => !element.isNamed)
                 .map((ParameterElement element) =>
                     'arguments${withNullability ? '?' : ''}[\'${info.convertField(element.name)}\'] as ${element.type.getDisplayString(withNullability: withNullability)},')
                 .join('\n'),
-          if (info.constructor.parameters
-              .any((ParameterElement element) => element.isNamed))
+          if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
             info.constructor.parameters
                 .where((ParameterElement element) => element.isNamed)
                 .map((ParameterElement element) =>
@@ -112,45 +124,33 @@ class PageWriter {
 
       _buffer
         ..writeln('static Map<String, dynamic> routeArgument(${<String>[
-          if (info.constructor.parameters.any((ParameterElement element) =>
-              !element.isNamed && !element.isOptional))
+          if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
             info.constructor.parameters
-                .where((ParameterElement element) =>
-                    !element.isNamed && !element.isOptional)
-                .map((ParameterElement element) =>
-                    '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
+                .where((ParameterElement element) => !element.isNamed && !element.isOptional)
+                .map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
                 .join(', '),
-          if (info.constructor.parameters.any((ParameterElement element) =>
-              !element.isNamed && element.isOptional))
+          if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && element.isOptional))
             '[${info.constructor.parameters.where((ParameterElement element) => !element.isNamed && element.isOptional).map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},]',
-          if (info.constructor.parameters
-              .any((ParameterElement element) => element.isNamed))
+          if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
             '{${info.constructor.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${withNullability && element.isRequiredNamed ? 'required ' : ''}${!withNullability && element.hasRequired ? '@required ' : ''}${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},}',
         ].join(', ')}) {')
-        ..writeln(
-            'return <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => '\'${info.convertField(element.name)}\': ${element.name},').join('\n')}};')
+        ..writeln('return <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => '\'${info.convertField(element.name)}\': ${element.name},').join('\n')}};')
         ..writeln('}');
     }
 
     // blank
     _buffer.writeln('');
     _buffer
-      ..writeln(
-          'static Future<T${withNullability ? '?' : ''}> pushByNamed<T extends Object${withNullability ? '?' : ''}>(${<String>[
+      ..writeln('static Future<T${withNullability ? '?' : ''}> pushByNamed<T extends Object${withNullability ? '?' : ''}>(${<String>[
         'BuildContext context',
-        if (info.constructor.parameters.any((ParameterElement element) =>
-            !element.isNamed && !element.isOptional))
+        if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
           info.constructor.parameters
-              .where((ParameterElement element) =>
-                  !element.isNamed && !element.isOptional)
-              .map((ParameterElement element) =>
-                  '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
+              .where((ParameterElement element) => !element.isNamed && !element.isOptional)
+              .map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
               .join(', '),
-        if (info.constructor.parameters.any((ParameterElement element) =>
-            !element.isNamed && element.isOptional))
+        if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && element.isOptional))
           '[${info.constructor.parameters.where((ParameterElement element) => !element.isNamed && element.isOptional).map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},]',
-        if (info.constructor.parameters
-            .any((ParameterElement element) => element.isNamed))
+        if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
           '{${info.constructor.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${withNullability && element.isRequiredNamed ? 'required ' : ''}${!withNullability && element.hasRequired ? '@required ' : ''}${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},}',
       ].join(', ')}) {')
       ..writeAll(<String>[
