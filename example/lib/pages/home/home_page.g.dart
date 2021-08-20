@@ -7,17 +7,13 @@ part of 'home_page.dart';
 // **************************************************************************
 
 class HomePageController {
-  @override
   String get name => HomePageProvider.name;
 
-  @override
   String get routeName => HomePageProvider.routeName;
 
-  @override
   WidgetBuilder get routeBuilder => HomePageProvider.routeBuilder;
 
-  @override
-  String? get flavorName => HomePageProvider.flavorName;
+  String? get flavor => HomePageProvider.flavor;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -29,8 +25,8 @@ class HomePageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
-        case #flavorName:
-          return flavorName;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -44,7 +40,7 @@ class HomePageProvider {
 
   static const String routeName = '/';
 
-  static const String? flavorName = null;
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

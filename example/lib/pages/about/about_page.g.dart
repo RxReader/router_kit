@@ -7,17 +7,13 @@ part of 'about_page.dart';
 // **************************************************************************
 
 class AboutPageController {
-  @override
   String get name => AboutPageProvider.name;
 
-  @override
   String get routeName => AboutPageProvider.routeName;
 
-  @override
   WidgetBuilder get routeBuilder => AboutPageProvider.routeBuilder;
 
-  @override
-  String? get flavorName => AboutPageProvider.flavorName;
+  String? get flavor => AboutPageProvider.flavor;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -29,8 +25,8 @@ class AboutPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
-        case #flavorName:
-          return flavorName;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -44,7 +40,7 @@ class AboutPageProvider {
 
   static const String routeName = '/about';
 
-  static const String? flavorName = 'target';
+  static const String? flavor = 'target';
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

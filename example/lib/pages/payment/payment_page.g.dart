@@ -7,17 +7,13 @@ part of 'payment_page.dart';
 // **************************************************************************
 
 class PaymentPageController {
-  @override
   String get name => PaymentPageProvider.name;
 
-  @override
   String get routeName => PaymentPageProvider.routeName;
 
-  @override
   WidgetBuilder get routeBuilder => PaymentPageProvider.routeBuilder;
 
-  @override
-  String? get flavorName => PaymentPageProvider.flavorName;
+  String? get flavor => PaymentPageProvider.flavor;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -29,8 +25,8 @@ class PaymentPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
-        case #flavorName:
-          return flavorName;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -44,7 +40,7 @@ class PaymentPageProvider {
 
   static const String routeName = '/payment';
 
-  static const String? flavorName = null;
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

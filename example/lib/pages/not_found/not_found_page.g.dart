@@ -7,17 +7,13 @@ part of 'not_found_page.dart';
 // **************************************************************************
 
 class NotFoundPageController {
-  @override
   String get name => NotFoundPageProvider.name;
 
-  @override
   String get routeName => NotFoundPageProvider.routeName;
 
-  @override
   WidgetBuilder get routeBuilder => NotFoundPageProvider.routeBuilder;
 
-  @override
-  String? get flavorName => NotFoundPageProvider.flavorName;
+  String? get flavor => NotFoundPageProvider.flavor;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -29,8 +25,8 @@ class NotFoundPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
-        case #flavorName:
-          return flavorName;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -44,7 +40,7 @@ class NotFoundPageProvider {
 
   static const String routeName = '/not_found';
 
-  static const String? flavorName = null;
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     return NotFoundPage();

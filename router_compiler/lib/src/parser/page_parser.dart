@@ -33,7 +33,7 @@ class PageParser {
       throw InvalidGenerationSourceError('`@$Page` does not have a default constructor!', element: element);
     }
 
-    final String? flavorName = annotation.peek('flavorName')?.stringValue;
+    final String? flavor = annotation.peek('flavor')?.stringValue;
 
     return PageInfo(
       uri: buildStep.inputId.uri,
@@ -42,7 +42,7 @@ class PageParser {
       routeName: routeName!,
       fieldRename: fieldRename,
       constructor: constructor,
-      flavorName: flavorName,
+      flavor: flavor,
     );
   }
 }

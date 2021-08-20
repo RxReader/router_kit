@@ -10,7 +10,7 @@ class PageInfo {
     required this.routeName,
     required this.fieldRename,
     required this.constructor,
-    this.flavorName,
+    this.flavor,
   });
 
   final Uri uri;
@@ -19,7 +19,7 @@ class PageInfo {
   final String routeName;
   final FieldRename fieldRename;
   final ConstructorElement constructor;
-  final String? flavorName;
+  final String? flavor;
 
   String get controllerDisplayName => '${displayName}Controller';
 

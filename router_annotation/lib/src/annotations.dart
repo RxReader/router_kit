@@ -10,13 +10,13 @@ class Page {
     required this.name,
     required this.routeName,
     this.fieldRename = FieldRename.snake,
-    this.flavorName,
+    this.flavor,
   });
 
   final String name;
   final String routeName;
   final FieldRename fieldRename;
-  final String? flavorName;
+  final String? flavor;
 }
 
 class Manifest {

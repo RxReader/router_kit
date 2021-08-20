@@ -44,5 +44,5 @@ class Controller {
   String get name => delegated.noSuchMethod(Invocation.getter(#name)) as String;
   String get routeName => delegated.noSuchMethod(Invocation.getter(#routeName)) as String;
   WidgetBuilder get routeBuilder => delegated.noSuchMethod(Invocation.getter(#routeBuilder)) as WidgetBuilder;
-  String? get flavorName => delegated.noSuchMethod(Invocation.getter(#flavorName)) as String?;
+  String? get flavor => delegated.noSuchMethod(Invocation.getter(#flavor)) as String?;
 }

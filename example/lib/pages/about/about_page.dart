@@ -7,7 +7,7 @@ part 'about_page.g.dart';
 @rca.Page(
   name: '关于',
   routeName: '/about',
-  flavorName: 'target',
+  flavor: 'target',
 )
 class AboutPage extends StatefulWidget {
   const AboutPage({Key? key}) : super(key: key);

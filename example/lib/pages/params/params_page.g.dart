@@ -7,17 +7,13 @@ part of 'params_page.dart';
 // **************************************************************************
 
 class ParamsPageController {
-  @override
   String get name => ParamsPageProvider.name;
 
-  @override
   String get routeName => ParamsPageProvider.routeName;
 
-  @override
   WidgetBuilder get routeBuilder => ParamsPageProvider.routeBuilder;
 
-  @override
-  String? get flavorName => ParamsPageProvider.flavorName;
+  String? get flavor => ParamsPageProvider.flavor;
 
   @override
   dynamic noSuchMethod(Invocation invocation) {
@@ -29,8 +25,8 @@ class ParamsPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
-        case #flavorName:
-          return flavorName;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -44,7 +40,7 @@ class ParamsPageProvider {
 
   static const String routeName = '/params';
 
-  static const String? flavorName = null;
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

@@ -24,25 +24,21 @@ class PageWriter {
     // blank
     _buffer.writeln();
 
-    _buffer.writeln('@override');
     _buffer.writeln('String get name => ${info.providerDisplayName}.name;');
 
     // blank
     _buffer.writeln();
 
-    _buffer.writeln('@override');
     _buffer.writeln('String get routeName => ${info.providerDisplayName}.routeName;');
 
     // blank
     _buffer.writeln();
 
-    _buffer.writeln('@override');
     _buffer.writeln('WidgetBuilder get routeBuilder => ${info.providerDisplayName}.routeBuilder;');
 
     _buffer.writeln();
 
-    _buffer.writeln('@override');
-    _buffer.writeln('String? get flavorName => ${info.providerDisplayName}.flavorName;');
+    _buffer.writeln('String? get flavor => ${info.providerDisplayName}.flavor;');
 
     // blank
     _buffer.writeln();
@@ -57,8 +53,8 @@ class PageWriter {
       ..writeln('return routeName;')
       ..writeln('case #routeBuilder:')
       ..writeln('return routeBuilder;')
-      ..writeln('case #flavorName:')
-      ..writeln('return flavorName;')
+      ..writeln('case #flavor:')
+      ..writeln('return flavor;')
       ..writeln('}')
       ..writeln('}')
       ..writeln('return super.noSuchMethod(invocation);')
@@ -87,7 +83,7 @@ class PageWriter {
 
     _buffer.writeln();
 
-    _buffer.writeln('static const String? flavorName = ${info.flavorName != null ? '\'${info.flavorName}\'' : null};');
+    _buffer.writeln('static const String? flavor = ${info.flavor != null ? '\'${info.flavor}\'' : null};');
 
     // blank
     _buffer.writeln();
