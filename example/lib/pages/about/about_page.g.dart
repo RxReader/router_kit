@@ -13,6 +13,8 @@ class AboutPageController {
 
   WidgetBuilder get routeBuilder => AboutPageProvider.routeBuilder;
 
+  String? get flavor => AboutPageProvider.flavor;
+
   @override
   dynamic noSuchMethod(Invocation invocation) {
     if (invocation.isGetter) {
@@ -23,6 +25,8 @@ class AboutPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -35,6 +39,8 @@ class AboutPageProvider {
   static const String name = '关于';
 
   static const String routeName = '/about';
+
+  static const String? flavor = 'target';
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

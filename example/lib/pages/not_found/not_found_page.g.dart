@@ -13,6 +13,8 @@ class NotFoundPageController {
 
   WidgetBuilder get routeBuilder => NotFoundPageProvider.routeBuilder;
 
+  String? get flavor => NotFoundPageProvider.flavor;
+
   @override
   dynamic noSuchMethod(Invocation invocation) {
     if (invocation.isGetter) {
@@ -23,6 +25,8 @@ class NotFoundPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -35,6 +39,8 @@ class NotFoundPageProvider {
   static const String name = '404';
 
   static const String routeName = '/not_found';
+
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     return NotFoundPage();

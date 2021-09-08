@@ -13,6 +13,8 @@ class PaymentPageController {
 
   WidgetBuilder get routeBuilder => PaymentPageProvider.routeBuilder;
 
+  String? get flavor => PaymentPageProvider.flavor;
+
   @override
   dynamic noSuchMethod(Invocation invocation) {
     if (invocation.isGetter) {
@@ -23,6 +25,8 @@ class PaymentPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -35,6 +39,8 @@ class PaymentPageProvider {
   static const String name = '购买';
 
   static const String routeName = '/payment';
+
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =

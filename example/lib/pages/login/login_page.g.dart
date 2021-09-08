@@ -13,6 +13,8 @@ class LoginPageController {
 
   WidgetBuilder get routeBuilder => LoginPageProvider.routeBuilder;
 
+  String? get flavor => LoginPageProvider.flavor;
+
   @override
   dynamic noSuchMethod(Invocation invocation) {
     if (invocation.isGetter) {
@@ -23,6 +25,8 @@ class LoginPageController {
           return routeName;
         case #routeBuilder:
           return routeBuilder;
+        case #flavor:
+          return flavor;
       }
     }
     return super.noSuchMethod(invocation);
@@ -35,6 +39,8 @@ class LoginPageProvider {
   static const String name = '登录';
 
   static const String routeName = '/login';
+
+  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     Map<String, dynamic>? arguments =
