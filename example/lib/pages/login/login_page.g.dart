@@ -37,7 +37,7 @@ class LoginPageProvider {
   static const String routeName = '/login';
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<String, dynamic>? arguments =
+    final Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return LoginPage(
       key: arguments?['key'] as Key?,
