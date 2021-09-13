@@ -4,7 +4,6 @@
 // ManifestCompilerGenerator
 // **************************************************************************
 
-import 'package:flutter/widgets.dart';
 import 'package:example/pages/home/home_page.dart';
 import 'package:example/pages/about/about_page.dart';
 import 'package:example/pages/login/login_page.dart';
@@ -12,8 +11,8 @@ import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
 
-class AppManifest {
-  const AppManifest._();
+class ManifestProvider {
+  const ManifestProvider._();
 
   static final List<dynamic> controllers = <dynamic>[
     HomePageController(),

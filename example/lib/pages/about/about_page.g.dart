@@ -36,11 +36,11 @@ class AboutPageController {
 class AboutPageProvider {
   const AboutPageProvider._();
 
+  static const String? flavor = 'target';
+
   static const String name = '关于';
 
   static const String routeName = '/about';
-
-  static const String? flavor = 'target';
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     final Map<String, dynamic>? arguments =

@@ -36,11 +36,11 @@ class PaymentPageController {
 class PaymentPageProvider {
   const PaymentPageProvider._();
 
+  static const String? flavor = null;
+
   static const String name = '购买';
 
   static const String routeName = '/payment';
-
-  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     final Map<String, dynamic>? arguments =

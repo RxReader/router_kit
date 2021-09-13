@@ -36,11 +36,11 @@ class LoginPageController {
 class LoginPageProvider {
   const LoginPageProvider._();
 
+  static const String? flavor = null;
+
   static const String name = '登录';
 
   static const String routeName = '/login';
-
-  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     final Map<String, dynamic>? arguments =

@@ -36,11 +36,11 @@ class HomePageController {
 class HomePageProvider {
   const HomePageProvider._();
 
+  static const String? flavor = null;
+
   static const String name = '首页';
 
   static const String routeName = '/';
-
-  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     final Map<String, dynamic>? arguments =

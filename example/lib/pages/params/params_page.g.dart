@@ -36,11 +36,11 @@ class ParamsPageController {
 class ParamsPageProvider {
   const ParamsPageProvider._();
 
+  static const String? flavor = null;
+
   static const String name = '参数';
 
   static const String routeName = '/params';
-
-  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     final Map<String, dynamic>? arguments =

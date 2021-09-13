@@ -36,11 +36,11 @@ class NotFoundPageController {
 class NotFoundPageProvider {
   const NotFoundPageProvider._();
 
+  static const String? flavor = null;
+
   static const String name = '404';
 
   static const String routeName = '/not_found';
-
-  static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
     return NotFoundPage();
