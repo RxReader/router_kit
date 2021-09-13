@@ -1,7 +1,9 @@
 import 'package:example/app/app_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:router_annotation/router_annotation.dart' as rca;
 
+@rca.Manifest()
 class App extends StatefulWidget {
   const App({Key? key}) : super(key: key);
 

@@ -23,24 +23,26 @@ class ManifestWriter {
       _buffer.writeln("import '${info.uri}';");
     }
 
+    // blank
     _buffer.writeln();
 
-    _buffer.writeln('class ManifestProvider {');
+    final String providerDisplayName = '${element.displayName}Manifest';
+    // begin
+    _buffer.writeln('class $providerDisplayName {');
 
-    _buffer.writeln();
+    // constructor
+    _buffer.writeln('const $providerDisplayName._();');
 
-    _buffer.writeln('const ManifestProvider._();');
-
+    // blank
     _buffer.writeln();
 
     _buffer.writeln('static final List<dynamic> controllers = <dynamic>[');
-
     for (final PageInfo info in infos) {
       _buffer.writeln('${info.controllerDisplayName}(),');
     }
-
     _buffer.writeln('];');
 
+    // end
     _buffer.writeln('}');
   }
 

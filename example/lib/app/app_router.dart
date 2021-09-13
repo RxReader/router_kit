@@ -1,9 +1,8 @@
-import 'package:example/app/app_router.manifest.g.dart';
+import 'package:example/app/app.manifest.g.dart';
 import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:router_annotation/router_annotation.dart' as rca;
 import 'package:router_api/router_api.dart' as ra;
 
 typedef Next = Future<dynamic> Function();
@@ -74,7 +73,6 @@ mixin InterceptableRouter on ra.Router {
   }
 }
 
-@rca.Manifest()
 mixin Manifest on ra.Router, InterceptableRouter {
   @mustCallSuper
   @protected
@@ -82,7 +80,7 @@ mixin Manifest on ra.Router, InterceptableRouter {
   void registerBuiltIn() {
     super.registerBuiltIn();
     // use(interceptor: _globalAuth);
-    for (final dynamic controller in ManifestProvider.controllers) {
+    for (final dynamic controller in AppManifest.controllers) {
       final ra.Controller ctrl = ra.Controller.from(controller);
       if (ctrl.flavor == null) {
         useController(controller: ctrl);

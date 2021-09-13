@@ -11,8 +11,8 @@ import 'package:example/pages/not_found/not_found_page.dart';
 import 'package:example/pages/params/params_page.dart';
 import 'package:example/pages/payment/payment_page.dart';
 
-class ManifestProvider {
-  const ManifestProvider._();
+class AppManifest {
+  const AppManifest._();
 
   static final List<dynamic> controllers = <dynamic>[
     HomePageController(),
