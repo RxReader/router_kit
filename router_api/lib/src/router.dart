@@ -10,7 +10,8 @@ class Router {
 
   Map<String, String> get names => Map<String, String>.unmodifiable(_names);
 
-  Map<String, WidgetBuilder> get routes => Map<String, WidgetBuilder>.unmodifiable(_routes);
+  Map<String, WidgetBuilder> get routes =>
+      Map<String, WidgetBuilder>.unmodifiable(_routes);
 
   @protected
   void registerBuiltIn() {}
@@ -41,8 +42,11 @@ class Controller {
   Controller.from(this.delegated);
   final dynamic delegated;
 
+  String? get flavor =>
+      delegated.noSuchMethod(Invocation.getter(#flavor)) as String?;
   String get name => delegated.noSuchMethod(Invocation.getter(#name)) as String;
-  String get routeName => delegated.noSuchMethod(Invocation.getter(#routeName)) as String;
-  WidgetBuilder get routeBuilder => delegated.noSuchMethod(Invocation.getter(#routeBuilder)) as WidgetBuilder;
-  String? get flavor => delegated.noSuchMethod(Invocation.getter(#flavor)) as String?;
+  String get routeName =>
+      delegated.noSuchMethod(Invocation.getter(#routeName)) as String;
+  WidgetBuilder get routeBuilder =>
+      delegated.noSuchMethod(Invocation.getter(#routeBuilder)) as WidgetBuilder;
 }
