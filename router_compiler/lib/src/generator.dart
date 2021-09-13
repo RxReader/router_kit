@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 import 'package:router_annotation/router_annotation.dart';
 import 'package:router_compiler/src/info/info.dart';
 import 'package:router_compiler/src/parser/page_parser.dart';
-import 'package:router_compiler/src/util/exceptions.dart';
 import 'package:router_compiler/src/writer/manifest_writer.dart';
 import 'package:router_compiler/src/writer/page_writer.dart';
 import 'package:source_gen/source_gen.dart';
@@ -17,15 +16,21 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   final Logger _log = Logger('PageCompiler');
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError('`@$Page` can only be used on classes.', element: element);
+      throw InvalidGenerationSourceError(
+          '`@$Page` can only be used on classes.',
+          element: element);
     }
 
     try {
       final bool withNullability = element.library.isNonNullableByDefault;
-      final PageInfo info = PageParser.parse(typeChecker, element, annotation, buildStep, withNullability: withNullability);
-      _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
+      final PageInfo info = PageParser.parse(
+          typeChecker, element, annotation, buildStep,
+          withNullability: withNullability);
+      _log.info(
+          '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
       infoMap[info.routeName] = info;
       final PageWriter writer = PageWriter(info);
       writer.generate(withNullability: withNullability);
@@ -48,13 +53,16 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   int _count = 0;
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw RouterCompilerException('Manifest annotation can only be defined on a class.');
+      throw InvalidGenerationSourceError(
+          'Manifest annotation can only be defined on a class.');
     }
 
     if (_count > 0) {
-      throw RouterCompilerException('Manifest annotation can only be defined once.');
+      throw InvalidGenerationSourceError(
+          'Manifest annotation can only be defined once.');
     }
 
     _count++;
@@ -82,14 +90,16 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
 
 final Map<String, PageInfo> infoMap = <String, PageInfo>{};
 
-Builder routerCompilerBuilder({required Map<String, dynamic> config}) => SharedPartBuilder(
+Builder pageCompilerBuilder({required Map<String, dynamic> config}) =>
+    SharedPartBuilder(
       <Generator>[
         PageCompilerGenerator(infoMap),
       ],
-      'router_compiler',
+      'page_compiler',
     );
 
-Builder manifestCompilerBuilder({required Map<String, dynamic> config}) => LibraryBuilder(
+Builder manifestCompilerBuilder({required Map<String, dynamic> config}) =>
+    LibraryBuilder(
       ManifestCompilerGenerator(infoMap),
       generatedExtension: '.manifest.g.dart',
     );
