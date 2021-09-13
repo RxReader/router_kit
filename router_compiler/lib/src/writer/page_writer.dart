@@ -92,7 +92,7 @@ class PageWriter {
     _buffer.writeln('static final WidgetBuilder routeBuilder = (BuildContext context) {');
     if (info.constructor.parameters.isNotEmpty) {
       _buffer.writeln(
-          'Map<String, dynamic>${withNullability ? '?' : ''} arguments = ModalRoute.of(context)${withNullability ? '!' : ''}.settings.arguments as Map<String, dynamic>${withNullability ? '?' : ' ?? <String, dynamic>{}'};');
+          'final Map<String, dynamic>${withNullability ? '?' : ''} arguments = ModalRoute.of(context)${withNullability ? '!' : ''}.settings.arguments as Map<String, dynamic>${withNullability ? '?' : ' ?? <String, dynamic>{}'};');
       final StringBuffer arguments = StringBuffer()
         ..writeln(<String>[
           if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed))

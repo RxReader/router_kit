@@ -43,7 +43,7 @@ class HomePageProvider {
   static const String? flavor = null;
 
   static final WidgetBuilder routeBuilder = (BuildContext context) {
-    Map<String, dynamic>? arguments =
+    final Map<String, dynamic>? arguments =
         ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>?;
     return HomePage(
       key: arguments?['key'] as Key?,
