@@ -81,9 +81,13 @@ mixin Manifest on ra.Router, InterceptableRouter {
     super.registerBuiltIn();
     // use(interceptor: _globalAuth);
     for (final dynamic controller in AppManifest.controllers) {
-      final ra.Controller ctrl = ra.Controller.from(controller);
-      if (ctrl.flavor == null) {
-        useController(controller: ctrl);
+      final ra.Controller wrapper = ra.Controller.from(controller);
+      if (wrapper.flavor == null) {
+        useRoute(
+          name: wrapper.name,
+          routeName: wrapper.routeName,
+          routeBuilder: wrapper.routeBuilder,
+        );
       }
     }
   }
