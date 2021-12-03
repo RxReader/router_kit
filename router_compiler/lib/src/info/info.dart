@@ -6,20 +6,20 @@ class PageInfo {
   const PageInfo({
     required this.uri,
     required this.displayName,
+    required this.flavor,
     required this.name,
     required this.routeName,
     required this.fieldRename,
     required this.constructor,
-    this.flavor,
   });
 
   final Uri uri;
   final String displayName;
+  final String? flavor;
   final String name;
   final String routeName;
   final FieldRename fieldRename;
   final ConstructorElement constructor;
-  final String? flavor;
 
   String get controllerDisplayName => '${displayName}Controller';
 

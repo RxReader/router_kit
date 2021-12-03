@@ -21,6 +21,8 @@ class PageParser {
           element: element);
     }
 
+    final String? flavor = annotation.peek('flavor')?.stringValue;
+
     final String? name = annotation.peek('name')?.stringValue;
     if (name?.isEmpty ?? true) {
       throw InvalidGenerationSourceError(
@@ -49,16 +51,14 @@ class PageParser {
           element: element);
     }
 
-    final String? flavor = annotation.peek('flavor')?.stringValue;
-
     return PageInfo(
       uri: buildStep.inputId.uri,
       displayName: element.displayName,
+      flavor: flavor,
       name: name!,
       routeName: routeName!,
       fieldRename: fieldRename,
       constructor: constructor,
-      flavor: flavor,
     );
   }
 }

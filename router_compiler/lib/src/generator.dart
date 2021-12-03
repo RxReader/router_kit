@@ -9,9 +9,9 @@ import 'package:router_compiler/src/writer/page_writer.dart';
 import 'package:source_gen/source_gen.dart';
 
 class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
-  PageCompilerGenerator(this.infoMap);
+  PageCompilerGenerator(this.infos);
 
-  final Map<String, PageInfo> infoMap;
+  final List<PageInfo> infos;
 
   final Logger _log = Logger('PageCompiler');
 
@@ -31,7 +31,7 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
           withNullability: withNullability);
       _log.info(
           '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
-      infoMap[info.routeName] = info;
+      infos.add(info);
       final PageWriter writer = PageWriter(info);
       writer.generate(withNullability: withNullability);
       return writer.toString();
@@ -44,9 +44,9 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
 }
 
 class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
-  ManifestCompilerGenerator(this.infoMap);
+  ManifestCompilerGenerator(this.infos);
 
-  final Map<String, PageInfo> infoMap;
+  final List<PageInfo> infos;
 
   final Logger _log = Logger('ManifestCompiler');
 
@@ -77,7 +77,7 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
         '******************** ${_log.name} ********************');
 
     try {
-      final ManifestWriter writer = ManifestWriter(element, infoMap);
+      final ManifestWriter writer = ManifestWriter(element, infos);
       writer.generate();
       return writer.toString();
     } on Exception catch (e, s) {
@@ -88,18 +88,18 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   }
 }
 
-final Map<String, PageInfo> infoMap = <String, PageInfo>{};
+final List<PageInfo> infos = <PageInfo>[];
 
 Builder pageCompilerBuilder({required Map<String, dynamic> config}) =>
     SharedPartBuilder(
       <Generator>[
-        PageCompilerGenerator(infoMap),
+        PageCompilerGenerator(infos),
       ],
       'page_compiler',
     );
 
 Builder manifestCompilerBuilder({required Map<String, dynamic> config}) =>
     LibraryBuilder(
-      ManifestCompilerGenerator(infoMap),
+      ManifestCompilerGenerator(infos),
       generatedExtension: '.manifest.g.dart',
     );
