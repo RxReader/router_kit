@@ -353,7 +353,7 @@ packages:
       path: "../router_compiler"
       relative: true
     source: path
-    version: "1.2.0"
+    version: "1.2.2"
   shelf:
     dependency: transitive
     description:
