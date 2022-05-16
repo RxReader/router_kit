@@ -13,22 +13,33 @@ T enumValueForDartObject<T>(
 String formatPrettyDisplay(DartType type, {required bool withNullability}) {
   if (type is FunctionType) {
     final StringBuffer display = StringBuffer()
-      ..write(type.returnType.getDisplayString(withNullability: withNullability))
+      ..write(
+          type.returnType.getDisplayString(withNullability: withNullability))
       ..write(' Function(')
       ..write(<String>[
-        if (type.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
+        if (type.parameters.any((ParameterElement element) =>
+            !element.isNamed && !element.isOptional))
           type.parameters
-              .where((ParameterElement element) => !element.isNamed && !element.isOptional)
-              .map((ParameterElement element) => '${element.type.getDisplayString(withNullability: withNullability)} ${element.name}')
+              .where((ParameterElement element) =>
+                  !element.isNamed && !element.isOptional)
+              .map((ParameterElement element) =>
+                  '${element.type.getDisplayString(withNullability: withNullability)} ${element.name}')
               .join(', '),
-        if (type.parameters.any((ParameterElement element) => !element.isNamed && element.isOptional))
+        if (type.parameters.any((ParameterElement element) =>
+            !element.isNamed && element.isOptional))
           '[${type.parameters.where((ParameterElement element) => !element.isNamed && element.isOptional).map((ParameterElement element) => '${element.type.getDisplayString(withNullability: withNullability)} ${element.name}').join(', ')}]',
         if (type.parameters.any((ParameterElement element) => element.isNamed))
           '{${type.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${element.type.getDisplayString(withNullability: withNullability)} ${element.name}').join(', ')}}',
       ].join(', '))
       ..write(')')
-      ..write(withNullability && type.nullabilitySuffix == NullabilitySuffix.question ? '?' : '')
-      ..write(withNullability && type.nullabilitySuffix == NullabilitySuffix.star ? '*' : '');
+      ..write(withNullability &&
+              type.nullabilitySuffix == NullabilitySuffix.question
+          ? '?'
+          : '')
+      ..write(
+          withNullability && type.nullabilitySuffix == NullabilitySuffix.star
+              ? '*'
+              : '');
     return display.toString();
   }
   return type.getDisplayString(withNullability: withNullability);

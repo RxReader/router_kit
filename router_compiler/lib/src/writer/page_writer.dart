@@ -31,16 +31,19 @@ class PageWriter {
     // blank
     _buffer.writeln();
 
-    _buffer.writeln('String get routeName => ${info.providerDisplayName}.routeName;');
+    _buffer.writeln(
+        'String get routeName => ${info.providerDisplayName}.routeName;');
 
     // blank
     _buffer.writeln();
 
-    _buffer.writeln('WidgetBuilder get routeBuilder => ${info.providerDisplayName}.routeBuilder;');
+    _buffer.writeln(
+        'WidgetBuilder get routeBuilder => ${info.providerDisplayName}.routeBuilder;');
 
     _buffer.writeln();
 
-    _buffer.writeln('String? get flavor => ${info.providerDisplayName}.flavor;');
+    _buffer
+        .writeln('String? get flavor => ${info.providerDisplayName}.flavor;');
 
     // blank
     _buffer.writeln();
@@ -75,7 +78,8 @@ class PageWriter {
 
     _buffer.writeln();
 
-    _buffer.writeln('static const String? flavor = ${info.flavor != null ? "'${info.flavor}'" : null};');
+    _buffer.writeln(
+        'static const String? flavor = ${info.flavor != null ? "'${info.flavor}'" : null};');
 
     // blank
     _buffer.writeln();
@@ -91,19 +95,22 @@ class PageWriter {
     _buffer.writeln();
 
     //
-    _buffer.writeln('static final WidgetBuilder routeBuilder = (BuildContext context) {');
+    _buffer.writeln(
+        'static final WidgetBuilder routeBuilder = (BuildContext context) {');
     if (info.constructor.parameters.isNotEmpty) {
       _buffer.writeln(
           'final Map<String, dynamic>${withNullability ? '?' : ''} arguments = ModalRoute.of(context)${withNullability ? '!' : ''}.settings.arguments as Map<String, dynamic>${withNullability ? '?' : ' ?? <String, dynamic>{}'};');
       final StringBuffer arguments = StringBuffer()
         ..writeln(<String>[
-          if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed))
+          if (info.constructor.parameters
+              .any((ParameterElement element) => !element.isNamed))
             info.constructor.parameters
                 .where((ParameterElement element) => !element.isNamed)
-                .map(
-                    (ParameterElement element) => "arguments${withNullability ? '?' : ''}['${info.convertField(element.name)}'] as ${element.type.getDisplayString(withNullability: withNullability)},")
+                .map((ParameterElement element) =>
+                    "arguments${withNullability ? '?' : ''}['${info.convertField(element.name)}'] as ${element.type.getDisplayString(withNullability: withNullability)},")
                 .join('\n'),
-          if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
+          if (info.constructor.parameters
+              .any((ParameterElement element) => element.isNamed))
             info.constructor.parameters
                 .where((ParameterElement element) => element.isNamed)
                 .map((ParameterElement element) =>
@@ -122,33 +129,45 @@ class PageWriter {
 
       _buffer
         ..writeln('static Map<String, dynamic> routeArgument(${<String>[
-          if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
+          if (info.constructor.parameters.any((ParameterElement element) =>
+              !element.isNamed && !element.isOptional))
             info.constructor.parameters
-                .where((ParameterElement element) => !element.isNamed && !element.isOptional)
-                .map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
+                .where((ParameterElement element) =>
+                    !element.isNamed && !element.isOptional)
+                .map((ParameterElement element) =>
+                    '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
                 .join(', '),
-          if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && element.isOptional))
+          if (info.constructor.parameters.any((ParameterElement element) =>
+              !element.isNamed && element.isOptional))
             '[${info.constructor.parameters.where((ParameterElement element) => !element.isNamed && element.isOptional).map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},]',
-          if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
+          if (info.constructor.parameters
+              .any((ParameterElement element) => element.isNamed))
             '{${info.constructor.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${withNullability && element.isRequiredNamed ? 'required ' : ''}${!withNullability && element.hasRequired ? '@required ' : ''}${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},}',
         ].join(', ')}) {')
-        ..writeln('return <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => "'${info.convertField(element.name)}': ${element.name},").join('\n')}};')
+        ..writeln(
+            'return <String, dynamic>{${info.constructor.parameters.map((ParameterElement element) => "'${info.convertField(element.name)}': ${element.name},").join('\n')}};')
         ..writeln('}');
     }
 
     // blank
     _buffer.writeln();
     _buffer
-      ..writeln('static Future<T${withNullability ? '?' : ''}> pushByNamed<T extends Object${withNullability ? '?' : ''}>(${<String>[
+      ..writeln(
+          'static Future<T${withNullability ? '?' : ''}> pushByNamed<T extends Object${withNullability ? '?' : ''}>(${<String>[
         'BuildContext context',
-        if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && !element.isOptional))
+        if (info.constructor.parameters.any((ParameterElement element) =>
+            !element.isNamed && !element.isOptional))
           info.constructor.parameters
-              .where((ParameterElement element) => !element.isNamed && !element.isOptional)
-              .map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
+              .where((ParameterElement element) =>
+                  !element.isNamed && !element.isOptional)
+              .map((ParameterElement element) =>
+                  '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}')
               .join(', '),
-        if (info.constructor.parameters.any((ParameterElement element) => !element.isNamed && element.isOptional))
+        if (info.constructor.parameters.any((ParameterElement element) =>
+            !element.isNamed && element.isOptional))
           '[${info.constructor.parameters.where((ParameterElement element) => !element.isNamed && element.isOptional).map((ParameterElement element) => '${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},]',
-        if (info.constructor.parameters.any((ParameterElement element) => element.isNamed))
+        if (info.constructor.parameters
+            .any((ParameterElement element) => element.isNamed))
           '{${info.constructor.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${withNullability && element.isRequiredNamed ? 'required ' : ''}${!withNullability && element.hasRequired ? '@required ' : ''}${formatPrettyDisplay(element.type, withNullability: withNullability)} ${element.name}${element.hasDefaultValue ? ' = ${element.defaultValueCode}' : ''}').join(', ')},}',
       ].join(', ')}) {')
       ..writeAll(<String>[

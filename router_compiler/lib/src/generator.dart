@@ -16,15 +16,20 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   final Logger _log = Logger('PageCompiler');
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError('`@$Page` can only be used on classes.', element: element);
+      throw InvalidGenerationSourceError(
+          '`@$Page` can only be used on classes.',
+          element: element);
     }
 
     try {
       final bool withNullability = element.library.isNonNullableByDefault;
-      final PageInfo info = PageParser.parse(element, annotation, buildStep, withNullability: withNullability);
-      _log.info('${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
+      final PageInfo info = PageParser.parse(element, annotation, buildStep,
+          withNullability: withNullability);
+      _log.info(
+          '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
       infos.add(info);
       final PageWriter writer = PageWriter(info);
       writer.generate(withNullability: withNullability);
@@ -47,13 +52,16 @@ class ManifestCompilerGenerator extends GeneratorForAnnotation<Manifest> {
   int _count = 0;
 
   @override
-  dynamic generateForAnnotatedElement(Element element, ConstantReader annotation, BuildStep buildStep) {
+  dynamic generateForAnnotatedElement(
+      Element element, ConstantReader annotation, BuildStep buildStep) {
     if (element is! ClassElement) {
-      throw InvalidGenerationSourceError('Manifest annotation can only be defined on a class.');
+      throw InvalidGenerationSourceError(
+          'Manifest annotation can only be defined on a class.');
     }
 
     if (_count > 0) {
-      throw InvalidGenerationSourceError('Manifest annotation can only be defined once.');
+      throw InvalidGenerationSourceError(
+          'Manifest annotation can only be defined once.');
     }
 
     _count++;

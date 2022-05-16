@@ -15,19 +15,28 @@ class PageParser {
     BuildStep buildStep, {
     required bool withNullability,
   }) {
-    if (!element.allSupertypes.map((InterfaceType supertype) => supertype.getDisplayString(withNullability: withNullability)).contains('Widget')) {
-      throw InvalidGenerationSourceError('`@$Page` can only be used on Widget classes.', element: element);
+    if (!element.allSupertypes
+        .map((InterfaceType supertype) =>
+            supertype.getDisplayString(withNullability: withNullability))
+        .contains('Widget')) {
+      throw InvalidGenerationSourceError(
+          '`@$Page` can only be used on Widget classes.',
+          element: element);
     }
 
     final String? flavor = annotation.peek('flavor')?.stringValue;
 
     final String? name = annotation.peek('name')?.stringValue;
     if (name?.isEmpty ?? true) {
-      throw InvalidGenerationSourceError('`@$Page` name can not be null or empty.', element: element);
+      throw InvalidGenerationSourceError(
+          '`@$Page` name can not be null or empty.',
+          element: element);
     }
     final String? routeName = annotation.peek('routeName')?.stringValue;
     if (routeName?.isEmpty ?? true) {
-      throw InvalidGenerationSourceError('`@$Page` routeName can not be null or empty.', element: element);
+      throw InvalidGenerationSourceError(
+          '`@$Page` routeName can not be null or empty.',
+          element: element);
     }
     FieldRename? _fromDartObject(ConstantReader reader) {
       return reader.isNull
@@ -39,11 +48,14 @@ class PageParser {
             );
     }
 
-    final FieldRename fieldRename = _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
+    final FieldRename fieldRename =
+        _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
 
     final ConstructorElement? constructor = element.unnamedConstructor;
     if (constructor == null) {
-      throw InvalidGenerationSourceError('`@$Page` does not have a default constructor!', element: element);
+      throw InvalidGenerationSourceError(
+          '`@$Page` does not have a default constructor!',
+          element: element);
     }
 
     return PageInfo(
