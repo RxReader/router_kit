@@ -1,12 +1,12 @@
 name: router_api
 description: Flutter Router Api.
-version: 2.0.0
+version: 2.0.1
 # author: v7lin <v7lin@qq.com>
 homepage: https://github.com/RxReader/router_kit
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=2.5.0"
 
 dependencies:
   flutter:
