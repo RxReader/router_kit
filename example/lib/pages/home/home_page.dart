@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: const Text('Payment'),
+            title: Text('Payment'),
             onTap: () {
               AppRouter.instance.pushNamed(
                 context,
@@ -42,7 +42,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           ListTile(
-            title: const Text('Params'),
+            title: Text('Params'),
             onTap: () {
               AppRouter.instance.pushNamed(
                 context,
@@ -52,7 +52,7 @@ class _HomePageState extends State<HomePage> {
             },
           ),
           ListTile(
-            title: const Text('About'),
+            title: Text('About'),
             onTap: () {
               AppRouter.instance.pushNamed(context, AboutPageProvider.routeName);
             },

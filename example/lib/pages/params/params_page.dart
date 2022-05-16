@@ -46,7 +46,7 @@ class _ParamsPageState extends State<ParamsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Params'),
+        title: Text('Params'),
       ),
       body: Center(
         child: Column(

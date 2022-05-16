@@ -3,7 +3,7 @@ builders:
   page_compiler:
     import: 'package:router_compiler/builder.dart'
     builder_factories: ['pageCompiler']
-    build_extensions: { '.dart': ['.page_compiler.g.part'] }
+    build_extensions: { '.dart': ['page_compiler.g.part'] }
     auto_apply: dependents
     runs_before: ['|manifest_compiler']
     build_to: cache
@@ -12,7 +12,7 @@ builders:
   manifest_compiler:
     import: 'package:router_compiler/builder.dart'
     builder_factories: ['manifestCompiler']
-    build_extensions: { '.dart': ['.manifest_compiler.g.part'] }
+    build_extensions: { '.dart': ['manifest_compiler.g.part'] }
     auto_apply: dependents
     build_to: source
     applies_builders: ['source_gen|combining_builder']

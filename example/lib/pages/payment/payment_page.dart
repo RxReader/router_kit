@@ -35,12 +35,12 @@ class _PaymentPageState extends State<PaymentPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment'),
+        title: Text('Payment'),
       ),
       body: ListView(
         children: <Widget>[
           ListTile(
-            title: const Text('Pay'),
+            title: Text('Pay'),
             onTap: () {
               Navigator.of(context).pop('Click Pay');
             },

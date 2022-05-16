@@ -33,7 +33,12 @@ class _AppState extends State<App> {
         return 'RouterKit';
       },
       theme: ThemeData.light().copyWith(
-        platform: TargetPlatform.iOS,
+        pageTransitionsTheme: PageTransitionsTheme(
+          builders: <TargetPlatform, PageTransitionsBuilder>{
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          },
+        ),
       ),
     );
   }
