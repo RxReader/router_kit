@@ -148,7 +148,7 @@ class PageWriter {
     }
 
     // blank
-    _buffer.writeln('');
+    _buffer.writeln();
     _buffer
       ..writeln(
           'static Future<T${withNullability ? '?' : ''}> pushByNamed<T extends Object${withNullability ? '?' : ''}>(${<String>[
