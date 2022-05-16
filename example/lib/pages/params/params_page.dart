@@ -13,13 +13,13 @@ typedef Callback = String? Function(String? info);
 class ParamsPage extends StatefulWidget {
   ParamsPage(
     this.paramA1, {
-    Key? key,
+    super.key,
     required this.paramB,
     this.paramC,
     this.paramF = 'xyz',
     this.paramG = 'xxx',
     this.callback,
-  }) : super(key: key);
+  });
 
   final String paramA1;
 

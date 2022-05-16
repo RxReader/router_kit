@@ -8,7 +8,9 @@ part 'not_found_page.g.dart';
   routeName: '/not_found',
 )
 class NotFoundPage extends StatefulWidget {
-  const NotFoundPage({Key? key}) : super(key: key);
+  const NotFoundPage({
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() {

@@ -10,7 +10,10 @@ part 'about_page.g.dart';
   flavor: 'target',
 )
 class AboutPage extends StatefulWidget {
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({
+    super.key,
+  });
+
   @override
   State<StatefulWidget> createState() {
     return _AboutPageState();

@@ -5,7 +5,9 @@ import 'package:router_annotation/router_annotation.dart' as rca;
 
 @rca.Manifest()
 class App extends StatefulWidget {
-  const App({Key? key}) : super(key: key);
+  const App({
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() {
