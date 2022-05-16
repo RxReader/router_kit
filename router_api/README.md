@@ -1,6 +1,6 @@
 # router_api
 
-Defines the api used by [router_compiler](https://pub.dev/packages/router_compiler) to create code for Flutter Route.
+Defines the api for Flutter Route.
 
 ## Usage
 
