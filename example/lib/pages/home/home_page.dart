@@ -49,14 +49,16 @@ class _HomePageState extends State<HomePage> {
               AppRouter.instance.pushNamed(
                 context,
                 ParamsPageProvider.routeName,
-                arguments: ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
+                arguments:
+                    ParamsPageProvider.routeArgument('aaa', paramB: 'bbb'),
               );
             },
           ),
           ListTile(
             title: Text('About'),
             onTap: () {
-              AppRouter.instance.pushNamed(context, AboutPageProvider.routeName);
+              AppRouter.instance
+                  .pushNamed(context, AboutPageProvider.routeName);
             },
           ),
         ],

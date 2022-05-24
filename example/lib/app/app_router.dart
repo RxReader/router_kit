@@ -23,16 +23,25 @@ mixin InterceptableRouter on ra.Router {
   }
 
   @override
-  void useRoute({required String name, required String routeName, required WidgetBuilder routeBuilder, Interceptor? interceptor}) {
+  void useRoute({
+    required String name,
+    required String routeName,
+    required WidgetBuilder routeBuilder,
+    Interceptor? interceptor,
+  }) {
     assert(!_routeInterceptors.containsKey(routeName));
-    super.useRoute(name: name, routeName: routeName, routeBuilder: routeBuilder);
+    super
+        .useRoute(name: name, routeName: routeName, routeBuilder: routeBuilder);
     if (interceptor != null) {
       _routeInterceptors[routeName] = interceptor;
     }
   }
 
   @override
-  void useController({required dynamic controller, Interceptor? interceptor}) {
+  void useController({
+    required dynamic controller,
+    Interceptor? interceptor,
+  }) {
     final ra.Controller wrapper = ra.Controller.from(controller);
     useRoute(
       name: wrapper.name,
@@ -42,32 +51,46 @@ mixin InterceptableRouter on ra.Router {
     );
   }
 
-  Future<Object?> pushNamed(BuildContext context, String routeName, {Object? arguments}) {
+  Future<Object?> pushNamed(
+    BuildContext context,
+    String routeName, {
+    Object? arguments,
+  }) {
     final List<Interceptor> activeInterceptors = <Interceptor>[
       ..._interceptors,
-      if (_routeInterceptors.containsKey(routeName)) _routeInterceptors[routeName]!,
+      if (_routeInterceptors.containsKey(routeName))
+        _routeInterceptors[routeName]!,
     ];
     final List<Next> nexts = <Next>[
       () => Navigator.of(context).pushNamed(routeName, arguments: arguments),
     ];
     for (final Interceptor interceptor in activeInterceptors.reversed) {
       final Next next = nexts.last;
-      nexts.add(() => interceptor.call(context, routeName, arguments: arguments, next: next));
+      nexts.add(() => interceptor.call(context, routeName,
+          arguments: arguments, next: next));
     }
     return nexts.last.call();
   }
 
-  Future<Object?> pushReplacementNamed(BuildContext context, String routeName, {Object? result, Object? arguments}) {
+  Future<Object?> pushReplacementNamed(
+    BuildContext context,
+    String routeName, {
+    Object? result,
+    Object? arguments,
+  }) {
     final List<Interceptor> activeInterceptors = <Interceptor>[
       ..._interceptors,
-      if (_routeInterceptors.containsKey(routeName)) _routeInterceptors[routeName]!,
+      if (_routeInterceptors.containsKey(routeName))
+        _routeInterceptors[routeName]!,
     ];
     final List<Next> nexts = <Next>[
-      () => Navigator.of(context).pushReplacementNamed(routeName, result: result, arguments: arguments),
+      () => Navigator.of(context).pushReplacementNamed(routeName,
+          result: result, arguments: arguments),
     ];
     for (final Interceptor interceptor in activeInterceptors.reversed) {
       final Next next = nexts.last;
-      nexts.add(() => interceptor.call(context, routeName, arguments: arguments, next: next));
+      nexts.add(() => interceptor.call(context, routeName,
+          arguments: arguments, next: next));
     }
     return nexts.last.call();
   }
