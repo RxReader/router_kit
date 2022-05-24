@@ -1,0 +1,47 @@
+name: build
+
+on: [push, pull_request]
+
+jobs:
+  build_ios:
+    name: Build iOS on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - run: flutter --version
+      - run: flutter pub get
+      - run: flutter format --dry-run --set-exit-if-changed .
+      - run: flutter pub publish --dry-run
+      - run: flutter analyze router_annotation/lib router_compiler/lib router_api/lib example/lib
+      - run: cd example; flutter build ios --no-codesign
+
+  build_android:
+    name: Build Android on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '11'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+      - name: Run ${{ github.repository_owner }}/install-ndk@shell
+        run: |
+          sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.1.6352462"
+      - run: flutter --version
+      - run: flutter pub get
+      - run: flutter format --dry-run --set-exit-if-changed .
+      - run: flutter pub publish --dry-run
+      - run: flutter analyze router_annotation/lib router_compiler/lib router_api/lib example/libs
+      - run: cd example; flutter build apk --debug
