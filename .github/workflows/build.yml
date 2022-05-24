@@ -15,11 +15,34 @@ jobs:
         with:
           channel: 'stable'
       - run: flutter --version
-      - run: flutter pub get
-      - run: flutter format --dry-run --set-exit-if-changed .
-      - run: flutter pub publish --dry-run
-      - run: flutter analyze router_annotation/lib router_compiler/lib router_api/lib example/lib
-      - run: cd example; flutter build ios --no-codesign
+      - name: check router_annotation
+        run: |
+          cd router_annotation/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter pub publish --dry-run
+          flutter analyze lib
+      - name: check router_compiler
+        run: |
+          cd router_compiler/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter pub publish --dry-run
+          flutter analyze lib
+      - name: check router_api
+        run: |
+          cd router_api/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter pub publish --dry-run
+          flutter analyze lib
+      - name: build example
+        run: |
+          cd example/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter analyze lib
+          flutter build ios --no-codesign
 
   build_android:
     name: Build Android on ${{ matrix.os }}
@@ -40,8 +63,31 @@ jobs:
         run: |
           sudo echo "y" | sudo $ANDROID_HOME/tools/bin/sdkmanager "ndk;21.1.6352462"
       - run: flutter --version
-      - run: flutter pub get
-      - run: flutter format --dry-run --set-exit-if-changed .
-      - run: flutter pub publish --dry-run
-      - run: flutter analyze router_annotation/lib router_compiler/lib router_api/lib example/libs
-      - run: cd example; flutter build apk --debug
+      - name: check router_annotation
+        run: |
+          cd router_annotation/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter pub publish --dry-run
+          flutter analyze lib
+      - name: check router_compiler
+        run: |
+          cd router_compiler/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter pub publish --dry-run
+          flutter analyze lib
+      - name: check router_api
+        run: |
+          cd router_api/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter pub publish --dry-run
+          flutter analyze lib
+      - name: build example
+        run: |
+          cd example/
+          flutter pub get
+          flutter format --dry-run --set-exit-if-changed .
+          flutter analyze lib
+          flutter build apk --debug
