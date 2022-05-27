@@ -1,4 +1,4 @@
-name: publish manually
+name: publish annotation manually
 
 on: workflow_dispatch
 

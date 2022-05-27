@@ -1,4 +1,4 @@
-name: publish manually
+name: publish compiler manually
 
 on: workflow_dispatch
 
