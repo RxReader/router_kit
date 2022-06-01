@@ -353,7 +353,7 @@ packages:
       path: "../router_api"
       relative: true
     source: path
-    version: "2.0.0"
+    version: "2.0.1"
   router_compiler:
     dependency: "direct dev"
     description:
@@ -487,4 +487,4 @@ packages:
     version: "3.1.1"
 sdks:
   dart: ">=2.17.0 <3.0.0"
-  flutter: ">=3.0.0"
+  flutter: ">=2.5.0"

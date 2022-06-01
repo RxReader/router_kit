@@ -1,5 +1,6 @@
 import 'package:example/app/app.manifest.g.dart';
 import 'package:example/pages/not_found/not_found_page.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -144,7 +145,7 @@ class AppRouter extends ra.Router with InterceptableRouter, Manifest {
 
   Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     if (routes.containsKey(settings.name)) {
-      return MaterialPageRoute<dynamic>(
+      return CupertinoPageRoute<dynamic>(
         builder: routes[settings.name]!,
         settings: settings,
       );
@@ -153,7 +154,7 @@ class AppRouter extends ra.Router with InterceptableRouter, Manifest {
   }
 
   Route<dynamic>? onUnknownRoute(RouteSettings settings) {
-    return MaterialPageRoute<dynamic>(
+    return CupertinoPageRoute<dynamic>(
       builder: routes[NotFoundPageProvider.routeName]!,
       settings: settings,
     );
