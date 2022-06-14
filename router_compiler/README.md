@@ -8,13 +8,13 @@ The builders generate code when they find members annotated with classes defined
 
 See the [example](../example) to understand how to configure your package.
 
-* router_compiler cli
+* (推荐) router_compiler cli
 
 ```shell
 flutter pub run router_compiler:compiler build
 ```
 
-* build_runner cli
+* (不推荐) build_runner cli
 
 ```shell
 flutter pub run build_runner clean
