@@ -1,6 +1,10 @@
+## 2.0.1
+
+* router_compiler cli
+
 ## 2.0.0
 
-* 升级Flutter 3.0
+* 升级 Flutter 3.0
 
 ## 1.2.2
 

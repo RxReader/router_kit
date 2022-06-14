@@ -8,6 +8,14 @@ The builders generate code when they find members annotated with classes defined
 
 See the [example](../example) to understand how to configure your package.
 
+* router_compiler cli
+
+```shell
+flutter pub run router_compiler:compiler build
+```
+
+* build_runner cli
+
 ```shell
 flutter pub run build_runner clean
 flutter pub run build_runner build --delete-conflicting-outputs
