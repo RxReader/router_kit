@@ -26,7 +26,7 @@ class BuildCommand extends Command<void> {
       throw ProcessException(
         'flutter',
         <String>['pub', 'run', 'build_runner', 'clean'],
-        clean.stderr as String ?? '',
+        clean.stderr as String? ?? '',
         clean.exitCode,
       );
     }
@@ -51,7 +51,7 @@ class BuildCommand extends Command<void> {
           'build',
           '--delete-conflicting-outputs'
         ],
-        build.stderr as String ?? '',
+        build.stderr as String? ?? '',
         build.exitCode,
       );
     }
