@@ -85,8 +85,11 @@ mixin InterceptableRouter on ra.Router {
         _routeInterceptors[routeName]!,
     ];
     final List<Next> nexts = <Next>[
-      () => Navigator.of(context).pushReplacementNamed(routeName,
-          result: result, arguments: arguments),
+      () => Navigator.of(context).pushReplacementNamed(
+            routeName,
+            result: result,
+            arguments: arguments,
+          ),
     ];
     for (final Interceptor interceptor in activeInterceptors.reversed) {
       final Next next = nexts.last;
@@ -116,19 +119,19 @@ mixin Manifest on ra.Router, InterceptableRouter {
     }
   }
 
-  // static Future<dynamic> _globalAuth(
-  //   BuildContext context,
-  //   String routeName, {
-  //   Object? arguments,
-  //   Next? next,
-  // }) async {
-  //   assert(context is BuildContext);
-  //   const dynamic isLoggedin = false;
-  //   if (isLoggedin != null && isLoggedin is bool && isLoggedin) {
-  //     return next?.call();
-  //   }
-  //   return null;
-  // }
+// static Future<dynamic> _globalAuth(
+//   BuildContext context,
+//   String routeName, {
+//   Object? arguments,
+//   Next? next,
+// }) async {
+//   assert(context is BuildContext);
+//   const dynamic isLoggedin = false;
+//   if (isLoggedin != null && isLoggedin is bool && isLoggedin) {
+//     return next?.call();
+//   }
+//   return null;
+// }
 }
 
 class AppRouter extends ra.Router with InterceptableRouter, Manifest {
@@ -136,12 +139,6 @@ class AppRouter extends ra.Router with InterceptableRouter, Manifest {
 
   static AppRouter get instance => _instance ??= AppRouter._();
   static AppRouter? _instance;
-
-  @protected
-  @override
-  void registerBuiltIn() {
-    super.registerBuiltIn();
-  }
 
   Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     if (routes.containsKey(settings.name)) {
