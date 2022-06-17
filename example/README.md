@@ -5,7 +5,7 @@ A Flutter Demo project.
 ## Usage
 
 ```shell
-flutter pub run router_compiler:compiler build
+flutter pub run router_compiler build
 ```
 
 ```shell

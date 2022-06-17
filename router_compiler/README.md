@@ -11,7 +11,7 @@ See the [example](../example) to understand how to configure your package.
 * (推荐) router_compiler cli
 
 ```shell
-flutter pub run router_compiler:compiler build
+flutter pub run router_compiler build
 ```
 
 * (不推荐) build_runner cli

@@ -60,7 +60,7 @@ class BuildCommand extends Command<void> {
 
 /// flutter pub run router_compiler:compiler build
 Future<void> main(List<String> args) async {
-  final CommandRunner<void> runner = CommandRunner<void>('compiler', '路由编译');
+  final CommandRunner<void> runner = CommandRunner<void>('router_compiler', '路由编译');
   runner.addCommand(BuildCommand());
   await runner.run(args);
 }
