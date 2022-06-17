@@ -6,7 +6,7 @@ The builders generate code when they find members annotated with classes defined
 
 ## Usage
 
-See the [example](../example) to understand how to configure your package.
+See the [example](https://github.com/RxReader/router_kit/tree/master/example) to understand how to configure your package.
 
 * (推荐) router_compiler cli
 
