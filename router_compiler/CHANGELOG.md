@@ -1,3 +1,7 @@
+## 2.0.3
+
+* remove router_compiler cli
+
 ## 2.0.2
 
 * router_compiler cli

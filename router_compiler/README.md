@@ -8,13 +8,7 @@ The builders generate code when they find members annotated with classes defined
 
 See the [example](https://github.com/RxReader/router_kit/tree/master/example) to understand how to configure your package.
 
-* (推荐) router_compiler cli
-
-```shell
-flutter pub run router_compiler build
-```
-
-* (不推荐) build_runner cli
+* build_runner cli
 
 ```shell
 flutter pub run build_runner clean
