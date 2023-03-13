@@ -18,6 +18,14 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
   @override
   dynamic generateForAnnotatedElement(
       Element element, ConstantReader annotation, BuildStep buildStep) {
+    if (!element.library!.isNonNullableByDefault) {
+      throw InvalidGenerationSourceError(
+        '$PageCompilerGenerator cannot target libraries that have not been migrated to '
+            'null-safety.',
+        element: element,
+      );
+    }
+
     if (element is! ClassElement) {
       throw InvalidGenerationSourceError(
           '`@$Page` can only be used on classes.',
@@ -25,14 +33,12 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
     }
 
     try {
-      final bool withNullability = element.library.isNonNullableByDefault;
-      final PageInfo info = PageParser.parse(element, annotation, buildStep,
-          withNullability: withNullability);
+      final PageInfo info = PageParser.parse(element, annotation, buildStep);
       _log.info(
           '${info.displayName}{name: ${info.name}, routeName: ${info.routeName}}');
       infos.add(info);
       final PageWriter writer = PageWriter(info);
-      writer.generate(withNullability: withNullability);
+      writer.generate();
       return writer.toString();
     } on Exception catch (e, s) {
       _log.severe(e);

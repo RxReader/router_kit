@@ -1,6 +1,6 @@
 name: router_compiler
 description: Flutter Router Compiler.
-version: 2.0.3
+version: 3.0.0
 # author: v7lin <v7lin@qq.com>
 homepage: https://github.com/RxReader/router_kit
 
@@ -10,10 +10,9 @@ environment:
 dependencies:
   router_annotation: ^2.0.0
 
-  args: ^2.3.1
-  analyzer: '>=2.0.0 <5.0.0'
-  logging: ^1.0.1
-  build: ^2.0.1
+  analyzer: ^5.2.0
+  logging: ^1.0.0
+  build: ^2.0.0
   source_gen: ^1.0.0
 
 dev_dependencies:

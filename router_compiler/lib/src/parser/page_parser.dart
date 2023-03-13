@@ -9,15 +9,10 @@ import 'package:source_gen/source_gen.dart';
 class PageParser {
   const PageParser._();
 
-  static PageInfo parse(
-    ClassElement element,
-    ConstantReader annotation,
-    BuildStep buildStep, {
-    required bool withNullability,
-  }) {
+  static PageInfo parse(ClassElement element, ConstantReader annotation, BuildStep buildStep) {
     if (!element.allSupertypes
         .map((InterfaceType supertype) =>
-            supertype.getDisplayString(withNullability: withNullability))
+            supertype.getDisplayString(withNullability: true))
         .contains('Widget')) {
       throw InvalidGenerationSourceError(
           '`@$Page` can only be used on Widget classes.',
@@ -38,7 +33,7 @@ class PageParser {
           '`@$Page` routeName can not be null or empty.',
           element: element);
     }
-    FieldRename? _fromDartObject(ConstantReader reader) {
+    FieldRename? fromDartObject(ConstantReader reader) {
       return reader.isNull
           ? null
           : enumValueForDartObject<FieldRename>(
@@ -49,7 +44,7 @@ class PageParser {
     }
 
     final FieldRename fieldRename =
-        _fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
+        fromDartObject(annotation.read('fieldRename')) ?? FieldRename.snake;
 
     final ConstructorElement? constructor = element.unnamedConstructor;
     if (constructor == null) {
