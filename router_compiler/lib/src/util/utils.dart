@@ -13,8 +13,7 @@ T enumValueForDartObject<T>(
 String formatPrettyDisplay(DartType type) {
   if (type is FunctionType) {
     final StringBuffer display = StringBuffer()
-      ..write(
-          type.returnType.getDisplayString(withNullability: true))
+      ..write(type.returnType.getDisplayString(withNullability: true))
       ..write(' Function(')
       ..write(<String>[
         if (type.parameters.any((ParameterElement element) =>
@@ -32,13 +31,8 @@ String formatPrettyDisplay(DartType type) {
           '{${type.parameters.where((ParameterElement element) => element.isNamed).map((ParameterElement element) => '${element.type.getDisplayString(withNullability: true)} ${element.name}').join(', ')}}',
       ].join(', '))
       ..write(')')
-      ..write(type.nullabilitySuffix == NullabilitySuffix.question
-          ? '?'
-          : '')
-      ..write(
-           type.nullabilitySuffix == NullabilitySuffix.star
-              ? '*'
-              : '');
+      ..write(type.nullabilitySuffix == NullabilitySuffix.question ? '?' : '')
+      ..write(type.nullabilitySuffix == NullabilitySuffix.star ? '*' : '');
     return display.toString();
   }
   return type.getDisplayString(withNullability: true);

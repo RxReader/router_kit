@@ -150,8 +150,7 @@ class PageWriter {
     // blank
     _buffer.writeln();
     _buffer
-      ..writeln(
-          'static Future<T?> pushByNamed<T extends Object?>(${<String>[
+      ..writeln('static Future<T?> pushByNamed<T extends Object?>(${<String>[
         'BuildContext context',
         if (info.constructor.parameters.any((ParameterElement element) =>
             !element.isNamed && !element.isOptional))

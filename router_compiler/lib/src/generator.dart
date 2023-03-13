@@ -21,7 +21,7 @@ class PageCompilerGenerator extends GeneratorForAnnotation<Page> {
     if (!element.library!.isNonNullableByDefault) {
       throw InvalidGenerationSourceError(
         '$PageCompilerGenerator cannot target libraries that have not been migrated to '
-            'null-safety.',
+        'null-safety.',
         element: element,
       );
     }
