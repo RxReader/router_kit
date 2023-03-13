@@ -1,3 +1,8 @@
+## 3.0.0
+
+* compat json_serializable
+* remove
+
 ## 2.0.3
 
 * remove router_compiler cli

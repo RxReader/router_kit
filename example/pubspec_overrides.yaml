@@ -1,0 +1,7 @@
+dependency_overrides:
+  router_api:
+    path: ../router_api
+  router_annotation:
+    path: ../router_annotation
+  router_compiler:
+    path: ../router_compiler
